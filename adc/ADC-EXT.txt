@@ -1,6 +1,6 @@
 = ADC Extensions
 Jacek Sieka <arnetheduck@gmail.com>
-1.0, December 2007
+1.0, May 2008
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
