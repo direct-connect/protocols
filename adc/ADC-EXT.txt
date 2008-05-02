@@ -1,0 +1,178 @@
+= ADC Extensions
+Jacek Sieka <arnetheduck@gmail.com>
+1.0, December 2007
+
+== Abstract
+These are the official extensions to ADC. This document is based on the
+information contained in the ADC wiki - spefications from there are moved here
+when they are mature and stable enough.
+
+== Version history
+The latest draft of the next version of this document as well as intermediate
+and older versions can be downloaded from
+$URL$.
+
+This version correspods to $Revision$.
+
+=== Version 1.0
+* Initial release created from original ADC 1.0 text
+* Added PING extension
+
+== Extensions
+
+=== TIGR - Tiger tree hash support
+
+==== General
+
+This extension adds Tiger tree hash support to the base protocol. It is
+intended to be used both for identifying files and for purposes such as CID
+generation and password negotiation
+
+==== TIGR for shared files
+All files shared by TIGR supporting clients must have been hashed using Merkle
+Hash trees, as defined by
+http://www.open-content.net/specs/draft-jchapweske-thex-02.html.  The Tiger
+algorithm, as specified by http://www.cs.technion.ac.il/~biham/Reports/Tiger/,
+functions as the hash algorithm. A base segment size of 1024 bytes must be
+used when generating the tree, but clients may then discard parts of the tree
+as long as at least 7 levels are kept or a block granularity of 64 KiB is
+achieved.
+
+Generally, the root of the tree (TTH) serves to identify a file uniquely.
+Searches use it and it must be present in the file list. Further, the root of
+the file list must also be available and discoverable via GFI. A client may
+also request the rest of the tree using the normal client-client transfer
+procedure. The root must be encoded using base32 encoding when converted to
+text.
+
+In the file list, each File element carries an additional attribute "TTH"
+containing the base32-encoded value of the Tiger tree root.
+
+In the GET/GFI type, the full tree may be accessed using the "tthl" type.
+
+"tthl" transfers send the largest set of leaves available) as a binary stream
+of leaf data, right-to-left, with no spacing in between them.  <start_pos>
+must be set to 0 and <bytes> to -1 when requesting the data.  <bytes> must
+contain the total binary size of the leaf stream in SND; by dividing this
+length by the individual hash length, the number of leaves, and thus the leaf
+level, can be deducted. The received leaves can then be used to reconstruct
+the entire tree, and the resulting root must match the root of the file (this
+verifies the integrity of the tree itself). Identifier must be a TTH root
+value from the "TTH/" root.
+
+In the GET/GFI namespace, files are identified by 
+"TTH/<base32-encoded tree root>".
+
+In SCH and GFI, the following attributes are added:
+
+[separator="|"]
+``_
+TR | Tiger tree Hash root, encoded with base32.
+TD | Tree depth, index of the highest level of tree data available, root-only = 0, first level (2 leaves) = 1, second level = 2, etc...
+___
+
+=== BZIP – File list compressed with bzip2
+This extension adds a special file "files.xml.bz2" in the unnamed root of the
+share which contains "files.xml" compressed with bzip2 1.0.3+ (www.bzip.org).
+
+=== ZLIB - Compressed communication
+There are two variants of zlib support, FULL and GET, and only one should be
+used on a each communications channel set up.
+
+==== ZLIB-FULL
+If, during SUP negotiation, a peer sends "ZLIF" in its support string, it must
+accept two additional commands, ZON and ZOF. Upon reception of ZON the peer
+must start decompressing the incoming stream of data with zlib before
+interpreting it, and stop doing so after ZOF is received (in the compressed
+stream). The compressing end must partially flush the zlib buffer after each
+chunk of data to allow for decompression by the peer.
+
+==== ZLIB-GET
+The alternative is to send "ZLIG" to indicate that zlib is supported for
+binary transfers using the GET command, but not otherwise. A flag "ZL1" is
+added to the to the SND command to indicate that the data will come
+compressed, and the client receiving requests it by adding the same flag to
+GET (the sending client may ignore a request for a compressed transfer, but
+may also use it even when not requested by the receiver). The <bytes>
+parameter of the GET and SND commands is to be interpreted as the number of
+uncompressed bytes to be transferred.
+
+=== PING - Pinger extension
+Added 2008-03-14, based on ADC 1.0
+
+This extension can be supported by both clients and hubs, and when present, if hub
+supports it, it must send additional information to the client ( otherwise normal
+base client).
+
+It's purpose is to send to hublist pingers additional information about the hub
+ that otherwise it would be impossible to get as a normal user (eg. minimum share, 
+ maximum user count, etc).
+
+==== INF
+
+Contexts : F
+
+When the client supporting the PING extension connects, the hub must send its
+normal INF along with the following added fields ( none mandatory, if not present,
+it means hub has no restrictions in that matter, or non existent):
+
+[separator="|"]
+```_
+Code | Type    | Description
+___
+HH   | string  | Hub Host address ( DNS or IP )
+WS   | url     | Hub Website
+NE   | string  | Hub Network
+OW   | string  | Hub Owner name
+UC   | integer | Current User count
+SS   | integer | Total share size
+SF   | integer | Total files shared
+MS   | integer | Minimum share required to enter hub ( bytes )
+XS   | integer | Maximum share for entering hub ( bytes )
+ML   | integer | Minimum slots required to enter hub
+XL   | integer | Maximum slots for entering hub
+MU   | integer | Minimum hubs connected where clients can be users
+MR   | integer | Minimum hubs connected where client can be registered
+MO   | integer | Minimum hubs connected where client can be operators
+XU   | integer | Maximum hubs connected where clients can be users
+XR   | integer | Maximum hubs connected where client can be registered
+XO   | integer | Maximum hubs connected where client can be operators
+MC   | integer | Maximum possible clients ( users ) who can connect
+UP   | integer | Hub uptime (seconds)
+NI   | string  | Hub name (from BASE)
+DE   | string  | Hub description (from BASE)
+VE   | string  | Hub software version (from BASE)
+___
+
+The hub must continue to send the user list as for a normal user (move to
+NORMAL state). The pinger may decide to go through or disconnect (eg. if it
+doesn't require additional information about the users).
+
+===== Example
+---- 
+ -pinger- HSUP ADBASE ADPING AD..
+ -hub- ISUP ADBASE ADPING AD..
+ -hub- ISID ..
+ -hub- IINF NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
+ - (pinger may disconnect)
+ -..
+----
+
+==== Hub - Hublist communication
+
+The same extension goes for hub- hublist communication. This way, the hub
+takes the role of the client and the hublist of the server.
+
+The hublist may send INF about itself with NI field which would become hublist
+name and WS hublist web address.
+
+===== Example
+----
+ -hub- HSUP ADBASE ADPING AD..
+ -hublist- ISUP ADBASE ADPING AD..
+ -hublist- IINF NIhublist_name WShublist_address
+ -hub- HINF  NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
+ -( disconnect )
+----
+
+// vim: set syntax=asciidoc:
