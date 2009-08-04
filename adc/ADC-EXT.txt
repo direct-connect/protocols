@@ -22,6 +22,7 @@ This version correspods to $Revision$.
 
 === Version 1.0.1
 * Added TS as additional MSG parameter
+* Added DFAV
 
 == Extensions
 
@@ -182,5 +183,25 @@ name and WS hublist web address.
 
 === TS - Timestamp in MSG
 Timestamp of the moment when the message was sent, expressed in seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
+
+=== DFAV - Distributed Favorites
+The idea behind this extension is to generate a public hublist from the users favorite hublist. Implementations should seperate between public and private hubs in the favorite hublist of an user, in order not to distribute private hubs where one can not connect to anyway.
+
+==== GFA
+
+Contexts: T, C
+
+Asks all users within the same hub with the correct feature to send all publicly available hubs, in their favorite hub list to the requesting client.
+
+==== RFA
+
+Contexts: C
+
+Response of a client.
+
+HA | Hub address
+
+LG | Last succesfull login time ( number of seconds since the epoch (1970), (UTC) )
+
 
 // vim: set syntax=asciidoc:
