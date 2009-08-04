@@ -1,6 +1,8 @@
 = ADC Extensions
 Jacek Sieka <arnetheduck@gmail.com>
 1.0, May 2008
+Fredrik Ullner <ullner@gmail.com>
+1.0.1 August 2009
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -17,6 +19,9 @@ This version correspods to $Revision$.
 === Version 1.0
 * Initial release created from original ADC 1.0 text
 * Added PING extension
+
+=== Version 1.0.1
+* Added TS as additional MSG parameter
 
 == Extensions
 
@@ -174,5 +179,8 @@ name and WS hublist web address.
  -hub- HINF  NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  -( disconnect )
 ----
+
+=== TS - Timestamp in MSG
+Timestamp of the moment when the message was sent, expressed in seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
 
 // vim: set syntax=asciidoc:
