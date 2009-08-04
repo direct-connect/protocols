@@ -185,7 +185,7 @@ name and WS hublist web address.
 Timestamp of the moment when the message was sent, expressed in seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
 
 === DFAV - Distributed Favorites
-The idea behind this extension is to generate a public hublist from the users favorite hublist. Implementations should seperate between public and private hubs in the favorite hublist of an user, in order not to distribute private hubs where one can not connect to anyway.
+The idea behind this extension is to generate a public hublist from the users favorite hublist. Implementations should separate between public and private hubs in the favorite hublist of an user, in order not to distribute private hubs where one can not connect to anyway.
 
 ==== GFA
 
@@ -202,6 +202,8 @@ Response of a client.
 HA | Hub address
 
 LG | Last succesfull login time ( number of seconds since the epoch (1970), (UTC) )
+
+All INF fields from BASE are inherited.
 
 
 // vim: set syntax=asciidoc:
