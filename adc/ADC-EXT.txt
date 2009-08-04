@@ -203,7 +203,7 @@ HA | Hub address
 
 LG | Last succesfull login time ( number of seconds since the epoch (1970), (UTC) )
 
-All INF fields from BASE are inherited.
+All INF fields from BASE are inherited. All INF fields from PING extension are inherited.
 
 
 // vim: set syntax=asciidoc:
