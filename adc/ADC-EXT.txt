@@ -1,10 +1,6 @@
 = ADC Extensions
-Jacek Sieka <arnetheduck@gmail.com>
-1.0, May 2008
 Fredrik Ullner <ullner@gmail.com>
-1.0.1 August 2009
-Fredrik Ullner <ullner@gmail.com>
-1.0.2 April 2010
+1.0.2, April 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -16,7 +12,7 @@ The latest draft of the next version of this document as well as intermediate
 and older versions can be downloaded from
 $URL$.
 
-This version correspods to $Revision$.
+This version corresponds to $Revision$.
 
 === Version 1.0
 * Initial release created from original ADC 1.0 text
@@ -82,7 +78,7 @@ TR | Tiger tree Hash root, encoded with base32.
 TD | Tree depth, index of the highest level of tree data available, root-only = 0, first level (2 leaves) = 1, second level = 2, etc...
 ___
 
-=== BZIP – File list compressed with bzip2
+=== BZIP - File list compressed with bzip2
 This extension adds a special file "files.xml.bz2" in the unnamed root of the
 share which contains "files.xml" compressed with bzip2 1.0.3+ (www.bzip.org).
 
@@ -210,9 +206,9 @@ LG | Last succesfull login time ( number of seconds since the epoch (1970), (UTC
 
 All INF fields from BASE are inherited. All INF fields from PING extension are inherited.
 
-==== UCMD
+=== UCMD
 
-CMD name
+ CMD name
 
 Contexts: F
 
@@ -225,12 +221,13 @@ Name uniquely (per hub) identifies a particular user command. The name may conta
 [separator="|"]
 ``_
 RM | 1 = Remove Command
-CT | Message Category,  1 = Hub command, client parameters only, 2 = User list command, client and user parameters, 4 = Search result command, client, user and file parameters, 8 = File list command, client, user and file parameters.
+CT | Message Category,  1 = Hub command, client parameters only, 2 = User list command, client and user parameters, 4 = Search result command, client, user and file parameters, 8 = File list command, client, user and file parameters.Multiple types are specified by adding the numbers together.
 TT | The full text to be sent to hub, including FOURCC, parameters and keywords.
 CO | 1 = Constrained, when sending this command on multiple users (for example in search results), constrain it to once per CID only
 SP | 1 = Insert separator instead of command name (name must still be present to uniquely identify the command).
+___
 
-===== Keywords
+==== Keywords
 Keywords are specified using "%[keyword]". Unknown keywords must be replaced by the empty string. Additionally, all %-substitutions of the C function "strftime" must be supported.
 
 The following tables specify the keywords that must be supported.
@@ -241,6 +238,7 @@ Client parameters
 myCID | Client CID
 mySID | ClientSID
 myXX | One for each flag on that particular hub; for example, myI4 and myNI
+___
 
 User parameters
 [separator="|"]
@@ -248,15 +246,19 @@ User parameters
 userCID | User CID
 userSID | User SID
 userXX | One for each flag on the user sent; for example, userI4 and userNI
+___
 
 File parameters
 [separator="|"]
 ``_
-hubXX | One for each flag of the hub; for example, hubNI and hubVE
+fileXX | One for each flag contained within a search result or file list entry (see RES)
+___
 
 Hub parameters
 [separator="|"]
 ``_
+hubXX | One for each flag of the hub; for example, hubNI and hubVE
+___
 
 The following tables specify the keywords that are optional.
 
@@ -264,13 +266,13 @@ User parameters
 [separator="|"]
 ``_
 line:info | Prompts the user for input where 'info' is the displayed text description for the user input
+___
 
-===== Example
+==== Example
 ICMD ADCH++/Hub\smanagement/Register\snick TTHMSG\s+regnick\\s%[userNI]\\s%[line:Password\\s(leave\\sempty\\sto\\sun-reg)]\\s%[line:Level\\s(facultative;\\sdefaults\\sto\\syour\\sown\\slevel\\sminus\\sone)]\n CT2
 ICMD ADCH++/Hub\smanagement/Reload\sbans TTHMSG\s+loadbans\n CT3
 ICMD ADCH++/Hub\smanagement/Reload\sscripts TTHMSG\s+reload\n CT3
 ICMD ADCH++/Info TTHMSG\s+info\\s%[userNI]\n CT2
 ICMD ADCH++/Info TTHMSG\s+info\n CT1
-
 
 // vim: set syntax=asciidoc:
