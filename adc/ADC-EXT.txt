@@ -269,10 +269,12 @@ line:info | Prompts the user for input where 'info' is the displayed text descri
 ___
 
 ==== Example
-ICMD ADCH++/Hub\smanagement/Register\snick TTHMSG\s+regnick\\s%[userNI]\\s%[line:Password\\s(leave\\sempty\\sto\\sun-reg)]\\s%[line:Level\\s(facultative;\\sdefaults\\sto\\syour\\sown\\slevel\\sminus\\sone)]\n CT2
-ICMD ADCH++/Hub\smanagement/Reload\sbans TTHMSG\s+loadbans\n CT3
-ICMD ADCH++/Hub\smanagement/Reload\sscripts TTHMSG\s+reload\n CT3
-ICMD ADCH++/Info TTHMSG\s+info\\s%[userNI]\n CT2
-ICMD ADCH++/Info TTHMSG\s+info\n CT1
+`_
+ICMD ADCH++/Hub{backslash}smanagement/Register{backslash}snick TTHMSG{backslash}s+regnick{backslash}s%[userNI]{backslash}s%[line&#58;Password{backslash}s(leave{backslash}sempty{backslash}sto{backslash}sun-reg)]{backslash}s%[line&#58;Level{backslash}s(facultative;{backslash}sdefaults{backslash}sto{backslash}syour{backslash}sown{backslash}slevel{backslash}sminus{backslash}sone)]{backslash}n CT2
+ICMD ADCH++/Hub{backslash}smanagement/Reload{backslash}sbans TTHMSG{backslash}s+loadbans{backslash}n CT3
+ICMD ADCH++/Hub{backslash}smanagement/Reload{backslash}sscripts TTHMSG{backslash}s+reload{backslash}n CT3
+ICMD ADCH++/Info TTHMSG{backslash}s+info{backslash}s%[userNI]{backslash}n CT2
+ICMD ADCH++/Info TTHMSG{backslash}s+info{backslash}n CT1
+___
 
 // vim: set syntax=asciidoc:
