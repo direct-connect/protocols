@@ -3,6 +3,8 @@ Jacek Sieka <arnetheduck@gmail.com>
 1.0, May 2008
 Fredrik Ullner <ullner@gmail.com>
 1.0.1 August 2009
+Fredrik Ullner <ullner@gmail.com>
+1.0.2 April 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -23,6 +25,9 @@ This version correspods to $Revision$.
 === Version 1.0.1
 * Added TS as additional MSG parameter
 * Added DFAV
+
+=== Version 1.0.2
+* Added UCMD extension
 
 == Extensions
 
@@ -199,9 +204,73 @@ Contexts: C
 
 Response of a client.
 
+HA | Hub address
+
 LG | Last succesfull login time ( number of seconds since the epoch (1970), (UTC) )
 
 All INF fields from BASE are inherited. All INF fields from PING extension are inherited.
+
+==== UCMD
+
+CMD name
+
+Contexts: F
+
+States: NORMAL
+
+User commands are used to send hub-specific commands to the client which provide useful shortcuts for the user. These commands contain strings which must be sent back to the hub and keyword substitutions in the strings. Each user command has a display name, a string to be sent to the hub, and one or more categories where it may appear. The strings passed to the hub must first be passed through a dictionary replacement that replaces all keywords in the string and then through the equivalent of the C standard function "strftime", with the current time.
+
+Name uniquely (per hub) identifies a particular user command. The name may contain "/" to indicate a logical structure on the viewing client, where each "/" introduces a new submenu level. Other than name, the command also has a number of flags that further detail what to do with it.
+
+[separator="|"]
+``_
+RM | 1 = Remove Command
+CT | Message Category,  1 = Hub command, client parameters only, 2 = User list command, client and user parameters, 4 = Search result command, client, user and file parameters, 8 = File list command, client, user and file parameters.
+TT | The full text to be sent to hub, including FOURCC, parameters and keywords.
+CO | 1 = Constrained, when sending this command on multiple users (for example in search results), constrain it to once per CID only
+SP | 1 = Insert separator instead of command name (name must still be present to uniquely identify the command).
+
+===== Keywords
+Keywords are specified using "%[keyword]". Unknown keywords must be replaced by the empty string. Additionally, all %-substitutions of the C function "strftime" must be supported.
+
+The following tables specify the keywords that must be supported.
+
+Client parameters
+[separator="|"]
+``_
+myCID | Client CID
+mySID | ClientSID
+myXX | One for each flag on that particular hub; for example, myI4 and myNI
+
+User parameters
+[separator="|"]
+``_
+userCID | User CID
+userSID | User SID
+userXX | One for each flag on the user sent; for example, userI4 and userNI
+
+File parameters
+[separator="|"]
+``_
+hubXX | One for each flag of the hub; for example, hubNI and hubVE
+
+Hub parameters
+[separator="|"]
+``_
+
+The following tables specify the keywords that are optional.
+
+User parameters
+[separator="|"]
+``_
+line:info | Prompts the user for input where 'info' is the displayed text description for the user input
+
+===== Example
+ICMD ADCH++/Hub\smanagement/Register\snick TTHMSG\s+regnick\\s%[userNI]\\s%[line:Password\\s(leave\\sempty\\sto\\sun-reg)]\\s%[line:Level\\s(facultative;\\sdefaults\\sto\\syour\\sown\\slevel\\sminus\\sone)]\n CT2
+ICMD ADCH++/Hub\smanagement/Reload\sbans TTHMSG\s+loadbans\n CT3
+ICMD ADCH++/Hub\smanagement/Reload\sscripts TTHMSG\s+reload\n CT3
+ICMD ADCH++/Info TTHMSG\s+info\\s%[userNI]\n CT2
+ICMD ADCH++/Info TTHMSG\s+info\n CT1
 
 
 // vim: set syntax=asciidoc:
