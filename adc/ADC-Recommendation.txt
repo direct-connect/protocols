@@ -3,6 +3,7 @@ Fredrik Ullner <ullner@gmail.com>
 1.0.0, July 2010
 
 == Abstract
+These are the official recommendations to ADC. This document is based on the information contained in the ADC documents, ADC wiki and ADC blog. Information is this document should be taken as guide lines to implementations.
 
 == Version history
 The latest draft of the next version of this document as well as intermediate
