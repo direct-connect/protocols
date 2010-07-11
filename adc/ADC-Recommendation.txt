@@ -1,0 +1,51 @@
+= ADC Recommendations
+Fredrik Ullner <ullner@gmail.com>
+1.0.0, July 2010
+
+== Abstract
+
+== Version history
+The latest draft of the next version of this document as well as intermediate
+and older versions can be downloaded from
+$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-Recommendation.txt $.
+
+This version corresponds to $Revision: 1 $.
+
+=== Version 1.0.0
+* Initialize release
+
+== General recommentations
+
+Message length
+Messages can be constructed to be long or short with varying complexity. All messages that contain a positional parameter can also contain additional named parameters. This mean that implementations must be able to read enough data to accuratley be aware of additional data. This also means that it may be in the implementations' interest to stop processing after an excessive amount of data, but implementations should strive to be as resiliant as possible. Certain messages that require parsing of specific parts, their context and content (e.g. regular expressions) may very well be short but nontheless pose a security issue if not dealt with appropriately.
+
+== STA recommendations
+Clients should display text messages appropriately depending on context, severity and error code. It is recommended to display the error message regardless of the error code. Hubs must not depend on where clients display error codes.
+
+While STA messages require a severity to accompany the error code, the severity may not be of importance to some error codes or are simply implied by the actual error code. However, it is important that the severity is sent as appropriate and is accurate. STA messages with 0 (success) for severity can usually be regarded by implementations that the information require little or no counter-action.
+The following list include error codes that make no or little sense in one or many severities, and a description why they are best used in one or only some severities. The descriptive text for the error codes can be seen in the STA specification, but may be re-stated as part of the description why they can have severity restriction(s).
+
+11 | If the hub is full, it makes little sense in keeping the client in some "connected" state. The recommended severity is to use 2 (fatal) to force the client to reconnect at a later time.
+12 | Similar to error code 11.
+21 | While potentially fatal, the client may resend its INF with a new NI field. The recommended severity for hubs is to use 2 (fatal) but they can use 1 (recoverable).
+22 | Similar to error code 21.
+23 | An invalid password depend on whether the hub wish to allow the client to resend its password (say, if the transmission became garbled). However, the recommended severity is to use 2 (fatal) unless under special circumstances, for some clients or for some users.
+24 | The recommended severity is to use 2 (fatal).
+25 | Can be 1 (recoverable) or 2 (fatal) but generally not 0 (sucess).
+26 | If the user is not registered in the hub, it makes little sense to try to reconnect immediately. The recommended severity is to use 2 (fatal).
+27 | Similar to error code 24.
+30 | The recommended severity is to use 2 (fatal).
+31 | Must be 2 (fatal).
+32 | Must be 2 (fatal).
+43 | Information that is missing or is bad is generally grounds for a disconnect but may be recoverable under certain states. The recommended severity is to use 2 (fatal).
+44 | Similar to error code 43.
+45 | Similar to error code 43.
+46 | Similar to error code 43.
+47 | Must be 2 (fatal).
+50 | May be cause for a disconnect but is generally recoverable. The recommended severity is to use 1 (recoverable).
+51 | Similar to error code 50.
+52 | Similar to error code 50.
+53 | Similar to error code 11.
+54 | Must be 2 (fatal).
+
+// vim: set syntax=asciidoc:
