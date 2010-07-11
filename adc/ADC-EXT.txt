@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.3, June 2010
+1.0.4 UNRELEASED, July 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -28,6 +28,9 @@ This version corresponds to $Revision$.
 === Version 1.0.3
 * Removed 'optional' keywords from UCMD
 * Added BLOM extension
+
+=== Version 1.0.4 UNRELEASED
+* Added magnet link extension to UCMD
 
 == Extensions
 
@@ -257,6 +260,7 @@ File parameters
 [separator="|"]
 ``_
 fileXX | One for each flag contained within a search result or file list entry (see RES)
+fileMN | Specify magnet link. Magnet links <http://en.wikipedia.org/wiki/Magnet_link> are used to reference files across networks and applications. Clients may ignore parameters it does not understand, but are free to pass on the parameters to other programs.
 ___
 
 Hub parameters
