@@ -80,6 +80,7 @@ In the GET/GFI namespace, files are identified by
 
 In SCH and GFI, the following attributes are added:
 
+[options="autowidth"]
 |=====
 |TR |Tiger tree Hash root, encoded with base32.
 |TD |Tree depth, index of the highest level of tree data available, root-only = 0, first level (2 leaves) = 1, second level = 2, etc...
@@ -128,7 +129,7 @@ When the client supporting the PING extension connects, the hub must send its
 normal INF along with the following added fields ( none mandatory, if not present,
 it means hub has no restrictions in that matter, or non existent):
 
-[options="header"]
+[options="header, autowidth"]
 |=====
 |Code | Type | Description
 |HH |string |Hub Host address ( DNS or IP )
@@ -160,14 +161,13 @@ NORMAL state). The pinger may decide to go through or disconnect (eg. if it
 doesn't require additional information about the users).
 
 ===== Example
----- 
+====
  -pinger- HSUP ADBASE ADPING AD..
  -hub- ISUP ADBASE ADPING AD..
  -hub- ISID ..
  -hub- IINF NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  - (pinger may disconnect)
- -..
-----
+====
 
 ==== Hub - Hublist communication
 
@@ -178,13 +178,13 @@ The hublist may send INF about itself with NI field which would become hublist
 name and WS hublist web address.
 
 ===== Example
-----
+====
  -hub- HSUP ADBASE ADPING AD..
  -hublist- ISUP ADBASE ADPING AD..
  -hublist- IINF NIhublist_name WShublist_address
  -hub- HINF  NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  -( disconnect )
-----
+====
 
 === TS - Timestamp in MSG
 Timestamp of the moment when the message was sent, expressed in seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
@@ -204,6 +204,7 @@ Contexts: C
 
 Response of a client.
 
+[options="autowidth"]
 |=====
 |HA | Hub address
 
@@ -223,6 +224,7 @@ User commands are used to send hub-specific commands to the client which provide
 
 Name uniquely (per hub) identifies a particular user command. The name may contain "/" to indicate a logical structure on the viewing client, where each "/" introduces a new submenu level. Other than name, the command also has a number of flags that further detail what to do with it.
 
+[options="autowidth"]
 |=====
 |RM |1 = Remove Command
 |CT |Message Category,  1 = Hub command, client parameters only, 2 = User list command, client and user parameters, 4 = Search result command, client, user and file parameters, 8 = File list command, client, user and file parameters.Multiple types are specified by adding the numbers together.
@@ -236,7 +238,7 @@ Keywords are specified using "%[keyword]". Unknown keywords must be replaced by 
 
 The following tables specify the keywords that must be supported.
 
-Client parameters
+Client parameters[options="autowidth"]
 |=====
 |myCID |Client CID
 |mySID |ClientSID
@@ -244,6 +246,7 @@ Client parameters
 |=====
 
 User parameters
+[options="autowidth"]
 |=====
 |userCID |User CID
 |userSID |User SID
@@ -252,30 +255,37 @@ User parameters
 |=====
 
 File parameters
+[options="autowidth"]
 |=====
 |fileXX |One for each flag contained within a search result or file list entry (see RES)
 |fileMN |Specify magnet link. http://en.wikipedia.org/wiki/Magnet_link[Magnet links] are used to reference files across networks and applications. Clients may ignore parameters it does not understand, but are free to pass on the parameters to other programs.
 |=====
 
 Hub parameters
+[options="autowidth"]
 |=====
 |hubXX |One for each flag of the hub; for example, hubNI and hubVE
 |=====
 
 ==== Example
-|=====
-|ICMD ADCH++/Hub\smanagement/Register\snick TTHMSG\s+regnick\s%[userNI]\s%[line:Password\s(leave\sempty\sto\sun-reg)]\s%[line:Level\s(facultative;\sdefaults\sto\syour\sown\slevel\sminus\sone)]\n CT2
-|ICMD ADCH++/Hub\smanagement/Reload\sbans TTHMSG\s+loadbans\n CT3
-|ICMD ADCH++/Hub\smanagement/Reload\sscripts TTHMSG\s+reload\n CT3
-|ICMD ADCH++/Info TTHMSG\s+info\s%[userNI]\n CT2
-|ICMD ADCH++/Info TTHMSG\s+info\n CT1
-|=====
+====
+ICMD ADCH++/Hub\smanagement/Register\snick TTHMSG\s+regnick\s%[userNI]\s%[line:Password\s(leave\sempty\sto\sun-reg)]\s%[line:Level\s(facultative;\sdefaults\sto\syour\sown\slevel\sminus\sone)]\n CT2
+
+ICMD ADCH++/Hub\smanagement/Reload\sbans TTHMSG\s+loadbans\n CT3
+
+ICMD ADCH++/Hub\smanagement/Reload\sscripts TTHMSG\s+reload\n CT3
+
+ICMD ADCH++/Info TTHMSG\s+info\s%[userNI]\n CT2
+
+ICMD ADCH++/Info TTHMSG\s+info\n CT1
+====
 
 === BLOM- Bloom filter
 
 Bloom filters allow the hub to filter certain searches using bitmap that represents the hashes of the files in the users share. BLOM is an extension that allows hub software to create a map (bloom filter) of the shared files on the hub, but with minimal effort, e.g. the hub doesn't keep a list of files, but a filter that never produces false negatives but only possible false positives. This can potentially save bandwidth and effort on the client side. When the user updates the share, the client must send an INF containing the flag SF. The hub may at any time request that the client sends an updated version of its bloom filter by sending a GET command to the client. The client will then respond using SND and send the bloom filter binary data.
 
 ==== Legend
+[options="autowidth"]
 |=====
 |b |Number of bits used for file hashes
 |n |Number of files in the user's share
@@ -288,6 +298,7 @@ Bloom filters allow the hub to filter certain searches using bitmap that represe
 The hub chooses k, h and m.
 
 ==== Restrictions
+[options="autowidth"]
 |=====
 |k * h < = b
 |h < = 64
@@ -296,6 +307,7 @@ The hub chooses k, h and m.
 |=====
 
 ==== Probability
+[options="autowidth"]
 |=====
 |p == (1 - (1 - 1 / m)^(k * n)^)^k^ |False positives
 |p == 0 |False negatives
@@ -317,7 +329,7 @@ For the GET type, 0 (zero) shall be used as start position.
 For the GET type, m / 8 shall be used as byte amount.
 
 Updates GET with the following flags;
-
+[options="autowidth"]
 |=====
 |BK |Specify 'k'.
 |BH |Specify 'h'.
@@ -368,12 +380,16 @@ Upon receiving this, try and connect to the specified port.
 ==== Example
 Client A is connected to hub A with the outbound port 1000 and client B is connected to hub A with the outbound port 2000. Client A has the SID AAAA and client B has the SID BBBB.
 
-----
+====
 Client A: DRCM AAAA BBBB ADC/1.0 foobar
+
 Client B: DNAT BBBB AAAA ADC/1.0 2000 foobar
+
 <Client A connects to client B's IP address and port 2000>
+
 Client A: DRNT AAAA BBBB ADC/1.0 1000 foobar
+
 <Client B connects  to client A's IP address and port 1000>
-----
+====
 
 // vim: set syntax=asciidoc:
