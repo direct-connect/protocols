@@ -276,7 +276,6 @@ Hub parameters
 Bloom filters allow the hub to filter certain searches using bitmap that represents the hashes of the files in the users share. BLOM is an extension that allows hub software to create a map (bloom filter) of the shared files on the hub, but with minimal effort, e.g. the hub doesn't keep a list of files, but a filter that never produces false negatives but only possible false positives. This can potentially save bandwidth and effort on the client side. When the user updates the share, the client must send an INF containing the flag SF. The hub may at any time request that the client sends an updated version of its bloom filter by sending a GET command to the client. The client will then respond using SND and send the bloom filter binary data.
 
 ==== Legend
-
 |=====
 |b |Number of bits used for file hashes
 |n |Number of files in the user's share
@@ -289,19 +288,16 @@ Bloom filters allow the hub to filter certain searches using bitmap that represe
 The hub chooses k, h and m.
 
 ==== Restrictions
-
-[width="15%"]
 |=====
 |k * h < = b
 |h < = 64
-|2^h > m
+|2^h^ > m
 |m mod 64 == 0
 |=====
 
 ==== Probability
-
 |=====
-|p == (1 - (1 - 1 / m)\^(k * n))^k |False positives
+|p == (1 - (1 - 1 / m)^(k * n)^)^k^ |False positives
 |p == 0 |False negatives
 |=====
 
@@ -322,7 +318,6 @@ For the GET type, m / 8 shall be used as byte amount.
 
 Updates GET with the following flags;
 
-[width="15%"]
 |=====
 |BK |Specify 'k'.
 |BH |Specify 'h'.
@@ -334,7 +329,7 @@ The client constructs the bloom filter by creating a bit array of m bits set to 
 Once the hub has received the bloom filter bit array, for each search command it processes, if it contains a hash search term, it can skip broadcasting the search to a particular client if at least one of the k bits in that clients bit array is "0", calculating positions as the client does when setting bits to "1". The hub has to evaluate the filter for each client that it has a bloom filter for, for each search.
 
 ==== Probability calculations
-p = (1 - (1 - 1 / m)\^(k * n))\^k, thus p becomes smaller as m grows and larger as n grows. Larger m means more bits to transfer but also fewer false positives. The optimum value for k given m and n is (m / n) * ln 2. The largest k supported by a hash of a certain size is b / h, so if the hub wants the smallest p possible, it should choose the smallest possible h which gives the largest k, and then calculate m = k * n/ln 2, checking that the resulting m < 2\^h. 2^h should much be larger than m (at least 3-4 times), because of how the modulo operator works. Also, with m grows the required bandwidth to transfer the bloom filter, so the hub may wish to cap m. In that case, it should still choose k according to m / n * ln 2, but send an h as big as possible to alleviate biasing problems.
+p = (1 - (1 - 1 / m)^(k * n)^)^k^, thus p becomes smaller as m grows and larger as n grows. Larger m means more bits to transfer but also fewer false positives. The optimum value for k given m and n is (m / n) * ln 2. The largest k supported by a hash of a certain size is b / h, so if the hub wants the smallest p possible, it should choose the smallest possible h which gives the largest k, and then calculate m = k * n/ln 2, checking that the resulting m < 2^h^. 2^h^ should much be larger than m (at least 3-4 times), because of how the modulo operator works. Also, with m grows the required bandwidth to transfer the bloom filter, so the hub may wish to cap m. In that case, it should still choose k according to m / n * ln 2, but send an h as big as possible to alleviate biasing problems.
 
 ==== Sample implementations
 ===== Tiger
