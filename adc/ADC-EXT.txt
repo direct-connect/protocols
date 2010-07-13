@@ -392,7 +392,7 @@ Client A: DRNT AAAA BBBB ADC/1.0 1000 foobar
 
 <Client B connects  to client A's IP address and port 1000>
 ======= RF - Referrer notification
-Extends the RF field of the INF to STA, allowing a client to notify a client upon SUP-negotiation from where the C-C originated from.
+Extends the RF field of the INF to STA, allowing a client to notify clients and hubs upon SUP-negotiation from where the C-C or C-H originated from.
 
 [options="autowidth"]
 |=====
