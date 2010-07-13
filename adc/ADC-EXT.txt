@@ -33,6 +33,8 @@ This version corresponds to $Revision$.
 * Added magnet link extension to 'UCMD'
 * Added NAT traversal extension 'NATT'
 * Added referral field to STA
+* Added upload queue field to STA
+* Added partial file sharing extension 'PFSR'
 
 == Extensions
 
@@ -405,5 +407,43 @@ CSUP ADBASE (...)
 
 CSTA 000 referrer RFadc://example.com:1234
 ====
+
+=== QP - Upload queue notification
+This extension's purpose is creating a queue on a client, when multiple other clients want to download from it, but they have no slots. Currently, when a slot is being freed, the first connecting client gets it. Other clients that don't have the luck of getting in time to attempt to download, have to wait again. The client who creates a queue must have a ticket number for each connecting client, which must be kept internally , and a difference between current connecting client's queue number and the currently uploading client's be provided to the connecting client, so that the clients are being deserved in the order they originally connected. The client could have a ticket incrementing starting from 1 for each session. Connecting slients must use the same token as they used when originally connected.
+
+[options="autowidth"]
+|=====
+|QP |Queue number, representing how many others are in front in the queue.
+|=====
+
+==== Example
+The following example will notify that the client's slots are full and that there are three uploads in the queue.
+====
+CSTA 253 No\sslots\savailable QP3
+====
+
+=== PFSR - Partial file sharing
+Partial File Sharing allows sharing of files which are available in user's download queue or in finished downloads list. As a result of this, new files will be spread much faster over whole network.
+
+When client receives search request (SCH), it looks into shared list to see whether requested hash is available between shared files. If it's found, everything is processed as normally. In other case, it looks into download queue (then, into finished downloads list) and receives a list of available chunks for requested hash. It mustn't take every chunk, but only that ones which are fully downloaded and has already been verified (e.g. against TTH leaves).
+
+ The feature should be signalled in SUP as PFSR.
+
+==== PSR
+ PSR
+
+Contexts: F, U
+
+States: NORMAL
+
+Information about downloaded and verified chunks is sent to requester with this command. When the requester is active command is sent over UDP (with U context) else it is sent over hub (with D context).
+[options="autowidth"]
+|====
+|U4 |UDP IPv4 port or 0 if we don't want receive a response. If UDP port is not zero (it must be when we are passive user), a PSR receiver must respond us with PSR including his available (and verified) chunks. The client must also set UDP port to zero to avoid infinite PSR sending.
+|U6 | Same as U4 but with IPv6 port.
+|TR |File hash
+|PC |Count of downloaded (and verified) chunks the user has.
+|PI |Comma separated list of start and end index of chunks the user has. If a user has a continous block of chunks, the intermittent start and end indexes may be omitted. For example, if a user has chunk 0 and 4 of total 5 chunks, then PI is "0,1,4,5". If the user has chunk 0, 1 and 4, then PI may be "0,1,1,2,4,5" or "0,2,4,5".
+|====
 
 // vim: set syntax=asciidoc:
