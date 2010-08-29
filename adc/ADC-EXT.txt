@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.4 UNRELEASED, July 2010
+1.0.4, August 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -29,7 +29,7 @@ This version corresponds to $Revision$.
 * Removed optional keywords from UCMD
 * Added BLOM extension
 
-=== Version 1.0.4 UNRELEASED
+=== Version 1.0.4
 * Added magnet link extension to 'UCMD'
 * Added NAT traversal extension 'NATT'
 * Added referral field to STA
@@ -427,7 +427,7 @@ Partial File Sharing allows sharing of files which are available in user's downl
 
 When client receives search request (SCH), it looks into shared list to see whether requested hash is available between shared files. If it's found, everything is processed as normally. In other case, it looks into download queue (then, into finished downloads list) and receives a list of available chunks for requested hash. It mustn't take every chunk, but only that ones which are fully downloaded and has already been verified (e.g. against TTH leaves).
 
- The feature should be signalled in SUP as PFSR.
+The feature should be signalled in SUP as PFSR.
 
 ==== PSR
  PSR
@@ -436,7 +436,7 @@ Contexts: F, U
 
 States: NORMAL
 
-Information about downloaded and verified chunks is sent to requester with this command. When the requester is active command is sent over UDP (with U context) else it is sent over hub (with D context).
+Information about downloaded and verified chunks is sent to requester with this command. When the requester is active command is sent over UDP (with U type) else it is sent over hub (with D type).
 [options="autowidth"]
 |====
 |U4 |UDP IPv4 port or 0 if we don't want receive a response. If UDP port is not zero (it must be when we are passive user), a PSR receiver must respond us with PSR including his available (and verified) chunks. The client must also set UDP port to zero to avoid infinite PSR sending.
