@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.4, August 2010
+1.0.5, September 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -35,6 +35,9 @@ This version corresponds to $Revision$.
 * Added referral field to STA
 * Added upload queue field to STA
 * Added partial file sharing extension 'PFSR'
+
+=== Version 1.0.5 UNRELEASED
+* Added locale field to INF
 
 == Extensions
 
@@ -409,7 +412,7 @@ CSTA 000 referrer RFadc://example.com:1234
 ====
 
 === QP - Upload queue notification
-This extension's purpose is creating a queue on a client, when multiple other clients want to download from it, but they have no slots. Currently, when a slot is being freed, the first connecting client gets it. Other clients that don't have the luck of getting in time to attempt to download, have to wait again. The client who creates a queue must have a ticket number for each connecting client, which must be kept internally , and a difference between current connecting client's queue number and the currently uploading client's be provided to the connecting client, so that the clients are being deserved in the order they originally connected. The client could have a ticket incrementing starting from 1 for each session. Connecting slients must use the same token as they used when originally connected.
+This extension's purpose is creating a queue on a client, when multiple other clients want to download from it, but they have no slots. Currently, when a slot is being freed, the first connecting client gets it. Other clients that don't have the luck of getting in time to attempt to download, have to wait again. The client who creates a queue must have a ticket number for each connecting client, which must be kept internally , and a difference between current connecting client's queue number and the currently uploading client's be provided to the connecting client, so that the clients are being deserved in the order they originally connected. The client could have a ticket incrementing starting from 1 for each session. Connecting clients must use the same token as they used when originally connected.
 
 [options="autowidth"]
 |=====
@@ -445,5 +448,17 @@ Information about downloaded and verified chunks is sent to requester with this 
 |PC |Count of downloaded (and verified) chunks the user has.
 |PI |Comma separated list of start and end index of chunks the user has. If a user has a continous block of chunks, the intermittent start and end indexes may be omitted. For example, if a user has chunk 0 and 4 of total 5 chunks, then PI is "0,1,4,5". If the user has chunk 0, 1 and 4, then PI may be "0,1,1,2,4,5" or "0,2,4,5".
 |====
+
+=== LC - Locale specification
+This extension's purpose is to notify the hub which user locale the client is using as well as the default locale for the hub. This allows hubs to customize text sent to clients, depending on language, left-to-right or right-to-left and more. If the hub does not directly support the client's locale, it should attempt to fall back to the same language group (e.g. hub supports en-US but not en-AU, so falls back to en-US), and if this is not available, then fall back to the hub's own locale.
+
+http://tools.ietf.org/html/bcp47[BCP47] should be used as reference for locale structure.
+
+[options="autowidth"]
+|=====
+|LC |User locale
+|=====
+
+Note that the standard suggest that the language should be in lowercase and the country in upper case. Note that the country code may be more than two characters. Additionally, dash ('-') and underscore ('_') are acceptable seperators.
 
 // vim: set syntax=asciidoc:
