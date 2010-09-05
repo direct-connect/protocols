@@ -38,6 +38,7 @@ This version corresponds to $Revision$.
 
 === Version 1.0.5 UNRELEASED
 * Added locale field to INF
+* Modified user parameter 'line' in 'UCMD' to handle multiple inputs.
 
 == Extensions
 
@@ -257,7 +258,7 @@ User parameters
 |userCID |User CID
 |userSID |User SID
 |userXX |One for each flag on the user sent; for example, userI4 and userNI
-|line:info |Prompts the user for input where 'info' is the displayed text description for the user input
+|line:info |Prompts the user for input where 'info' is the displayed text description for the user input. 'info' can be used for multiple values (combobox etc), and should be structured as "general info/default selection/value0/value1/.../valueN". The general info can be viewed as the caption of the user input dialog. Default selection is an integer k which signifies the default value to be used. Note that 0<=k<=N and N>=1. Note that values are 0-index based. Values are separated with a forward slash ('/'). If a forward slash is part of a value, it should be escaped by using an additional forward slash ('//').
 |=====
 
 File parameters
