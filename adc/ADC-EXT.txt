@@ -39,6 +39,8 @@ This version corresponds to $Revision$.
 === Version 1.0.5 UNRELEASED
 * Added locale field to INF
 * Modified user parameter 'line' in 'UCMD' to handle multiple inputs.
+* Added hidden in enumeration of CT field in INF.
+* Added error code Invalid feature in STA.
 
 == Extensions
 
@@ -461,5 +463,27 @@ http://tools.ietf.org/html/bcp47[BCP47] should be used as reference for locale s
 |=====
 
 Note that the standard suggest that the language should be in lowercase and the country in upper case. Note that the country code may be more than two characters. Additionally, dash ('-') and underscore ('_') are acceptable seperators.
+
+=== Hidden status for client type
+This extension will add to the CT field enumeration in the INF to denote a user as "hidden". Other clients shall as appropriate not display the user in user lists etc.
+
+[options="autowidth"]
+|=====
+|CT |64=Hidden
+|=====
+
+Full updated and comparable text;
+[options="autowidth"]
+|=====
+|CT |Client (user) type, 1=bot, 2=registered user, 4=operator, 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself), 64=Hidden. Multiple types are specified by adding the numbers together.
+|=====
+
+=== "Invalid feature" error code
+This extension will add "Invalid feature" as error code in STA. Invalid features are features the hub or client deem inappropriate or simply not welcome. The error code should not be used for features the hub or client does not know of.
+
+[options="autowidth"]
+|=====
+|48 |Invalid feature. Flag "FC" is the FOURCC of the invalid feature(s). If multiple features are invalid, use comma between the features (i.e. FCQWER,ASDF,ZXCV).
+|=====
 
 // vim: set syntax=asciidoc:
