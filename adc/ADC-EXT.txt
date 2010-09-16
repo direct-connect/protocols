@@ -36,7 +36,7 @@ This version corresponds to $Revision$.
 * Added upload queue field to STA
 * Added partial file sharing extension 'PFSR'
 
-=== Version 1.0.5 UNRELEASED
+=== Version 1.0.5
 * Added locale field to INF
 * Modified user parameter 'line' in 'UCMD' to handle multiple inputs.
 * Added hidden in enumeration of CT field in INF.
