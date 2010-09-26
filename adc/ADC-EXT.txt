@@ -44,7 +44,6 @@ This version corresponds to $Revision$.
 
 === Version 1.0.6 UNRELEASED
 * Added KEYP extension for providing certificate substitution protection in ADCS.
-* Added URI specification for ADC
 
 == Extensions
 
@@ -547,17 +546,7 @@ We are, in particular, trusting the hub not to maliciously modify the KP fields 
 
 ==== Example
 ====
-adcs://example.com:1234/kp?SHA256/G3PJC4F4MQ5KOXGE2MPYJW5EW63IC6M7RN7OS663JLLWN2M5I6FQ
+adcs://example.com:1234/?kp=SHA256/G3PJC4F4MQ5KOXGE2MPYJW5EW63IC6M7RN7OS663JLLWN2M5I6FQ
 ====
-
-=== URI specification
-ADC URIs shall be specified in the following (extended) form;
-
-====
-adc://example.com:1234/foo?bar
-====
-Where 'foo' is the identifyable or parsable string for the URI and where 'bar' is the content or value.
-
-Extensions creating a new URI (say, the adcs:// URI), should also adopt this general structure.
 
 // vim: set syntax=asciidoc:
