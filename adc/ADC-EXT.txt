@@ -490,13 +490,13 @@ This extension will add "Invalid feature" as error code in STA. Invalid features
 |=====
 
 === KEYP - Certificate substitution protection in ADCS (Secure ADC)
-This extension adds a simple, but secure way to protect against man-in-the-middle attacks against ADC when wrapped with TLS (1.0 or later). It does not require setting up a CA or signing keys, but possible if desired.
+This extension adds a simple, but secure way to protect against man-in-the-middle attacks against ADC when wrapped with TLS (1.0 or later). It does not require setting up a CA or signing keys, but that is still possible if desired.
 
-The extension introduce a keyprint parameter to the ADCS URI. The keyprint parameter is a hash of either the certificate signing the server certificate (in a CA-style key-signing configuration) or, simply, the server certificate itself (in a self-signed configuration).
+The extension introduces a keyprint parameter to the ADCS URI. The keyprint parameter is a hash of the server certificate.
 
-The extension also require that clients should publish their own certificates' keyprint in the KP field in the INF. Assuming one trusts the hub enough not to maliciously change the keyprints en route (a reasonable assumption given the hub's existing position of trust), and given that the connection to the hub has been similarly authenticated (either as above or via a directly downloaded trusted certificate), client-client connections are also protected against attempted man-in-the-middle attacks - without messing around having to get everyone's certificates signed in advance.
+The extension also requires clients to publish their own certificates' keyprint in the KP field in the INF. Assuming one trusts the hub enough not to maliciously change the keyprints en route (a reasonable assumption given the hub's existing position of trust), and given that the connection to the hub has been similarly authenticated (either as above or via a directly downloaded trusted certificate), client-client connections are also protected against attempted man-in-the-middle attacks - without messing around with having to get everyone's certificates signed in advance.
 
-The keyprint parameter consist of a hash name, followed by a forward slash ('/'), followed by the Base32-encoded cyrptographic hash of either the certificate directly (which is appropriate in the case of a self-signed certificate), or a certificate providing the base of a valid signature chain (which may be more appropriate a CA-signed certificate).
+The keyprint parameter consists of a hash name, followed by a forward slash ('/'), followed by the Base32-encoded cyrptographic hash of the certificate.
 
 The hash used shall be SHA256. Other extensions may add other hashes, given sufficient security contemplation.
 
@@ -507,18 +507,15 @@ INF field;
 |=====
 
 ==== Keyprint replacement behaviour
-If a client receives a KP field in an FINF broadcast via a hub to it is connected using ADCS and a trusted key as above (or otherwise), it should be regarded as the valid and correct keyprint for that client's IP/port/hub combination, replacing any earlier keyprint for that IP/port/hub combination.
+If a client receives a KP field in an FINF broadcast via a hub it is connected to using ADCS and a trusted key as above (or otherwise), it should be regarded as the valid and correct keyprint for that client's IP/port/hub combination, replacing any earlier keyprint for that IP/port/hub combination.
 
 ==== Keyprint verification
-When initiating a TLS handshake with a remote host where the keyprint is known, the client can verify that a man-in-the-middle attack is not occurring by checking if the hash given in the keyprint matches exactly:
-
-* a root certificate presented in a valid signature chain which covers the certificate presented during the handshake by the remote host; or
-* the entire certificate presented during the handshake by the remote host.
+When initiating a TLS handshake with a remote host where the keyprint is known, the client can verify that a man-in-the-middle attack is not occurring by checking if the hash given in the keyprint exactly matches that of the certificate presented during the handshake by the remote host.
 
 Suppose the client is aware of a remote host's keyprint and is in the process of connecting to that host. A certificate substitution attack is in place if the hub presents itself with a certificate that does not match and where the certificate is not the root of the valid signature chain covering the certificate.
-If the client detect such an attack, the client MUST abort the connection with a user-visible, non-modal error stating, for example, "Crypto error: Detected attempted man-in-the-middle attack, aborting". (This error quite possibly represents a real attempted attack that has been foiled; we may try auto-reconnecting but we should NEVER ignore it, or it will succeed. We may wish to avoid stating the keyprint of the certificate that was actually received.)
+If the client detects such an attack, the client should abort the connection and notify the user with a message stating, for example, "Crypto error: Detected attempted man-in-the-middle attack, aborting". (This error quite possibly represents a real attempted attack that has been foiled; we may try auto-reconnecting but we should NEVER ignore it, or it will succeed. We may wish to avoid stating the keyprint of the certificate that was actually received.)
 
-Optionally, when receiving a TLS handshake, if the client know what the remote host's keyprint ought to be, the client could also verify this. However, note that only the initiating side needs to check this for the man-in-the-middle protection to be valid; specifically the hub doesn't need to remember, or even understand, clients' keyprints.
+Optionally, when receiving a TLS handshake, if the client knows what the remote host's keyprint ought to be, the client could also verify this. However, note that only the initiating side needs to check this for the man-in-the-middle protection to be valid; specifically the hub doesn't need to remember, or even understand, clients' keyprints.
 
 ==== Security Considerations
 ===== General
