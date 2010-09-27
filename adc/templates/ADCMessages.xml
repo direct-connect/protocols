@@ -1,0 +1,214 @@
+<adc>
+  <commands>
+    <command name="StatusCodeCommand" id="STA" description="Status code.">
+      <positionalParameters>
+        <positionalParameter name="Severity" id="Code" type="enum" description="">
+          <enum name="Success" value="0" description="Success" />
+          <enum name="Recoverable" value="1" description="Recoverable (error but no disconnect) " />
+          <enum name="Fatal" value="2" description="Fatal (disconnect)" />
+        </positionalParameter>
+        <positionalParameter name="ErrorCode" id="Code" type="enum" description="">
+          <enum name="Generic" value="0" description="Generic, show description" />
+          <enum name="GenericHubError" value="10" description="Generic hub error" />
+          <enum name="HubFull" value="11" description="" />
+          <enum name="HubDisabled" value="12" description="" />
+          <enum name="GenericLoginAccessError" value="20" description="" />
+          <enum name="NickInvalid" value="21" description="" />
+          <enum name="NickTaken" value="22" description="" />
+          <enum name="InvalidPassword" value="23" description="" />
+          <enum name="CIDTaken" value="24" description=" " />
+          <enum name="AccessDenied" value="25" description="" />
+          <enum name="RegisteredUsersOnly" value="26" description="" />
+          <enum name="InvalidPID" value="27" description="" />
+          <enum name="GenericDisconnect" value="30" description="" />
+          <enum name="PermanentlyBanned" value="31" description="" />
+          <enum name="TemporarilyBanned" value="32" description="" />
+          <enum name="ProtocolError" value="40" description="" />
+          <enum name="TransferProtocolUnsupported" value="41" description="" />
+          <enum name="DirectConnectionFailed" value="42" description="" />
+          <enum name="RequireFieldMessing" value="43" description="" />
+          <enum name="InvalidState" value="44" description="" />
+          <enum name="RequiredFeatureMissing" value="45" description="" />
+          <enum name="InvalidIPSupplied" value="46" description="" />
+          <enum name="NoHashSupportClientHub" value="47" description="" />
+          <enum name="InvalidFeature" value="48" description="" extension="1" />
+          <enum name="ClientClientError" value="50" description="" />
+          <enum name="FileNotAvailable" value="51" description="" />
+          <enum name="FilePartNotAvailable" value="52" description="" />
+          <enum name="SlotsFull" value="53" description="" />
+          <enum name="NoHashSupportClientClient" value="54" description="" />
+        </positionalParameter>
+        <positionalParameter name="Description" id="Description" type="string" description="Description"/>
+      </positionalParameters>
+      <namedParameters>
+        <namedParameter name="FourCharacterCode" id="FC" type="stringlist" description="" />
+        <namedParameter name="TimeLeft" id="TL" type="int" description="" />
+        <namedParameter name="Token" id="TO" type="string" description="" />
+        <namedParameter name="Protocol" id="PR" type="string" description="" />
+        <namedParameter name="MissingField" id="FM" type="string" description="" />
+        <namedParameter name="InvalidField" id="FB" type="string" description="" />
+        <namedParameter name="IPv4Address" id="I4" type="IPAddress" description="" />
+        <namedParameter name="IPv6Address" id="I6" type="IPAddress" description="" />
+        <namedParameter name="ReferenceAddress" id="RF" type="string" description="" extension="1" />
+      </namedParameters>
+    </command>
+    <command name="FeatureSupportCommand" id="SUP" description="Feature support">
+      <positionalParameters />
+      <namedParameters>
+        <namedParameter name="AddFeatureList" id="AD" type="stringitemlist" description="" />
+        <namedParameter name="RemoveFeatureList" id="RM" type="stringitemlist" description="" />
+      </namedParameters>
+    </command>
+    <command name="SIDCommand" id="SID" description="Session ID">
+      <positionalParameters>
+        <positionalParameter name="SessionId" id="SID" type="string" description="SID of user"/>
+      </positionalParameters>
+    </command>
+    <command name="InformationCommand" id="INF" description="Information message">
+      <positionalParameters />
+      <namedParameters>
+        <namedParameter name="ClientID" id="ID" type="string" description="The CID of the client" />
+        <namedParameter name="PrivateID" id="PD" type="string" description="The PID of the client" />
+        <namedParameter name="IPv4Address" id="I4" type="IPAddress" description="IPv4 address without port." />
+        <namedParameter name="IPv6Address" id="I6" type="IPAddress" description="IPv6 address without port." />
+        <namedParameter name="UDPIPv4Port" id="U4" type="int" description="" />
+        <namedParameter name="UDPIPv6Port" id="U6" type="int" description="" />
+        <namedParameter name="ShareSize" id="SS" type="int" description="Share size in bytes." />
+        <namedParameter name="SharedFiles" id="SF" type="int" description="" />
+        <namedParameter name="ClientVersion" id="VE" type="string" description="" />
+        <namedParameter name="MaxUploadSpeed" id="US" type="int" description="" />
+        <namedParameter name="MaxDownloadSpeed" id="DS" type="int" description="" />
+        <namedParameter name="MaxSlots" id="SL" type="int" description="" />
+        <namedParameter name="AutoSlotAllocatorSpeed" id="AS" type="int" description="" />
+        <namedParameter name="MinAutoSlotAllocator" id="AM" type="int" description="" />
+        <namedParameter name="EmailAddress" id="EM" type="string" description="" />
+        <namedParameter name="NickName" id="NI" type="string" description="" />
+        <namedParameter name="Description" id="DE" type="string" description="" />
+        <namedParameter name="HubsNormal" id="HN" type="int" description="" />
+        <namedParameter name="HubsRegistered" id="HR" type="int" description="" />
+        <namedParameter name="HubsOperator" id="HO" type="int" description="" />
+        <namedParameter name="Token" id="TO" type="string" description="" />
+        <namedParameter name="ClientType" id="CT" type="combined" description="Client (user) type">
+          <combined name="Bot" value="1" description="BOT" />
+          <combined name="RegisteredUser" value="2" description="Registered user" />
+          <combined name="Operator" value="4" description="Operator" />
+          <combined name="SuperUser" value="8" description="Super user" />
+          <combined name="HubOwner" value="16" description="Hub owner" />
+          <combined name="Hub" value="32" description="Hub" />
+          <combined name="Hidden" value="64" description="Hidden" extension="1" />
+        </namedParameter>
+        <namedParameter name="Away" id="AW" type="enum" description="">
+          <enum name="Away" value="1" description="" />
+          <enum name="ExtendedAway" value="2" description="" />
+        </namedParameter>
+      </namedParameters>
+    </command>
+    <command name="MessageCommand" id="MSG" description="Normal message">
+      <positionalParameters>
+        <positionalParameter id="Text" type="string" description="Message"/>
+      </positionalParameters>
+      <namedParameters>
+        <namedParameter name="PrivateMessage" id="PM" type="string" description="" />
+        <namedParameter name="ThirdPerson" id="ME" type="enum" description="">
+          <enum value="1" description="message should be displayed as /me in IRC (&quot;*nick text&quot;)" />
+        </namedParameter>
+      </namedParameters>
+    </command>
+    <command name="SearchCommand" id="SCH" description="Search">
+      <positionalParameters />
+      <namedParameters>
+        <namedParameter name="IncludedSearchTerms" id="AN" type="stringitemlist" description="Included search terms." />
+        <namedParameter name="ExcludedSearchTerms" id="NO" type="stringitemlist" description="Excluded search terms." />
+        <namedParameter name="Extensions" id="EX" type="stringitemlist" description="Extensions." />
+        <namedParameter name="LessThanEqualBytes" id="LE" type="int" description="Smaller (less) than or equal size in bytes." />
+        <namedParameter name="GreaterThanEqualBytes" id="GE" type="int" description="Larger (greater) than or equal size in bytes." />
+        <namedParameter name="ExactSize" id="EQ" type="int" description="Exact size in bytes." />
+        <namedParameter name="Token" id="TO" type="string" description="Token." />
+      </namedParameters>
+    </command>
+    <command name="SearchResultCommand" id="RES" description="Search result">
+      <positionalParameters />
+      <namedParameters>
+        <namedParameter name="FileName" id="FN" type="string" description="Full filename including path in share." />
+        <namedParameter name="Size" id="SI" type="int" description="Size, in bytes." />
+        <namedParameter name="SlotsAvailable" id="SL" type="int" description="Slots currently available." />
+        <namedParameter name="Token" id="TO" type="string" description="Token." />
+      </namedParameters>
+    </command>
+    <command name="ConnectToMeCommand" id="CTM" description="Connect to me">
+      <positionalParameters>
+        <positionalParameter name="Protocol" id="Protocol" type="string" description="Protocol version. E.g., &quot;ADC/1.0&quot;"/>
+        <positionalParameter name="Port" id="Port" type="int" description="Port"/>
+        <positionalParameter name="Token" id="Token" type="string" description="Token." />
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="ReverseConnectToMeCommand" id="RCM" description="Reverse CTM. Used by passive clients to request a connection token from an active client.">
+      <positionalParameters>
+        <positionalParameter name="Protocol" id="Protocol" type="string" description="Protocol version. E.g., &quot;ADC/1.0&quot;"/>
+        <positionalParameter name="Token" id="Token" type="string" description="Token." />
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="GetPasswordCommand" id="GPA" description="Get password.">
+      <positionalParameters>
+        <positionalParameter name="Data" id="Data" type="string" description="Parameter is at least 24 random bytes (base32 encoded)."/>
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="ProvidePasswordCommand" id="PAS" description="Provide password.">
+      <positionalParameters>
+        <positionalParameter name="Password" id="Password" type="string" description=" The password (utf-8 encoded bytes), followed by the random data (binary), passed through the session hash algorithm then converted to base32."/>
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="QuitCommand" id="QUI" description="Quit user.">
+      <positionalParameters>
+        <positionalParameter name="SessionId" id="SID" type="string" description="Session Id of user to disconnect"/>
+      </positionalParameters>
+      <namedParameters>
+        <namedParameter name="SessionIdInitiator" id="ID" type="string" description="SID of the initiator of the disconnect." />
+        <namedParameter name="TimeLeft" id="TL" type="int" description="Time left until reconnect is allowed, in seconds. -1 = forever" />
+        <namedParameter name="Message" id="MS" type="string" description="Message" />
+        <namedParameter name="RedirectServerURI" id="RD" type="string" description="Redirect server URI." />
+        <namedParameter name="DisconnectClient" id="DI" type="enum" description="Any client that has this flag in the QUI message should have its transfers terminated by other clients connected to it, as it is unwanted in the system">
+          <enum name="DisconnectAll" value="1" description="" />
+        </namedParameter>
+      </namedParameters>
+    </command>
+    <command name="GetFileCommand" id="GET" description="Get file.">
+      <positionalParameters>
+        <positionalParameter name="Type" id="Type" type="enumstring" description="">
+          <enum name="File" value="file" description="" />
+          <enum name="List" value="list" description="" />
+        </positionalParameter>
+        <positionalParameter name="Identifier" id="Identifier" type="string" description="" />
+        <positionalParameter name="StartPosition" id="StartPosition" type="int" description="" />
+        <positionalParameter name="Bytes" id="Bytes" type="int" description="" />
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="GetFileInformationCommand" id="GFI" description="Get file information.">
+      <positionalParameters>
+        <positionalParameter name="Type" id="Type" type="enumstring" description="">
+          <enum name="File" value="file" description="" />
+          <enum name="List" value="list" description="" />
+        </positionalParameter>
+        <positionalParameter name="Identifier" id="Identifier" type="string" description="" />
+      </positionalParameters>
+      <namedParameters />
+    </command>
+    <command name="SendFileCommand" id="SND" description="Send file.">
+      <positionalParameters>
+        <positionalParameter name="Type" id="Type" type="enumstring" description="">
+          <enum name="File" value="file" description="" />
+          <enum name="List" value="list" description="" />
+        </positionalParameter>
+        <positionalParameter name="Identifier" id="Identifier" type="string" description="" />
+        <positionalParameter name="StartPosition" id="StartPosition" type="int" description="" />
+        <positionalParameter name="Bytes" id="Bytes" type="int" description="" />
+      </positionalParameters>
+      <namedParameters />
+    </command>
+  </commands>
+</adc>
