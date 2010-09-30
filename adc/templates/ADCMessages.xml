@@ -63,14 +63,15 @@
       <positionalParameters>
         <positionalParameter name="SessionId" id="SID" type="string" description="SID of user"/>
       </positionalParameters>
+      <namedParameters />
     </command>
     <command name="InformationCommand" id="INF" description="Information message">
       <positionalParameters />
       <namedParameters>
         <namedParameter name="ClientID" id="ID" type="string" description="The CID of the client" />
         <namedParameter name="PrivateID" id="PD" type="string" description="The PID of the client" />
-        <namedParameter name="IPv4Address" id="I4" type="IPAddress" description="IPv4 address without port." />
-        <namedParameter name="IPv6Address" id="I6" type="IPAddress" description="IPv6 address without port." />
+        <namedParameter name="IPv4Address" id="I4" type="IPv4Address" description="IPv4 address without port." />
+        <namedParameter name="IPv6Address" id="I6" type="IPv6Address" description="IPv6 address without port." />
         <namedParameter name="UDPIPv4Port" id="U4" type="int" description="" />
         <namedParameter name="UDPIPv6Port" id="U6" type="int" description="" />
         <namedParameter name="ShareSize" id="SS" type="int" description="Share size in bytes." />
