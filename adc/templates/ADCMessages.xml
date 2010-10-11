@@ -106,7 +106,7 @@
     </command>
     <command name="MessageCommand" id="MSG" description="Normal message">
       <positionalParameters>
-        <positionalParameter id="Text" type="string" description="Message"/>
+        <positionalParameter name="Text" id="Text" type="string" description="Message"/>
       </positionalParameters>
       <namedParameters>
         <namedParameter name="PrivateMessage" id="PM" type="string" description="" />
