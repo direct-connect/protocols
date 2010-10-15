@@ -44,6 +44,7 @@ This version corresponds to $Revision$.
 
 === Version 1.0.6 UNRELEASED
 * Added KEYP extension for providing certificate substitution protection in ADCS.
+* Added note to signal DFAV in SUP.
 
 == Extensions
 
@@ -203,6 +204,8 @@ Timestamp of the moment when the message was sent, expressed in seconds since th
 
 === DFAV - Distributed Favorites
 The idea behind this extension is to generate a public hublist from the users favorite hublist. Implementations should separate between public and private hubs in the favorite hublist of an user, in order not to distribute private hubs where one can not connect to anyway.
+
+Signal DFAV in SUP.
 
 ==== GFAGFA
 
