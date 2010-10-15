@@ -46,6 +46,7 @@ This version corresponds to $Revision$.
 * Added 'KEYP' extension for providing certificate substitution protection in ADCS.
 * Added note to signal DFAV in SUP.
 * Added 'SUDP' extension for encryption of UDP traffic.
+* Added 'TYPE' extension for chat state notifications.
 
 == Extensions
 
@@ -179,7 +180,7 @@ doesn't require additional information about the users).
  -pinger- HSUP ADBASE ADPING AD..
  -hub- ISUP ADBASE ADPING AD..
  -hub- ISID ..
- -hub- IINF NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
+ -hub- IINF NIhubname DEcurrent\stopic VE.. HHexample.org:555 WShttp://example.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  - (pinger may disconnect)
 ====
 
@@ -196,7 +197,7 @@ name and WS hublist web address.
  -hub- HSUP ADBASE ADPING AD..
  -hublist- ISUP ADBASE ADPING AD..
  -hublist- IINF NIhublist_name WShublist_address
- -hub- HINF  NIhubname DEcurrent\stopic VE.. HHmyhub.no-ip.org:555 WShttp://myhub.no-ip.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
+ -hub- HINF  NIhubname DEcurrent\stopic VE.. HHexample.org:555 WShttp://example.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  -( disconnect )
 ====
 
@@ -551,7 +552,6 @@ adcs://example.com:1234/?kp=SHA256/G3PJC4F4MQ5KOXGE2MPYJW5EW63IC6M7RN7OS663JLLWN
 ====
 
 === SUDP - Encrypting UDP traffic
-
 This is an extension that allows UDP traffic to be encrypted.
 
 While assymetric encryption may be optimal in sense of security, a symmetric cipher will protect perfectly against outside adversaries given the hub-client connections is also running ADCS. New is that senders now create a random IV for their "request command" (e.g. searches) and send it along the "response command"  (e.g. search result).
@@ -579,5 +579,29 @@ Client may otherwise verify if the message is a U-type message, followed by a kn
 There is a potential chance that decryption succeed with what is bad key. If that is the case, the client should verify that the data is not garbled.
 
 Note that in a normal circumstance, the client will most likely be using relatively few active keys.
+
+=== TYPE - Typing notification
+This extension adds a typing similar to Jabber's http://www.xmpp.org/extensions/xep-0085.html["Chat state notifications"].
+
+Signal TYPE in SUP and the INF's SU field.
+
+==== TPN
+ TPN code
+
+Contexts: F, T
+
+States: NORMAL
+
+Command should be sent to the Reply-To user (PM field in MSG, if present). All TPN messages are sent when the event occur.
+
+Code values:
+[options="autowidth"]
+|=====
+|00 |Gone |Closed tab, minimized window, etc |Should be sent.
+|01 |Inactive |Changed tab, window became unfocused (but not closed or minimized), etc |Should be sent.
+|02 |Paused |Paused typing. |Should be sent.
+|10 |Active |Now in this tab, reading message and is actively participating in the chat session. |Must be sent.
+|11 |Composing |Currently typing a message. |Must be sent.
+|=====
 
 // vim: set syntax=asciidoc:
