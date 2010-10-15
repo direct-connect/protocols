@@ -47,6 +47,7 @@ This version corresponds to $Revision$.
 * Added note to signal DFAV in SUP.
 * Added 'SUDP' extension for encryption of UDP traffic.
 * Added 'TYPE' extension for chat state notifications.
+* Added 'FEED' extension for RSS feeds.
 
 == Extensions
 
@@ -603,5 +604,49 @@ Code values:
 |10 |Active |Now in this tab, reading message and is actively participating in the chat session. |Must be sent.
 |11 |Composing |Currently typing a message. |Must be sent.
 |=====
+
+=== FEED - RSS feeds
+The extension adds RSS feed support. See http://en.wikipedia.org/wiki/RSS for a description.
+
+Signal FEED in SUP and the INF's SU field.
+
+==== RSS
+ RSS url
+
+Context: F, T
+
+States: NORMAL
+
+url is the URL to the feed.
+
+Additional fields:
+
+[options="autowidth"]
+|=====
+|CR |Name of the author.
+|TI |Name of post.
+|DE |Content summary of post.
+|LI |Direct link to post
+|FN |Feed name
+|FN |Feed description
+|DT |Time of publish. Specified in seconds since UNIX epoch.
+|RM |1 = Remove feed from aggregator.
+|=====
+
+==== Examples
+Publish a new feed called 'Example_feed' and with a description 'description_of_feed':
+====
+RSS http://example.com/rss FNExample_feed FNdescription_of_feed
+====
+
+Remove a feed:
+====
+RSS http://example.com/rss RM1
+====
+
+Publish a new post 'New_post' from 'John_Doe':
+====
+RSS http://example.com/rss TINew_post DEdescription_of_post LIhttp://example.com/entries/new_post DT1253628000 CRJohn_Doe
+====
 
 // vim: set syntax=asciidoc:
