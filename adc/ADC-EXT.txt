@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.6, September 2010
+1.0.6, October 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -15,36 +15,37 @@ $URL$.
 This version corresponds to $Revision$.
 
 === Version 1.0
-* Initial release created from original ADC 1.0 text
-* Added PING extension
+* Initial release created from original ADC 1.0 text.
+* Added 'PING' extension for hub pingers.
 
 === Version 1.0.1
-* Added TS as additional MSG parameter
-* Added DFAV
+* Added timestamp field to MSG.
+* Added 'DFAV' extension for distributing hub addresses.
 
 === Version 1.0.2
-* Added UCMD extension
+* Added 'UCMD' extension for user commands.
 
 === Version 1.0.3
-* Removed optional keywords from UCMD
-* Added BLOM extension
+* Removed optional keywords from UCMD.
+* Added 'BLOM' extension for bloom filters.
 
 === Version 1.0.4
-* Added magnet link extension to 'UCMD'
-* Added NAT traversal extension 'NATT'
-* Added referral field to STA
-* Added upload queue field to STA
-* Added partial file sharing extension 'PFSR'
+* Added magnet link extension to UCMD.
+* Added NAT traversal extension 'NATT'.
+* Added referral field to STA.
+* Added upload queue field to STA.
+* Added partial file sharing extension 'PFSR'.
 
 === Version 1.0.5
 * Added locale field to INF
-* Modified user parameter 'line' in 'UCMD' to handle multiple inputs.
+* Modified user parameter 'line' in UCMD to handle multiple inputs.
 * Added hidden in enumeration of CT field in INF.
 * Added error code Invalid feature in STA.
 
 === Version 1.0.6 UNRELEASED
-* Added KEYP extension for providing certificate substitution protection in ADCS.
+* Added 'KEYP' extension for providing certificate substitution protection in ADCS.
 * Added note to signal DFAV in SUP.
+* Added 'SUDP' extension for encryption of UDP traffic.
 
 == Extensions
 
@@ -548,5 +549,35 @@ We are, in particular, trusting the hub not to maliciously modify the KP fields 
 ====
 adcs://example.com:1234/?kp=SHA256/G3PJC4F4MQ5KOXGE2MPYJW5EW63IC6M7RN7OS663JLLWN2M5I6FQ
 ====
+
+=== SUDP - Encrypting UDP traffic
+
+This is an extension that allows UDP traffic to be encrypted.
+
+While assymetric encryption may be optimal in sense of security, a symmetric cipher will protect perfectly against outside adversaries given the hub-client connections is also running ADCS. New is that senders now create a random IV for their "request command" (e.g. searches) and send it along the "response command"  (e.g. search result).
+
+Signal SUDP in SUP and in the INF's SU field.
+
+If a client signal support for SUDP in an ADCS hub, it may extend commands that will generate a response (e.g. SCH) with a KY-field as the encryption key. Clients shall only include the flag in ADCS hubs.
+
+[options="autowidth"]
+|=====
+|KY | 16 byte encryption key in BASE32. 128 bit AES encryption shall be used.
+|=====
+
+For example, a SCH command will result in 29 Bytes of overhead ("<space>KY"+26 Bytes Base32 encoded key).
+
+A client that has a response for the command can now encrypt the response message by prepending 16 bytes of random data and afterwards encrypting it with AES/CBC/PKCS5Padding (Cipher/Blockmode/Padding) using 16 zero bytes as IV for CBC.
+
+In above scenario, the response would be a RES command.
+
+==== Decryption notes
+In the case of searching, the searching client in return for decryption first has to guess which commands it receives are encrypted and which are not. It can do so for example by simply trying decryption with all currently active keys. If a key is wrong or the message was not encrypted, padding will fail and decryption is unsuccessful!
+
+Client may otherwise verify if the message is a U-type message, followed by a known command (and a space). If that is not the case, the client takes the most recent key and decrypts. If that succeed, the message is valid.
+
+There is a potential chance that decryption succeed with what is bad key. If that is the case, the client should verify that the data is not garbled.
+
+Note that in a normal circumstance, the client will most likely be using relatively few active keys.
 
 // vim: set syntax=asciidoc:
