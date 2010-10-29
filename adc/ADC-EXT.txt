@@ -37,17 +37,18 @@ This version corresponds to $Revision$.
 * Added partial file sharing extension 'PFSR'.
 
 === Version 1.0.5
-* Added locale field to INF
+* Added locale field to INF.
 * Modified user parameter 'line' in UCMD to handle multiple inputs.
 * Added hidden in enumeration of CT field in INF.
 * Added error code Invalid feature in STA.
 
 === Version 1.0.6 UNRELEASED
 * Added 'KEYP' extension for providing certificate substitution protection in ADCS.
-* Added note to signal DFAV in SUP.
+* Added note to signal DFAV.
 * Added 'SUDP' extension for encryption of UDP traffic.
 * Added 'TYPE' extension for chat state notifications.
-* Added 'FEED' extension for RSS feeds.
+* Added 'FEED' extension for RSS feeds.* Added grouping of file extensions to SCH.
+* Added failover hub addresses to the hub's INF.
 
 == Extensions
 
@@ -208,7 +209,7 @@ Timestamp of the moment when the message was sent, expressed in seconds since th
 === DFAV - Distributed Favorites
 The idea behind this extension is to generate a public hublist from the users favorite hublist. Implementations should separate between public and private hubs in the favorite hublist of an user, in order not to distribute private hubs where one can not connect to anyway.
 
-Signal DFAV in SUP.
+Signal DFAV in SUP and the INF's SU field.
 
 ==== GFAGFA
 
@@ -269,7 +270,7 @@ User parameters
 |userCID |User CID
 |userSID |User SID
 |userXX |One for each flag on the user sent; for example, userI4 and userNI
-|line:info |Prompts the user for input where 'info' is the displayed text description for the user input. 'info' can be used for multiple values (combobox etc), and should be structured as "general info/default selection/value0/value1/.../valueN". The general info can be viewed as the caption of the user input dialog. Default selection is an integer k which signifies the default value to be used. Note that 0<=k<=N and N>=1. Note that values are 0-index based. Values are separated with a forward slash ('/'). If a forward slash is part of a value, it should be escaped by using an additional forward slash ('//').
+|line:info |Prompts the user for input where 'info' is the displayed text description for the user input. 'info' can be used for multiple values (combobox etc), and should be structured as "general info/default selection/value0/value1/.../valueN". The general info can be viewed as the caption of the user input dialog. Default selection is an integer k which signifies the default value to be used. Note that N >= k >= 0 and N >= 1. Note that values are 0-index based. Values are separated with a forward slash ('/'). If a forward slash is part of a value, it should be escaped by using an additional forward slash ('//').
 |=====
 
 File parameters
@@ -577,7 +578,7 @@ In the case of searching, the searching client in return for decryption first ha
 
 Client may otherwise verify if the message is a U-type message, followed by a known command (and a space). If that is not the case, the client takes the most recent key and decrypts. If that succeed, the message is valid.
 
-There is a potential chance that decryption succeed with what is bad key. If that is the case, the client should verify that the data is not garbled.
+There is a potential chance that decryption succeed with what is a bad key. If that is the case, the client should verify that the data is not garbled.
 
 Note that in a normal circumstance, the client will most likely be using relatively few active keys.
 
@@ -648,5 +649,40 @@ Publish a new post 'New_post' from 'John_Doe':
 ====
 RSS http://example.com/rss TINew_post DEdescription_of_post LIhttp://example.com/entries/new_post DT1253628000 CRJohn_Doe
 ====
+
+=== GR - Grouping of file extensions in SCH
+In BASE, clients add EX fields to SCH to denote which extension files should have. This can lead to a situation where the large bulk of extensions are of similar "type", e.g. audio files or documents. This extension intend to add a field GR which groups multiple extensions. In addition, the field RX shall be used for group-exclusion; if all extensions in a group but one are desired, field RX will be used to exclude those group items.
+
+Field GR values, where multiple groups are specified by adding the numbers together:
+[options="autowidth"]
+|=====
+|1 |Audio |AIFF, APE, AU, FLAC, M4A, MID, MP2, MP3, MPC, OGG, RA, WAV, WMA
+|2 |Compressed |7Z, ACE, ARJ, BZ2, LHA, LZH, RAR, TAR, TZ, Z, ZIP
+|4 |Document |DOC, DOCX, HTM, HTML, NFO, ODF, ODP, ODS, ODT, PDF, PPT, PPTX, RTF, TXT, XLS, XLSX, XML, XPS
+|8 |Executable |APP, BAT, CMD, COM, DLL, EXE, JAR, MSI, PS1, VBS, WSF
+|16 |Picture |AI, BMP, CDR, EPS, GIF, ICO, IMG, JPEG, JPG, PCT, PCX, PICT, PNG, PS, PSD, PSP, RLE, SFW, TGA, TIF
+|32 |Video |3GP, ASF, ASX, AVI, DIVX, FLV, MKV, MOV, MP4, MPEG, MPG, OGM, PXP, QT, RM, RMVB, SWF, VOB, WEBM, WMV
+|=====
+
+Field RX:
+[options="autowidth"]
+|=====
+|RX |Extensions in a group that are not desired. E.g., "GR1 RXMP3 RXWAV" would include all extensions in the 'audio' group except 'MP3' or 'WAV'.
+|=====
+
+=== FO - Failover hub addresses
+If a hub goes down, the client's only option is to keep re-trying the last known hub address. This extension will add a list of failover hub addresses, field FO, that the client can try to connect to, if the main hub address fail.
+
+Clients should decide the frequency of connection attempts (for the main hub as well as the failover addresses). The client should try connecting in the specified order. The client may decide what to do after the FO-list is exhausted, but recommended is to try to connect to the main hub and continue with the list as before.
+
+The client should display an appropriate message to the user that it has connected to a failover address.
+
+This extension should be implemented, at a minimum, for favourite hubs. If clients have any concerns about where a hub may redirect users to, or about storing the extra state information, then it may avoid implementing this for non-favourite hubs.
+
+Field FO in the hub's INF:
+[options="autowidth"]
+|=====
+|FO |Failover hub addresses. Specify well formed ADC or ADCS URI addresses, with multiple addresses separated with a comma. Example; FOadc://example.com:1234,adc://example.net:1234
+|=====
 
 // vim: set syntax=asciidoc:
