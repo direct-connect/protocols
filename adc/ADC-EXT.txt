@@ -49,6 +49,7 @@ This version corresponds to $Revision$.
 * Added 'TYPE' extension for chat state notifications.
 * Added 'FEED' extension for RSS feeds.* Added grouping of file extensions to SCH.
 * Added failover hub addresses to the hub's INF.
+* Added free slots to the client's INF.
 
 == Extensions
 
@@ -170,7 +171,7 @@ it means hub has no restrictions in that matter, or non existent):
 |UP |integer |Hub uptime (seconds)
 |NI |string  |Hub name (from BASE)
 |DE |string  |Hub description (from BASE)
-VE |string  |Hub software version (from BASE)
+|VE |string  |Hub software version (from BASE)
 |=====
 
 The hub must continue to send the user list as for a normal user (move to
@@ -567,7 +568,7 @@ If a client signal support for SUDP in an ADCS hub, it may extend commands that 
 |KY | 16 byte encryption key in BASE32. 128 bit AES encryption shall be used.
 |=====
 
-For example, a SCH command will result in 29 Bytes of overhead ("<space>KY"+26 Bytes Base32 encoded key).
+For example, a SCH command will result in 29 Bytes of overhead ("<separator>KY"+26 Bytes Base32 encoded key).
 
 A client that has a response for the command can now encrypt the response message by prepending 16 bytes of random data and afterwards encrypting it with AES/CBC/PKCS5Padding (Cipher/Blockmode/Padding) using 16 zero bytes as IV for CBC.
 
@@ -607,7 +608,7 @@ Code values:
 |=====
 
 === FEED - RSS feeds
-The extension adds RSS feed support. See http://en.wikipedia.org/wiki/RSS for a description.
+The extension adds http://en.wikipedia.org/wiki/RSS[RSS feed] support.
 
 Signal FEED in SUP and the INF's SU field.
 
@@ -651,7 +652,7 @@ RSS http://example.com/rss TINew_post DEdescription_of_post LIhttp://example.com
 ====
 
 === GR - Grouping of file extensions in SCH
-In BASE, clients add EX fields to SCH to denote which extension files should have. This can lead to a situation where the large bulk of extensions are of similar "type", e.g. audio files or documents. This extension intend to add a field GR which groups multiple extensions. In addition, the field RX shall be used for group-exclusion; if all extensions in a group but one are desired, field RX will be used to exclude those group items.
+In BASE, clients add EX fields to SCH to denote which extension files should have. This can lead to a situation where the large bulk of extensions are of similar "type", e.g. audio files or documents. This extension intend to add a field GR which groups multiple extensions. In addition, the field RX shall be used for group-exclusion; if all extensions in a group but two are desired, field RX will be used to exclude those group items.
 
 Field GR values, where multiple groups are specified by adding the numbers together:
 [options="autowidth"]
@@ -683,6 +684,15 @@ Field FO in the hub's INF:
 [options="autowidth"]
 |=====
 |FO |Failover hub addresses. Specify well formed ADC or ADCS URI addresses, with multiple addresses separated with a comma. Example; FOadc://example.com:1234,adc://example.net:1234
+|=====
+
+=== FS - Free slots in client
+This is an extension that will broadcast the amount of free slots the client has available.
+
+Field FS in the client's INF:
+[options="autowidth"]
+|=====
+|FS |Free slots available.
 |=====
 
 // vim: set syntax=asciidoc:
