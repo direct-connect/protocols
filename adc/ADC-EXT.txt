@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.6, October 2010
+1.0.6, November 2010
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -15,21 +15,26 @@ $URL$.
 This version corresponds to $Revision$.
 
 === Version 1.0
+Jacek Sieka <arnetheduck@gmail.com>, 2008-05-02
 * Initial release created from original ADC 1.0 text.
 * Added 'PING' extension for hub pingers.
 
 === Version 1.0.1
+Fredrik Ullner <ullner@gmail.com>, 2009-08-04
 * Added timestamp field to MSG.
 * Added 'DFAV' extension for distributing hub addresses.
 
 === Version 1.0.2
+Fredrik Ullner <ullner@gmail.com>, 2010-04-04
 * Added 'UCMD' extension for user commands.
 
 === Version 1.0.3
+Fredrik Ullner <ullner@gmail.com>, 2010-05-26
 * Removed optional keywords from UCMD.
 * Added 'BLOM' extension for bloom filters.
 
 === Version 1.0.4
+Fredrik Ullner <ullner@gmail.com>, 2010-06-29
 * Added magnet link extension to UCMD.
 * Added NAT traversal extension 'NATT'.
 * Added referral field to STA.
@@ -37,6 +42,7 @@ This version corresponds to $Revision$.
 * Added partial file sharing extension 'PFSR'.
 
 === Version 1.0.5
+Fredrik Ullner <ullner@gmail.com>, 2010-09-16
 * Added locale field to INF.
 * Modified user parameter 'line' in UCMD to handle multiple inputs.
 * Added hidden in enumeration of CT field in INF.
@@ -47,9 +53,10 @@ This version corresponds to $Revision$.
 * Added note to signal DFAV.
 * Added 'SUDP' extension for encryption of UDP traffic.
 * Added 'TYPE' extension for chat state notifications.
-* Added 'FEED' extension for RSS feeds.* Added grouping of file extensions to SCH.
+* Added 'FEED' extension for RSS feeds.* Added 'SEGA' extension for grouping of file extensions in SCH.
 * Added failover hub addresses to the hub's INF.
 * Added free slots to the client's INF.
+* Added 'ADCS' extension for encryption in ADC.
 
 == Extensions
 
@@ -372,7 +379,7 @@ For test vectors, see the http://www.adcportal.com/wiki/index.php/Talk:BLOM[ADC 
 === NATT - NAT traversal
 NAT traversal allow two passive clients to connect to each other. For more information about NAT traversal, see https://dcpp.wordpress.com/2010/02/13/passive-mode-c-c-connections-and-nat-traversal[Passive Mode C-C Connections and NAT Traversal].
 
-If a client does not support TCP4 or TCP6, it will send an RCM to the client it is trying to connect to. If the other client also doesn't support TCP4 (or TCP6 correspondingly), NAT traversal may instead be used.  The feature should be signalled in SUP as NATT.
+If a client does not support TCP4 or TCP6, it will send an RCM to the client it is trying to connect to. If the other client also doesn't support TCP4 (or TCP6 correspondingly), NAT traversal may instead be used. Signal NATT in the INF's SU field.
 
 Do note that the hub must forward I4 or I6 for respective clients' INF.
 
@@ -497,7 +504,7 @@ This extension will add "Invalid feature" as error code in STA. Invalid features
 |48 |Invalid feature. Flag "FC" is the FOURCC of the invalid feature(s). If multiple features are invalid, use comma between the features (i.e. FCQWER,ASDF,ZXCV).
 |=====
 
-=== KEYP - Certificate substitution protection in ADCS (Secure ADC)
+=== KEYP - Certificate substitution protection in conjunction with ADCS
 This extension adds a simple, but secure way to protect against man-in-the-middle attacks against ADC when wrapped with TLS (1.0 or later). It does not require setting up a CA or signing keys, but that is still possible if desired.
 
 The extension introduces a keyprint parameter to the ADCS URI. The keyprint parameter is a hash of the server certificate.
@@ -651,17 +658,19 @@ Publish a new post 'New_post' from 'John_Doe':
 RSS http://example.com/rss TINew_post DEdescription_of_post LIhttp://example.com/entries/new_post DT1253628000 CRJohn_Doe
 ====
 
-=== GR - Grouping of file extensions in SCH
+=== SEGA - Grouping of file extensions in SCH
 In BASE, clients add EX fields to SCH to denote which extension files should have. This can lead to a situation where the large bulk of extensions are of similar "type", e.g. audio files or documents. This extension intend to add a field GR which groups multiple extensions. In addition, the field RX shall be used for group-exclusion; if all extensions in a group but two are desired, field RX will be used to exclude those group items.
+
+Signal SEGA in the INF's SU field for support of this extension.
 
 Field GR values, where multiple groups are specified by adding the numbers together:
 [options="autowidth"]
 |=====
-|1 |Audio |AIFF, APE, AU, FLAC, M4A, MID, MP2, MP3, MPC, OGG, RA, WAV, WMA
+|1 |Audio |APE, FLAC, M4A, MID, MP3, MPC, OGG, RA, WAV, WMA
 |2 |Compressed |7Z, ACE, ARJ, BZ2, LHA, LZH, RAR, TAR, TZ, Z, ZIP
 |4 |Document |DOC, DOCX, HTM, HTML, NFO, ODF, ODP, ODS, ODT, PDF, PPT, PPTX, RTF, TXT, XLS, XLSX, XML, XPS
 |8 |Executable |APP, BAT, CMD, COM, DLL, EXE, JAR, MSI, PS1, VBS, WSF
-|16 |Picture |AI, BMP, CDR, EPS, GIF, ICO, IMG, JPEG, JPG, PCT, PCX, PICT, PNG, PS, PSD, PSP, RLE, SFW, TGA, TIF
+|16 |Picture |BMP, CDR, EPS, GIF, ICO, IMG, JPEG, JPG, PNG, PS, PSD, SFW, TGA, TIF, WEBP
 |32 |Video |3GP, ASF, ASX, AVI, DIVX, FLV, MKV, MOV, MP4, MPEG, MPG, OGM, PXP, QT, RM, RMVB, SWF, VOB, WEBM, WMV
 |=====
 
@@ -694,5 +703,16 @@ Field FS in the client's INF:
 |=====
 |FS |Free slots available.
 |=====
+
+=== ADCS - Symmetrical Encryption in ADC
+ADCS is an extension that has the goal of adding the TLS/SSL layer just over the TCP layer and beneath the application layer (where ADC runs). This way, the ADC protocol remains unchanged while the connections are encrypted. The connecting party performs a TLS handshake immediately after the TCP connection is established. The ADC handshake is performed and once the TLS connection is established the ADC handshake proceeds as usual.
+
+Encrypted ADC connections can be established using a TLS tunnel, both for hub and for client connections. Certificates can be used to authenticate both hub and user, for example by making the hub the root CA, and only allow clients signed by the hub to connect. Ephemeral keys should be use to ensure forward secrecy when possible.  A future extension or revision of this extension will provide ways to handle certificate based logins, who creates which certificates and who signs what, and all that is not specified in this revision.
+
+==== Client-Hub encryption
+TLS client-hub connections can be initiated either by negotiating the feature "ADCS" on connection or by using the protocol adcs:// when initiating the connection.
+
+==== Client-Client encryption
+TLS client-client connections can be established either by negotiating the feature "ADCS" on connection or by specifying "ADCS/1.0" in the CTM protocol field. Clients supporting encrypted connections must indicate this in the INF SU field with "ADCS".
 
 // vim: set syntax=asciidoc:
