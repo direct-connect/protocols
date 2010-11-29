@@ -16,25 +16,30 @@ This version corresponds to $Revision$.
 
 === Version 1.0
 Jacek Sieka <arnetheduck@gmail.com>, 2008-05-02
+
 * Initial release created from original ADC 1.0 text.
 * Added 'PING' extension for hub pingers.
 
 === Version 1.0.1
 Fredrik Ullner <ullner@gmail.com>, 2009-08-04
+
 * Added timestamp field to MSG.
 * Added 'DFAV' extension for distributing hub addresses.
 
 === Version 1.0.2
 Fredrik Ullner <ullner@gmail.com>, 2010-04-04
+
 * Added 'UCMD' extension for user commands.
 
 === Version 1.0.3
 Fredrik Ullner <ullner@gmail.com>, 2010-05-26
+
 * Removed optional keywords from UCMD.
 * Added 'BLOM' extension for bloom filters.
 
 === Version 1.0.4
 Fredrik Ullner <ullner@gmail.com>, 2010-06-29
+
 * Added magnet link extension to UCMD.
 * Added NAT traversal extension 'NATT'.
 * Added referral field to STA.
@@ -43,6 +48,7 @@ Fredrik Ullner <ullner@gmail.com>, 2010-06-29
 
 === Version 1.0.5
 Fredrik Ullner <ullner@gmail.com>, 2010-09-16
+
 * Added locale field to INF.
 * Modified user parameter 'line' in UCMD to handle multiple inputs.
 * Added hidden in enumeration of CT field in INF.
@@ -50,6 +56,7 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-16
 
 === Version 1.0.6
 Fredrik Ullner <ullner@gmail.com>, 2010-09-29
+
 * Added 'KEYP' extension for providing certificate substitution protection in ADCS.
 * Added note to signal DFAV.
 * Added 'SUDP' extension for encryption of UDP traffic.
