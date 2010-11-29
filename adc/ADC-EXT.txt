@@ -48,7 +48,8 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-16
 * Added hidden in enumeration of CT field in INF.
 * Added error code Invalid feature in STA.
 
-=== Version 1.0.6 UNRELEASED
+=== Version 1.0.6
+Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 * Added 'KEYP' extension for providing certificate substitution protection in ADCS.
 * Added note to signal DFAV.
 * Added 'SUDP' extension for encryption of UDP traffic.
@@ -667,7 +668,7 @@ Field GR values, where multiple groups are specified by adding the numbers toget
 [options="autowidth"]
 |=====
 |1 |Audio |APE, FLAC, M4A, MID, MP3, MPC, OGG, RA, WAV, WMA
-|2 |Compressed |7Z, ACE, ARJ, BZ2, LHA, LZH, RAR, TAR, TZ, Z, ZIP
+|2 |Compressed |7Z, ACE, ARJ, BZ2, GZ, LHA, LZH, RAR, TAR, TZ, Z, ZIP
 |4 |Document |DOC, DOCX, HTM, HTML, NFO, ODF, ODP, ODS, ODT, PDF, PPT, PPTX, RTF, TXT, XLS, XLSX, XML, XPS
 |8 |Executable |APP, BAT, CMD, COM, DLL, EXE, JAR, MSI, PS1, VBS, WSF
 |16 |Picture |BMP, CDR, EPS, GIF, ICO, IMG, JPEG, JPG, PNG, PS, PSD, SFW, TGA, TIF, WEBP
