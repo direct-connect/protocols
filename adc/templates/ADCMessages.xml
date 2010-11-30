@@ -47,8 +47,8 @@
         <namedParameter name="Protocol" id="PR" type="string" description="" />
         <namedParameter name="MissingField" id="FM" type="string" description="" />
         <namedParameter name="InvalidField" id="FB" type="string" description="" />
-        <namedParameter name="IPv4Address" id="I4" type="IPAddress" description="" />
-        <namedParameter name="IPv6Address" id="I6" type="IPAddress" description="" />
+        <namedParameter name="IPv4Address" id="I4" type="IPv4Address" description="" />
+        <namedParameter name="IPv6Address" id="I6" type="IPv6Address" description="" />
         <namedParameter name="ReferenceAddress" id="RF" type="string" description="" extension="1" />
       </namedParameters>
     </command>
