@@ -1,6 +1,6 @@
 = ADC Protocol
-Jacek Sieka <arnetheduck@gmail.com>
-1.0.1, May 2008
+Fredrik Ullner <ullner@gmail.com>
+1.0.2, January 2011
 
 == Abstract
 ADC is a text protocol for a client-server network similar to Neo-Modus'
@@ -25,16 +25,25 @@ and older versions can be downloaded from
 $URL$. 
 This version correspods to $Revision$.
 
+=== Version 1.0.2, UNRELEASED
+Fredrik Ullner <ullner@gmail.com>
+
+* Editorial updates
+
 === Version 1.0.1, 2008-05-02
+Jacek Sieka <arnetheduck@gmail.com>
+
 * Moved extensions to a separate document
 * Moved specification to a separate project on SourceForge
 
 === Version 1.0, 2007-12-01
+Jacek Sieka <arnetheduck@gmail.com>
+
 * Initial release
 
 == Line protocol
 === General
-* All messages begin with a four-letter word. The first letter designates how
+* All messages begin with a four-letter word (FOURCC). The first letter designates how
   the message should be sent and the other three specify what to do.
 * Parameters are separated by space and a newline (codepoint 0x0a) ends each
   message. The string "\s" escapes space, "\n" newline and "\\" backslash.
@@ -45,8 +54,8 @@ This version correspods to $Revision$.
   invalid messages and should dispatch unknown messages according to their
   type.
 * Client addresses must be specified in dotted-decimal form ("x.x.x.x") for
-  IPv4 and RFC 1884 form for IPv6. Hub addresses must be specified in URL
-  form, with "adc" as protocol specifier ("adc://server:port/").
+  IPv4 and RFC 4291 form for IPv6. Hub addresses must be specified in URL
+  form, with "adc" as protocol specifier ("adc://server:port/" and "adc://[server]:port/" for IPv4 and IPv6 respectively).
 * Numbers are sent as strings in standard floating point notation, using '.'
   as the decimal separator and without a thousands separator. Integers are
   numbers with neither a decimal portion nor an exponent. Applications should
@@ -66,7 +75,7 @@ This version correspods to $Revision$.
 === Message syntax
 ..................
 message               ::= message_body? eol
-message_body          ::= (b_message_header | cih_message_header | de_message_header | f_message_header | u_message_header | message_header) 
+message_body          ::= (b_message_header | cih_message_header | de_message_header | f_message_header | u_message_header) 
                           (separator positional_parameter)* (separator named_parameter)*
 b_message_header      ::= 'B' command_name separator my_sid
 cih_message_header    ::= ('C' | 'I' | 'H') command_name
@@ -101,17 +110,17 @@ message when sending it to the hub for distribution. Clients should use the
 message type only to aid in parsing the message and otherwise ignore it. The
 following message types are defined:
 
-[separator="|"]
-```_
-B | Broadcast | Hub must send message to all connected clients, including the sender of the message.
-C | Client message | Clients must use this message type when communicating directly over TCP.
-D | Direct message | The hub must send the message to the target_sid user.
-E | Echo message | The hub must send the message to the target_sid user and the my_sid user.
-F | Feature broadcast | The hub must send message to all clients that support both all required (+) and no excluded (-) features named. The feature name is matched against the corresponding SU field in INF sent by each client.
-H | Hub message | Clients must use this message type when a message is intended for the hub only.
-I | Info message | Hubs must use this message type when sending a message to a client that didn't come from another client.
-U | UDP message | Clients must use this message type when communicating directly over UDP.
-___
+[options="autowidth"]
+|=====
+|B |Broadcast |Hub must send message to all connected clients, including the sender of the message.
+|C |Client message |Clients must use this message type when communicating directly over TCP.
+|D |Direct message |The hub must send the message to the target_sid user.
+|E |Echo message |The hub must send the message to the target_sid user and the my_sid user.
+|F |Feature broadcast |The hub must send message to all clients that support both all required (+) and no excluded (-) features named. The feature name is matched against the corresponding SU field in INF sent by each client.
+|H |Hub message |Clients must use this message type when a message is intended for the hub only.
+|I |Info message |Hubs must use this message type when sending a message to a client that didn't come from another client.
+|U |UDP message |Clients must use this message type when communicating directly over UDP.
+|=====
 
 === Session hash
 Certain commands require the use of a hash function. The hash function used is
@@ -298,6 +307,8 @@ non-partial list.
 unlisted items. "1" means the directory contains unlisted items, "0" that it
 does not. Incomplete="0" is the default and may thus be omitted.
 
+"TTH" is used by the TIGR extension.
+
 More information may be added to the file by extensions, but is not guaranteed
 to be interpreted by other clients.
 
@@ -313,13 +324,13 @@ The message context specifies how the message may be received / sent. Hubs and
 clients may support using the message in additional contexts as well. The
 context codes are as follows:
 
-[separator="|"]
-``_
-F | From hub (hub-client TCP)
-T | To hub (hub-client TCP)
-C | Between clients (client-client TCP)
-U | Between clients (client-client UDP)
-___
+[options="autowidth"]
+|=====
+|F |From hub (hub-client TCP)
+|T |To hub (hub-client TCP)
+|C |Between clients (client-client TCP)
+|U |Between clients (client-client UDP)
+|=====
 
 When requesting a new client-client connection, this protocol is identified by
 "ADC/1.0".
@@ -355,47 +366,47 @@ could occur at different severity levels.
 
 Severity values:
 
-[separator="|"]
-``_
-0 | Success (used for confirming commands), error code must be "00", and an additional flag "FC" contains the FOURCC of the command being confirmed if applicable.
-1 | Recoverable (error but no disconnect)
-2 | Fatal (disconnect)
-___
+[options="autowidth"]
+|=====
+|0 |Success (used for confirming commands), error code must be "00", and an additional flag "FC" contains the FOURCC of the command being confirmed if applicable.
+|1 |Recoverable (error but no disconnect)
+|2 |Fatal (disconnect)
+|=====
 
 Error codes:
 
-[separator="|"]
-``_
-00 | Generic, show description
-x0 | Same as 00, but categorized according to the rough structure set below
-10 | Generic hub error
-11 | Hub full
-12 | Hub disabled
-20 | Generic login/access error
-21 | Nick invalid
-22 | Nick taken
-23 | Invalid password 
-24 | CID taken
-25 | Access denied, flag "FC" is the FOURCC of the offending command. Sent when a user is not allowed to execute a particular command
-26 | Registered users only
-27 | Invalid PID supplied
-30 | Kicks/bans/disconnects generic
-31 | Permanently banned
-32 | Temporarily banned, flag "TL" is an integer specifying the number of seconds left until it expires (This is used for kick as well…).
-40 | Protocol error
-41 | Transfer protocol unsupported, flag "TO" the token, flag "PR" the protocol string. The client receiving a CTM or RCM should send this if it doesn't support the C-C protocol.
-42 | Direct connection failed, flag "TO" the token, flag "PR" the protocol string. The client receiving a CTM or RCM should send this if it tried but couldn't connect.
-43 | Required INF field missing/bad, flag "FM" specifies missing field, "FB" specifies invalid field.
-44 | Invalid state, flag "FC" the FOURCC of the offending command.
-45 | Required feature missing, flag "FC" specifies the FOURCC of the missing feature. 
-46 | Invalid IP supplied in INF, flag "I4" or "I6" specifies the correct IP.
-47 | No hash support overlap in SUP between client and hub.
-50 | Client-client / file transfer error
-51 | File not available
-52 | File part not available
-53 | Slots full
-54 | No hash support overlap in SUP between clients.
-___
+[options="autowidth"]
+|=====
+|00 |Generic, show description
+|x0 |Same as 00, but categorized according to the rough structure set below
+|10 |Generic hub error
+|11 |Hub full
+|12 |Hub disabled
+|20 |Generic login/access error
+|21 |Nick invalid
+|22 |Nick taken
+|23 |Invalid password 
+|24 |CID taken
+|25 |Access denied, flag "FC" is the FOURCC of the offending command. Sent when a user is not allowed to execute a particular command
+|26 |Registered users only
+|27 |Invalid PID supplied
+|30 |Kicks/bans/disconnects generic
+|31 |Permanently banned
+|32 |Temporarily banned, flag "TL" is an integer specifying the number of seconds left until it expires (This is used for kick as well…).
+|40 |Protocol error
+|41 |Transfer protocol unsupported, flag "TO" the token, flag "PR" the protocol string. The client receiving a CTM or RCM should send this if it doesn't support the C-C protocol.
+|42 |Direct connection failed, flag "TO" the token, flag "PR" the protocol string. The client receiving a CTM or RCM should send this if it tried but couldn't connect.
+|43 |Required INF field missing/bad, flag "FM" specifies missing field, "FB" specifies invalid field.
+|44 |Invalid state, flag "FC" the FOURCC of the offending command.
+|45 |Required feature missing, flag "FC" specifies the FOURCC of the missing feature. 
+|46 |Invalid IP supplied in INF, flag "I4" or "I6" specifies the correct IP.
+|47 |No hash support overlap in SUP between client and hub.
+|50 |Client-client / file transfer error
+|51 |File not available
+|52 |File part not available
+|53 |Slots full
+|54 |No hash support overlap in SUP between clients.
+|=====
 
 Description:
 Description of the error, suitable for viewing directly by the user
@@ -467,36 +478,35 @@ have changed.
 
 Fields:
 
-[separator="|"]
-```_
-Code | Type    | Description
-___
-ID   | base32  | The CID of the client. Mandatory for C-C connections.
-PD   | base32  | The PID of the client. Hubs must check that the hash(PID) == CID and then discard the field before broadcasting it to other clients. Must not be sent in C-C connections.
-I4   | IPv4    | IPv4 address without port. A zero address (0.0.0.0) means that the server should replace it with the real IP of the client. Hubs must check that a specified address corresponds to what the client is connecting from to avoid DoS attacks and only allow trusted clients to specify a different address. Clients should use the zero address when connecting, but may opt not to do so at the user's discretion. Any client that supports incoming TCPv4 connections must also add the feature TCP4 to their SU field.
-I6   | IPv6    | IPv6 address without port. A zero address (::) means that the server should replace it with the IP of the client. Any client that supports incoming TCPv6 connections must also add the feature TCP6 to their SU field.
-U4   | integer | Client UDP port. Any client that supports incoming UDPv4 packets must also add the feature UDP4 to their SU field. 
-U6   | integer | Same as U4, but for IPv6. Any client that supports incoming UDPv6 packets must also add the feature UDP6 to their SU field.
-SS   | integer | Share size in bytes
-SF   | integer | Number of shared files
-VE   | string  | Client identification, version (client-specific, a short identifier then a dotted version number is recommended)
-US   | integer | Maximum upload speed, bytes/second
-DS   | integer | Maximum download speed, bytes/second
-SL   | integer | Maximum simultaneous upload connections (slots)
-AS   | integer | Automatic slot allocator speed limit, bytes/sec. The client keeps opening slots as long as its total upload speed doesn't exceed this value.
-AM   | integer | Minimum simultaneous upload connectins in automatic slot manager mode
-EM   | string  | E-mail address
-NI   | string  | Nickname (or hub name). The hub must ensure that this is unique in the hub up to case-sensitivity. Valid are all characters in the Unicode character set with code point above 32, although hubs may limit this further as they like with an appropriate error message.
-DE   | string  | Description. Valid are all characters in the Unicode character set with code point equal to or greater than 32.
-HN   | integer | Hubs where user is a normal user and in NORMAL state
-HR   | integer | Hubs where user is registered (had to supply password) and in NORMAL state
-HO   | integer | Hubs where user is op and in NORMAL state
-TO   | string  | Token, as received in RCM/CTM, when establishing a C-C connection.
-CT   | integer | Client (user) type, 1=bot, 2=registered user, 4=operator, 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself). Multiple types are specified by adding the numbers together.
-AW   | integer | 1=Away, 2=Extended away, not interested in hub chat (hubs may skip sending broadcast type MSG commands to clients with this flag)
-SU   | string  | Comma-separated list of feature FOURCC's. This notifies other clients of extended capabilities of the connecting client.
-RF   | string  | URL of referer (hub in case of redirect, web page)
-___
+[options="autowidth,header"]
+|=====
+|Code |Type    |Description
+|ID |base32 |The CID of the client. Mandatory for C-C connections.
+|PD |base32 |The PID of the client. Hubs must check that the hash(PID) == CID and then discard the field before broadcasting it to other clients. Must not be sent in C-C connections.
+|I4 |IPv4 |IPv4 address without port. A zero address (0.0.0.0) means that the server should replace it with the real IP of the client. Hubs must check that a specified address corresponds to what the client is connecting from to avoid DoS attacks and only allow trusted clients to specify a different address. Clients should use the zero address when connecting, but may opt not to do so at the user's discretion. Any client that supports incoming TCPv4 connections must also add the feature TCP4 to their SU field.
+|I6 |IPv6 |IPv6 address without port. A zero address (::) means that the server should replace it with the IP of the client. Any client that supports incoming TCPv6 connections must also add the feature TCP6 to their SU field.
+|U4 |integer |Client UDP port. Any client that supports incoming UDPv4 packets must also add the feature UDP4 to their SU field. 
+|U6 |integer |Same as U4, but for IPv6. Any client that supports incoming UDPv6 packets must also add the feature UDP6 to their SU field.
+|SS |integer |Share size in bytes
+|SF |integer |Number of shared files
+|VE |string |Client identification, version (client-specific, a short identifier then a dotted version number is recommended)
+|US |integer |Maximum upload speed, bytes/second
+|DS |integer |Maximum download speed, bytes/second
+|SL |integer |Maximum simultaneous upload connections (slots)
+|AS |integer |Automatic slot allocator speed limit, bytes/sec. The client keeps opening slots as long as its total upload speed doesn't exceed this value.
+|AM |integer |Minimum simultaneous upload connectins in automatic slot manager mode
+|EM |string |E-mail address
+|NI |string |Nickname (or hub name). The hub must ensure that this is unique in the hub up to case-sensitivity. Valid are all characters in the Unicode character set with code point above 32, although hubs may limit this further as they like with an appropriate error message.
+|DE |string |Description. Valid are all characters in the Unicode character set with code point equal to or greater than 32.
+|HN |integer |Hubs where user is a normal user and in NORMAL state
+|HR |integer |Hubs where user is registered (had to supply password) and in NORMAL state
+|HO |integer |Hubs where user is op and in NORMAL state
+|TO |string |Token, as received in RCM/CTM, when establishing a C-C connection.
+|CT |integer |Client (user) type, 1=bot, 2=registered user, 4=operator, 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself). Multiple types are specified by adding the numbers together.
+|AW |integer |1=Away, 2=Extended away, not interested in hub chat (hubs may skip sending broadcast type MSG commands to clients with this flag)
+|SU |string |Comma-separated list of feature FOURCC's. This notifies other clients of extended capabilities of the connecting client.
+|RF |string |URL of referrer (hub in case of redirect, web page)
+|=====
 
 NOTE: Normally one would only accept an IP (I4 or I6) that is the same as the
 source IP of the connecting peer. Use caution when accepting unknown IPs. Only
@@ -525,11 +535,11 @@ allow for uniform message displays.
 
 Flags:
 
-[separator="|"]
-``_
-PM<group-SID> | Private message, <group-SID> is the SID clients must send responses to. This field must contain the originating SID if this is a normal private conversation.
-ME | 1 = message should be displayed as /me in IRC ("*nick text")
-___
+[options="autowidth"]
+|=====
+|PM<group-SID> |Private message, <group-SID> is the SID clients must send responses to. This field must contain the originating SID if this is a normal private conversation.
+|ME |Speak in third person, 1 = message should be displayed as /me in IRC ("*nick text")
+|=====
 
 ==== SCH
  SCH
@@ -542,15 +552,15 @@ unknown fields and complete the search request as if they were not present,
 unless no known fields are present in which case the client must ignore the
 search.
 
-[separator="|"]
-``_
-AN, NO, EX | String search term, where AN is include (and), NO is exclude (and not), and EX is extension. Each filename (including the path to it) should be matched using case insensitive substring search as follows: match all AN, remove those that match any NO, and make sure the extension matches at least one of the EX (if it is present). Extensions must be sent without the leading '.'.
-LE | Smaller (less) than or equal size in bytes
-GE | Larger (greater) than or equal size in bytes
-EQ | Exact size in bytes
-TO | Token, string. Used by the client to tell one search from the other. If present, the responding client must copy this field to each search result.
-TY | File type, to be chosen from the following (none specified = any type): 1 = File, 2 = Directory
-___
+[options="autowidth"]
+|=====
+|AN, NO, EX |String search term, where AN is include (and), NO is exclude (and not), and EX is extension. Each filename (including the path to it) should be matched using case insensitive substring search as follows: match all AN, remove those that match any NO, and make sure the extension matches at least one of the EX (if it is present). Extensions must be sent without the leading period (\'.').
+|LE |Smaller (less) than or equal size in bytes
+|GE |Larger (greater) than or equal size in bytes
+|EQ |Exact size in bytes
+|TO |Token, string. Used by the client to tell one search from the other. If present, the responding client must copy this field to each search result.
+|TY |File type, to be chosen from the following (none specified = any type): 1 = File, 2 = Directory
+|=====
 
 Searching by UDP is subject to IP spoofing; can thus be used to initiate a DoS
 attack. Clients should only accept incoming UDP searches in a trusted
@@ -566,13 +576,13 @@ INF ones. Clients must provide filename, session hash, size and token, but are
 encouraged to supply additional fields if available. Passive results should be
 limited to 5 and active to 10.
 
-[separator="|"]
-``_
-FN | Full filename including path in share
-SI | Size, in bytes
-SL | Slots currently available
-TO | Token
-___
+[options="autowidth"]
+|=====
+|FN |Full filename including path in share
+|SI |Size, in bytes
+|SL |Slots currently available
+|TO |Token
+|=====
 
 ==== CTM
  CTM protocol separator port separator token 
@@ -632,14 +642,14 @@ not send data after the QUI to the client being disconnected.
 
 The following flags may be present:
 
-[separator="|"]
-``_
-ID | SID of the initiator of the disconnect (for example the one that issued a kick).
-TL | Time Left until reconnect is allowed, in seconds. -1 = forever. 
-MS | Message.
-RD | Redirect server URL.
-DI | Any client that has this flag in the QUI message should have its transfers terminated by other clients connected to it, as it is unwanted in the system.
-___
+[options="autowidth"]
+|=====
+|ID |SID of the initiator of the disconnect (for example the one that issued a kick).
+|TL |Time Left until reconnect is allowed, in seconds. -1 = forever. 
+|MS |Message.
+|RD |Redirect server URL.
+|DI |Any client that has this flag in the QUI message should have its transfers terminated by other clients connected to it, as it is unwanted in the system.
+|=====
 
 ==== GET
  GET type identifier start_pos bytes
@@ -695,36 +705,34 @@ starting at <start_pos>.
 == Examples
 === Client – Hub connection
 
-[separator="|"]
-``_
-Client                       | Hub
-___
-HSUP ADBASE ADTIGR ...       |
-                             | ISUP ADBASE ADTIGR ...
-                             | ISID <client-sid>
-                             | IINF HU1 HI1 ...
-BINF <my-sid> ID... PD...    |
-                             | IGPA ...
-HPAS ...                     |
-                             | BINF <all clients>
-                             | BINF <Client-SID>
-...                          | ...
-___
+[options="autowidth,header"]
+|=====
+|Client |Hub
+|HSUP ADBASE ADTIGR ...|
+| |ISUP ADBASE ADTIGR ...
+| |ISID <client-sid>
+| |IINF CT32 ...
+|BINF <my-sid> ID... PD... |
+| |IGPA ...
+|HPAS ... |
+| |BINF <all clients>
+| |BINF <Client-SID>
+|... |...
+|=====
 
 === Client – Client connection
 
-[separator="|"]
-``_
-Client                       | Server
-___
-CSUP ADBASE ADTIGR ...       |
-                             | CSUP ADBASE ADTIGR ...
-                             | CINF IDxxx
-CINF IDxxx TO<token>         |
-                             | CGET ...
-CSND ...                     |
-<data>                       |
-___
+[options="autowidth,header"]
+|=====
+|Client |Server
+|CSUP ADBASE ADTIGR ... |
+| |CSUP ADBASE ADTIGR ...
+| |CINF IDxxx
+|CINF IDxxx TO<token> |
+| |CGET ...
+|CSND ... |
+|<data> |
+|=====
 
 == Standard Extensions
 
