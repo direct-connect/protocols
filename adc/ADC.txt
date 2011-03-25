@@ -1,6 +1,6 @@
 = ADC Protocol
 Fredrik Ullner <ullner@gmail.com>
-1.0.2, January 2011
+1.0.2, March 2011
 
 == Abstract
 ADC is a text protocol for a client-server network similar to Neo-Modus'
@@ -23,7 +23,7 @@ Connect idea through the Neo-Modus Direct Connect client / hub.
 The latest draft of the next version of this document as well as intermediate
 and older versions can be downloaded from
 $URL$. 
-This version correspods to $Revision$.
+This version corresponds to $Revision$.
 
 === Version 1.0.2, UNRELEASED
 Fredrik Ullner <ullner@gmail.com>
@@ -55,7 +55,7 @@ Jacek Sieka <arnetheduck@gmail.com>
   type.
 * Client addresses must be specified in dotted-decimal form ("x.x.x.x") for
   IPv4 and RFC 4291 form for IPv6. Hub addresses must be specified in URL
-  form, with "adc" as protocol specifier ("adc://server:port/" and "adc://[server]:port/" for IPv4 and IPv6 respectively).
+  form, with "adc" as protocol specifier ("adc://server:port/").
 * Numbers are sent as strings in standard floating point notation, using '.'
   as the decimal separator and without a thousands separator. Integers are
   numbers with neither a decimal portion nor an exponent. Applications should
@@ -252,6 +252,7 @@ validate against the following XML schema:
       <xs:complexContent>
         <xs:extension base="ContainerType">
           <xs:attribute ref="Name" use="required"></xs:attribute>
+          <xs:attribute ref="Incomplete" use="optional"></xs:attribute>
           <xs:anyAttribute processContents="lax"></xs:anyAttribute>
         </xs:extension>
       </xs:complexContent>
