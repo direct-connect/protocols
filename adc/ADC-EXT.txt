@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.6, November 2010
+1.0.7, UNRELASED
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -65,6 +65,11 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 * Added failover hub addresses to the hub's INF.
 * Added free slots to the client's INF.
 * Added 'ADCS' extension for encryption in ADC.
+
+=== Version 1.0.7
+Fredrik Ullner <ullner@gmail.com>, UNRELASED
+
+* Added application and version separation in INF
 
 == Extensions
 
@@ -722,5 +727,13 @@ TLS client-hub connections can be initiated either by negotiating the feature "A
 
 ==== Client-Client encryption
 TLS client-client connections can be established either by negotiating the feature "ADCS" on connection or by specifying "ADCS/1.0" in the CTM protocol field. Clients supporting encrypted connections must indicate this in the INF SU field with "ADCS".
+
+=== Application and version separation in INF
+This extension adds the parameter 'AP' to the INF to signal application. The current parameter in BASE, VE, will be used for version signalling.
+
+Example:
+====
+BINF BBBB APDCPLUSPLUS VE0.782
+====
 
 // vim: set syntax=asciidoc:
