@@ -61,7 +61,8 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 * Added note to signal DFAV.
 * Added 'SUDP' extension for encryption of UDP traffic.
 * Added 'TYPE' extension for chat state notifications.
-* Added 'FEED' extension for RSS feeds.* Added 'SEGA' extension for grouping of file extensions in SCH.
+* Added 'FEED' extension for RSS feeds.
+* Added 'SEGA' extension for grouping of file extensions in SCH.
 * Added failover hub addresses to the hub's INF.
 * Added free slots to the client's INF.
 * Added 'ADCS' extension for encryption in ADC.
@@ -70,6 +71,7 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 Fredrik Ullner <ullner@gmail.com>, UNRELASED
 
 * Added application and version separation in INF
+* TIGR should now correctly reference SCH and RES
 
 == Extensions
 
@@ -116,7 +118,7 @@ value from the "TTH/" root.
 In the GET/GFI namespace, files are identified by 
 "TTH/<base32-encoded tree root>".
 
-In SCH and GFI, the following attributes are added:
+In SCH and RES, the following attributes are added:
 
 [options="autowidth"]
 |=====
