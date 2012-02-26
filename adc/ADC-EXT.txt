@@ -86,7 +86,8 @@ generation and password negotiation
 ==== TIGR for shared files
 All files shared by TIGR supporting clients must have been hashed using Merkle
 Hash trees, as defined by
-http://www.open-content.net/specs/draft-jchapweske-thex-02.html.  The Tiger
+http://web.archive.org/web/20080316033726/http://www.open-content.net/specs/draft-jchapweske-thex-02.html.
+The Tiger
 algorithm, as specified by http://www.cs.technion.ac.il/~biham/Reports/Tiger/,
 functions as the hash algorithm. A base segment size of 1024 bytes must be
 used when generating the tree, but clients may then discard parts of the tree
