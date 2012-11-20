@@ -1,6 +1,6 @@
 = ADC Protocol
 Fredrik Ullner <ullner@gmail.com>
-1.0.2, March 2011
+1.0.2, November 2012
 
 == Abstract
 ADC is a text protocol for a client-server network similar to Neo-Modus'
@@ -29,6 +29,8 @@ This version corresponds to $Revision$.
 Fredrik Ullner <ullner@gmail.com>
 
 * Editorial updates
+* Added a terminology section
+* Added note in STA, severity 2 (Fatal), on responsibility.
 
 === Version 1.0.1, 2008-05-02
 Jacek Sieka <arnetheduck@gmail.com>
@@ -371,7 +373,7 @@ Severity values:
 |=====
 |0 |Success (used for confirming commands), error code must be "00", and an additional flag "FC" contains the FOURCC of the command being confirmed if applicable.
 |1 |Recoverable (error but no disconnect)
-|2 |Fatal (disconnect)
+|2 |Fatal (disconnect), sending party is responsible for action.
 |=====
 
 Error codes:
@@ -733,6 +735,17 @@ starting at <start_pos>.
 | |CGET ...
 |CSND ... |
 |<data> |
+|=====
+
+== Terminology
+
+[options="autowidth,header"]
+|=====
+|Term |Description
+|FOURCC |Four character code. This may be the message type followed by the command, e.g. "ISTA", "BMSG" etc. This may also be the name of a feature (BASE, TIGR etc). Any four character identification.
+|Server |The hub is the 'server' in a client - hub context. The client receiving the incoming connection is the 'server' in a client - client context.
+|Base32 |An encoding used by the protocol, see RFC 4648 for more information about Base32. Note that the Base32 implementation in ADC is never padded.
+|Context |When a command states a context, e.g. "T" (To hub), it defines an expectance on the flow of traffic. A context may refer to one or multiple message types. For example, for the context 'T', the message types "B", "C", "D", "E", "F" and "H" are valid. Note that the context is not a restriction in any way, implementations may further extend a command's expected contexts.
 |=====
 
 == Standard Extensions
