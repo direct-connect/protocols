@@ -1,6 +1,6 @@
 = ADC Extensions
 Fredrik Ullner <ullner@gmail.com>
-1.0.7, UNRELASED
+1.0.7, November 2012
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -68,7 +68,7 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 * Added 'ADCS' extension for encryption in ADC.
 
 === Version 1.0.7
-Fredrik Ullner <ullner@gmail.com>, UNRELASED
+Fredrik Ullner <ullner@gmail.com>, 2012-11-22
 
 * Added application and version separation in INF
 * TIGR should now correctly reference SCH and RES
