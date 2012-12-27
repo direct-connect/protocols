@@ -1,0 +1,1101 @@
+== ADC Test specification
+Fredrik Ullner <ullner@gmail.com>
+1.0.0, December 2012
+
+== Abstract
+These is the official test specification for ADC. 
+
+This document describes the different circumstances that may arise and what implementations may be aware that others are sending and how they are processing the information.
+
+The 'server' in this document may describe the server party in a client-hub connection as well as in a client-client connection.
+
+== Version history
+The latest draft of the next version of this document as well as intermediate
+and older versions can be downloaded from
+$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-Test.txt $.
+
+This version corresponds to $Revision: 90 $.
+
+=== Version 1.0
+Fredrik Ullner <ullner@gmail.com>, 2012-12-27
+
+* Initial release.
+
+== Tests
+
+=== GPA
+
+==== Too short random data
+Purpose: Validate what a client does when it receives random data in the GPA that is too short (less than 24 bytes)
+
+Expected: Client sends a STA indicating that the GPA is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client B sends "INF BBBB ..." |                
+|5 |The server sends "GPA A" (1 byte) |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in random data
+Purpose: Validate what a client does when it receives random data in the GPA that contain invalid characters (1 for instance)
+
+Expected: Client sends a STA indicating that the GPA is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client B sends "INF BBBB ..." |                
+|5 |The server sends "GPA AAAAAAAAAAAAAAAAAAAAAAA1" (24 bytes) |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Valid random data
+Result:
+|=====
+| 
+|=====
+
+==== Empty GPA
+Result:
+|=====
+| 
+|=====
+
+=== INF
+
+==== ID and PD fields present and matching
+Result:
+|=====
+| 
+|=====
+
+==== ID and PD fields present and mismatching
+Result:
+|=====
+| 
+|=====
+
+==== Only ID field present
+Result:
+|=====
+| 
+|=====
+
+==== Only PD field present
+Result:
+|=====
+| 
+|=====
+
+==== Neither ID or PD fields present
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in ID field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in PD field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in NI field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in DE field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid IP in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid IP in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== Wrong IP in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== Wrong IP in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== DNS in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== DNS in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== Zero address in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== Zero address in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== Correct address in I4 field
+Result:
+|=====
+| 
+|=====
+
+==== Correct address in I6 field
+Result:
+|=====
+| 
+|=====
+
+==== Too long FOURCC in SU field
+Result:
+|=====
+| 
+|=====
+
+==== Too short FOURCC in SU field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid FOURCC in SU field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid formatting of SU field
+Result:
+|=====
+| 
+|=====
+
+==== Empty INF
+Result:
+|=====
+| 
+|=====
+
+==== Underflow fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW
+Result:
+|=====
+| 
+|=====
+
+==== Negative out-of-range value for fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW
+Result:
+|=====
+| 
+|=====
+
+==== 0 value for fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW
+Result:
+|=====
+| 
+|=====
+
+==== Overflow fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW 
+Result:
+|=====
+| 
+|=====
+
+==== Positive out-of-range value for fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in fields SS, SF, US, DS, SL, AS, AM, HN, HR, HO, CT, AW
+Result:
+|=====
+| 
+|=====
+
+=== MSG
+
+==== A basic MSG with no named parameters
+Result:
+|=====
+| 
+|=====
+
+==== A basic MSG with ME field
+Result:
+|=====
+| 
+|=====
+
+==== A basic MSG with PM field
+Result:
+|=====
+| 
+|=====
+
+==== A basic MSG with ME and PM fields
+Result:
+|=====
+| 
+|=====
+
+==== Negative out-of-bounds value in ME field
+Result:
+|=====
+| 
+|=====
+
+==== Underflow value in ME field
+Result:
+|=====
+| 
+|=====
+
+==== 0 Value in ME field
+Result:
+|=====
+| 
+|=====
+
+==== Empty ME field
+Result:
+|=====
+| 
+|=====
+
+==== Overflow value in ME field
+Result:
+|=====
+| 
+|=====
+
+==== Postive out-of-bounds value in ME field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in ME field
+Result:
+|=====
+| 
+|=====
+
+==== Empty PM
+Result:
+|=====
+| 
+|=====
+
+==== Too short SID value in PM field
+Result:
+|=====
+| 
+|=====
+
+==== Too long SID value in PM field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters SID value in PM field
+Result:
+|=====
+| 
+|=====
+
+==== Non-existing SID value in PM field
+Result:
+|=====
+| 
+|=====
+
+==== MSG in PROTOCOL state
+Result:
+|=====
+| 
+|=====
+
+==== MSG in IDENTIFY state
+Result:
+|=====
+| 
+|=====
+
+==== MSG in VERIFY state
+Result:
+|=====
+| 
+|=====
+
+==== MSG in NORMAL state
+Result:
+|=====
+| 
+|=====
+
+=== PAS
+
+==== Invalid response based on the GPA
+Purpose: Validate what a server does when it receives a response that does not match the request.
+
+Expected: Server sends a STA indicating that the PAS is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client B sends "INF BBBB ..." |                
+|5 |The server sends "GPA AAAAAAAAAAAAAAAAAAAAAAAA" (24 bytes) |                
+|6 |The client sends "PAS BBBBBBBBBBBBBBBBBBBBBBBB" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in response
+Purpose: Validate what a server does when it receives a response that contain invalid characters (1 for instance)
+
+Expected: Server sends a STA indicating that the PAS is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client B sends "INF BBBB ..." |                
+|5 |The server sends "GPA AAAAAAAAAAAAAAAAAAAAAAAA" (24 bytes) |                
+|6 |The client sends "PAS BBBBBBBBBBBBBBBBBBBBBBB1" (last byte is invalid) |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Valid response
+Result:
+|=====
+| 
+|=====
+
+==== Empty PAS
+Result:
+|=====
+| 
+|=====
+
+=== QUI
+
+==== Too short SID
+Result:
+|=====
+| 
+|=====
+
+==== Too long SID
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in SID
+Result:
+|=====
+| 
+|=====
+
+==== No client with the specified SID
+Result:
+|=====
+| 
+|=====
+
+==== Too short ID field
+Result:
+|=====
+| 
+|=====
+
+==== Too long ID field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in ID field
+Result:
+|=====
+| 
+|=====
+
+==== No client with the specified SID in the ID field
+Result:
+|=====
+| 
+|=====
+
+==== Negative out-of-bounds value in TL field
+Result:
+|=====
+| 
+|=====
+
+==== Underflow TL field
+Result:
+|=====
+| 
+|=====
+
+==== Overflow TL field
+Result:
+|=====
+| 
+|=====
+
+==== -1 (forever) in TL field
+Result:
+|=====
+| 
+|=====
+
+==== 120 second value in TL field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in TL field
+Result:
+|=====
+| 
+|=====
+
+==== Empty TL field
+Result:
+|=====
+| 
+|=====
+
+==== "example" in MS field
+Result:
+|=====
+| 
+|=====
+
+==== Empty MS field
+Result:
+|=====
+| 
+|=====
+
+==== Negative out-of-bounds value in DI field
+Result:
+|=====
+| 
+|=====
+
+==== Underflow DI field
+Result:
+|=====
+| 
+|=====
+
+==== Overflow DI field
+Result:
+|=====
+| 
+|=====
+
+==== 0 as value in DI field
+Result:
+|=====
+| 
+|=====
+
+==== 1 as value in DI field
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in DI field
+Result:
+|=====
+| 
+|=====
+
+==== Empty DI field
+Result:
+|=====
+| 
+|=====
+
+==== Empty RD field
+Result:
+|=====
+| 
+|=====
+
+==== QUI in PROTOCOL state
+Result:
+|=====
+| 
+|=====
+
+==== QUI in IDENTIFY state
+Result:
+|=====
+| 
+|=====
+
+==== QUI in VERIFY state
+Result:
+|=====
+| 
+|=====
+
+==== QUI in NORMAL state
+Result:
+|=====
+| 
+|=====
+
+=== SCH
+
+==== Underflow fields LE, GE, EQ, TY
+Result:
+|=====
+| 
+|=====
+
+==== Negative out-of-range value for fields LE, GE, EQ, TY
+Result:
+|=====
+| 
+|=====
+
+==== 0 value for fields LE, GE, EQ, TY
+Result:
+|=====
+| 
+|=====
+
+==== Overflow fields LE, GE, EQ, TY
+Result:
+|=====
+| 
+|=====
+
+==== Positive out-of-range value for TY
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in fields LE, GE, EQ, TY
+Result:
+|=====
+| 
+|=====
+
+==== Combination of LE and EQ fields with conflicting values
+Result:
+|=====
+| 
+|=====
+
+==== Combination of GE and EQ fields with conflicting values
+Result:
+|=====
+| 
+|=====
+
+==== Combination of LE, GE and EQ fields with conflicting values
+Result:
+|=====
+| 
+|=====
+
+==== Valid AN field
+Result:
+|=====
+| 
+|=====
+
+==== Valid NO field
+Result:
+|=====
+| 
+|=====
+
+==== Only NO field
+Result:
+|=====
+| 
+|=====
+
+==== Combination of AN and NO fields with conflicting values
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in field EX
+Result:
+|=====
+| 
+|=====
+
+==== Empty AN
+Result:
+|=====
+| 
+|=====
+
+==== Empty NO
+Result:
+|=====
+| 
+|=====
+
+==== Empty EX
+Result:
+|=====
+| 
+|=====
+
+==== Empty LE
+Result:
+|=====
+| 
+|=====
+
+==== Empty GE
+Result:
+|=====
+| 
+|=====
+
+==== Empty EQ
+Result:
+|=====
+| 
+|=====
+
+==== Empty TO
+Result:
+|=====
+| 
+|=====
+
+==== Empty TY
+Result:
+|=====
+| 
+|=====
+
+=== SID
+
+==== Too short SID from hub
+Purpose: Validate what a client does when it receives an SID that is too short (less than 4 characters)
+
+Expected: Client sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBB" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Too long SID from hub
+Purpose: Validate what a client does when it receives an SID that is too long (longer than 4 characters)
+
+Expected: Client sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBBB" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in SID from hub
+Purpose: Validate what a client does when it receives an SID that contain invalid characters (1 for instance)
+
+Expected: Client sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBB1" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Too short SID from client in INF
+Purpose: Validate what a server does when it receives an SID that is too short (less than 4 characters)
+
+Expected: Server sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client sends "INF BBB ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Too long SID from client in INF
+Purpose: Validate what a server does when it receives an SID that is too long (longer than 4 characters)
+
+Expected: Server sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client sends "INF BBBBB ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Invalid characters in SID from client
+Purpose: Validate what a server does when it receives an SID that contain invalid characters (1 for instance)
+
+Expected: Server sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client sends "INF BBB1 ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Non-assigned SID from client
+Purpose: Validate what a server does when it receives an SID that it didn't assign a client.
+
+Expected: Server sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |The client sends "INF CCCC ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Assigned SID from another client
+Purpose: Validate what a server does when it receives an SID that was already assigned to another a client.
+
+Expected: Server sends a STA indicating that the SID is invalid and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |The server sends "SID BBBB" |                
+|4 |Continue with normal communication until NORMAL is reached and stabalized |                
+|5 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|6 |The server sends "SID CCCC" |                
+|7 |Client B sends "INF BBBB ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Valid SID assignment
+Result:
+|=====
+| 
+|=====
+
+==== Valid SID use
+Result:
+|=====
+| 
+|=====
+
+==== No SID from server
+Result:
+|=====
+| 
+|=====
+
+=== SUP
+
+==== Invalid BASE version from server
+Purpose: Validate what a client does when it receives BAS2 instead of BASE.
+
+Expected: Client sends a STA indicating lack of support for BASE and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ..." |                
+|2 |The server responds with "SUP ADBAS2 ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Invalid BASE version from client
+Purpose: Validate what a server does when it receives BAS2 instead of BASE
+
+Expected: Server sends a STA indicating lack of support for BASE and disconnects
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBAS2 ..." |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Lack of overlapping hash support from server
+Purpose: Validate what a client does when it does not receive overlapping hashes.
+
+Expected: Client sends a STA indicating no overlapping hash support and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Lack of overlapping hash support from client
+Purpose: Validate what a server does when it does not receive overlapping hashes.
+
+Expected: Server sends a STA indicating no overlapping hash support and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Remove BASE support in NORMAL from server
+Purpose: Validate what a client does when the BASE support is removed during NORMAL state.
+
+Expected: Client sends a STA indicating lack of support for BASE and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |Continue with normal communication until NORMAL is reached and stabalized |                
+|4 |The server sends "SUP RMBASE" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Remove BASE support in NORMAL from client
+Purpose: Validate what a server does when the BASE support is removed during NORMAL state.
+
+Expected: Server sends a STA indicating lack of support for BASE and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |Continue with normal communication until NORMAL is reached and stabalized |                
+|4 |The client sends "SUP RMBASE" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Remove hash support in NORMAL from server
+Purpose: Validate what a client does when the hash support is removed during NORMAL state.
+
+Expected: Client sends a STA indicating lack of support for TIGR and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |Continue with normal communication until NORMAL is reached and stabalized |                
+|4 |The server sends "SUP RMTIGR" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== Remove hash support in NORMAL from client
+Purpose: Validate what a server does when the hash support is removed during NORMAL state.
+
+Expected: Server sends a STA indicating lack of support for TIGR and disconnects.
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR" |                
+|2 |The server responds with "SUP ADBASE ADTIGR" |                
+|3 |Continue with normal communication until NORMAL is reached and stabalized |                
+|4 |The client sends "SUP RMTIGR" |                
+|=====
+Result:
+|=====
+| 
+|=====
+
+==== No SUP content from client
+Result:
+|=====
+| 
+|=====
+
+==== No SUP content from server
+Result:
+|=====
+| 
+|=====
+
+==== Valid SUP sequence from server
+Result:
+|=====
+| 
+|=====
+
+==== Valid SUP sequence from client
+Result:
+|=====
+| 
+|=====
+
