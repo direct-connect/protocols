@@ -31,6 +31,8 @@ Fredrik Ullner <ullner@gmail.com>
 * Editorial updates
 * Added a terminology section
 * Added note in STA, severity 2 (Fatal), on responsibility.
+* State management is now its own section.
+* The client in a client-client connection should send its INF first now.
 
 === Version 1.0.1, 2008-05-02
 Jacek Sieka <arnetheduck@gmail.com>
@@ -319,8 +321,7 @@ to be interpreted by other clients.
 ADC clients/hubs that support the following messages may advertise the feature
 "BASE" in the PROTOCOL phase. 
 
-The connecting party will be known as client, the other as server. The server
-always controls state transitions. For each message, the action code and the
+The connecting party will be known as client, the other as server. For each message, the action code and the
 message contexts under which it is valid are specified. 
 
 The message context specifies how the message may be received / sent. Hubs and
@@ -341,19 +342,75 @@ When requesting a new client-client connection, this protocol is identified by
 In the descriptions of the commands, the message header and trailing named
 parameters have been omitted.
 
-=== Client – Hub communication
-During login, the client goes through a number of stages. An action is valid
-only in the NORMAL stage unless otherwise noted. The stages, in login order,
-are PROTOCOL (feature support discovery), IDENTIFY (user identification,
-static checks), VERIFY (password check), NORMAL (normal operation), and DATA
-(for binary transfers). 
+=== State management
 
-=== Client – Client communication
-The client – client protocol use the same stages as client – hub, but clients
-are not required to support the VERIFY state and GPA/PAS commands. Support for
-VERIFY/GPA/PAS must be advertised as an extension. It is always the client
-that sends the first CTM/RCM command that is given control of the connection
-once the NORMAL state has been reached.
+ADC defines a state machine to control flow and processing of messages. The receiving end must ensure, according to the state machine, that it does not parse or drop messages while it is in the process of another state where the message might be invalid.
+
+[options="autowidth, header"]
+|=====
+|State |Description
+|PROTOCOL |Feature support recovery
+|IDENTIFY |User identification and static checks
+|VERIFY |Password check (does not exist in C-C communication unless announced by an extension)
+|NORMAL |Normal operation (end state)
+|DATA |Binary transfers. The state changes back to NORMAL once the transfer is complete.
+|=====
+
+The states presented are the login order, from top to bottom.
+
+==== States
+===== PROTOCOL
+When the hub receives a SUP, it should reply with its own SUP followed by SID assignment. The hub transitions the state then to IDENTIFY. 
+
+When the server party receives a SUP in the client-client connection, it should reply with its own SUP. The server transitions the state then to IDENTIFY.
+
+===== IDENTIFY
+The hub may initiate this state by sending its own INF in this state but is not required. The client should send its INF whereupon the hub shall verify the PD and ID fields and other required fields. The hub transitions the state then to VERIFY if the user is registered or NORMAL if not.
+
+The client party in the client-client connection shall send its INF whereupon the server party shall send its INF. The server transitions the state then to NORMAL (or VERIFY if an extension implements this).
+
+===== VERIFY
+The hub shall send a GPA whereupon the client will respond with a PAS. The server transitions the state then to NORMAL.
+
+Client-client support for VERIFY must be signaled as an extension.
+
+===== NORMAL
+The hub should send its INF if not done already. The server shall send the INF of all connected clients whereupon the connecting client's INF shall be last. Normal operation may then commence with chatting and file sharing.
+
+Normal operation may commence immediately in a client-client connection. Typically, the downloading party sends a GET whereupon the other party sends a SND followed by a transition to the DATA state.
+
+===== DATA
+The DATA state is an actual binary transfer state, it does not have any commands or other content beyond streaming data.
+
+The DATA state exist only in the client-client communication, an extension can be used to add binary transfers between a client and a hub. The DATA state commence after a SND command.
+
+The state transitions back to NORMAL once the correct amount of bytes are transferred (specified by a previous command).
+
+==== Notes
+State always transitions from PROTOCOL to IDENTIFY and never from IDENTIFY to PROTOCOL. Likewise apply between IDENTIFY, VERIFY and NORMAL. This does not apply between NORMAL and DATA.
+
+Successful commands sent after a state transition indicate that the next state has been reached. For example, PROTOCOL begins a connection and state changes to IDENTIFY once the hub sends the SID.
+
+The state is shared between the client and the server while the server (implicitly) controls state transitions.
+
+The connecting party is known as the client and the other is known as the server (or hub). The client initiates the connection and state machine by sending its own SUP.
+
+A STA is valid in all states (except DATA) and may require that messages are resent (i.e. that the state transition does not occur).
+
+It is always the client party in a client-client connection that sent the connection request (CTM/RCM) command that is given control of the connection once the NORMAL state has been reached.
+
+Any party may disconnect the connection if they receive invalid data or insufficient data. All implementations must therefore be prepared for a potential disconnection following each command, meaning that the following state is not achieved. A disconnection should be preceded by a STA or a QUI to indicate what was wrong.
+
+The hub's INF is optionally sent in IDENTIFY or in NORMAL.
+
+[options="autowidth, header"]
+|=====
+|State |Commands
+|PROTOCOL |STA, SUP, SID
+|IDENTIFY |STA, INF, QUI
+|VERIFY |STA, GPA, PAS, QUI
+|NORMAL |STA, SUP, INF, MSG, SCH, RES, CTM, RCM, QUI, GET, GFI, SND
+|=====
 
 === Actions
 ==== STA
@@ -361,7 +418,7 @@ once the NORMAL state has been reached.
 
 Contexts: F, T, C, U
 
-States: All
+States: PROTOCOL, IDENTIFY, VERIFY, NORMAL
 
 Status code in the form "xyy" where x specifies severity and yy the specific
 error code. The severity and error code are treated separately, the same error
@@ -437,14 +494,6 @@ indicates support for regardless of its own SUP, and vice versa.
 This command can also be used to dynamically add / remove features, 'AD'
 meaning add and 'RM' meaning remove. 
 
-When the hub receives this message in PROTOCOL state, it should reply in kind,
-assign a SID to the client, optionally send an INF about itself, and move to
-the IDENTIFY state.
-
-When the server receives this message in a client-client connection in the
-PROTOCOL state, it should reply in kind, send an INF about itself, and move to
-the IDENTIFY state. 
-
 ==== SID
  SID sid
 
@@ -452,9 +501,7 @@ Contexts: F
 
 States: PROTOCOL
 
-This command assigns a SID to a user who is currently logging on. The hub must
-send this command after SUP but before INF in the PROTOCOL state. The client,
-when it receives it, should send an INF about itself.
+This command assigns a SID to a user who is currently logging on.
 
 ==== INF
  INF
@@ -517,21 +564,15 @@ for trusted users one may allow a different IP or an IP from a different
 domain (IPv4 or IPv6) to be specified. If you fail to do this, your hub can be
 used as a medium for DDoS attacks.
 
-When a hub receives this message in the IDENTIFY state, it should verify the
-PD and ID fields, and proceed to the VERIFY state by sending a PAS request or
-NORMAL state by sending its own INF (unless it already did so previously),
-then the INF of all connected clients in NORMAL state, and last the INF of the
-connecting client. When the hub sends an INF about itself, the NI becomes hub
+When the hub sends an INF about itself, the NI becomes hub
 name, the VE the hub version, and DE the hub description.
-
-When the server receives this during client-client communication in IDENTIFY
-state, it should verify the ID and TO fields, send an INF about itself and
-pass to the NORMAL state.
 
 ==== MSG
  MSG text
 
 Contexts: F, T
+
+States: NORMAL
 
 A chat message. The receiving clients should precede it with "<" nick ">", to
 allow for uniform message displays.
@@ -548,6 +589,8 @@ Flags:
  SCH
 
 Contexts: F, T, C, (U)
+
+States: NORMAL
 
 Search. Each parameter is an operator followed by a term. Each term is a
 two-letter code followed by the data to search for. Clients must ignore any
@@ -574,6 +617,8 @@ environment.
 
 Contexts: F, T, C, U
 
+States: NORMAL
+
 Search result, made up of fields syntactically and structurally similar to the
 INF ones. Clients must provide filename, session hash, size and token, but are
 encouraged to supply additional fields if available. Passive results should be
@@ -592,6 +637,8 @@ limited to 5 and active to 10.
 
 Contexts: F, T
 
+States: NORMAL
+
 Connect to me. Used by active clients that want to connect to someone, or in
 response to RCM. Only TCP active clients may send this. <token> is a string
 that identifies the incoming connection triggered by this command and must be
@@ -607,6 +654,8 @@ sent indicating this.
  RCM protocol separator token
 
 Contexts: F, T
+
+States: NORMAL
 
 Reverse CTM. Used by passive clients to request a connection token from an
 active client.
@@ -629,7 +678,6 @@ States: VERIFY
 
 Password. The password (utf-8 encoded bytes), followed by the random data
 (binary), passed through the session hash algorithm then converted to base32.
-When validated, this transitions the server into NORMAL state.
 
 ==== QUI
  QUI sid
@@ -658,6 +706,8 @@ The following flags may be present:
  GET type identifier start_pos bytes
 
 Contexts: C
+
+States: NORMAL
 
 Requests that a certain file or binary data be transmitted. <start_pos> counts
 0 as the first byte. <bytes> may be set to -1 to indicate that the sending
@@ -689,6 +739,8 @@ and client.
 
 Contexts: C
 
+States: NORMAL
+
 Get File Information. Requests that the other client returns a RES about the
 file as if it had responded to a SCH command. Type and identifier are the same
 as for GET, but the identifier may come from any namespace, including the
@@ -699,8 +751,9 @@ unnamed root.
 
 Contexts: C
 
-Transitions to DATA state. The sender will transmit until <bytes> bytes of
-binary data have been sent and then will transition back to NORMAL state. The
+States: NORMAL
+
+The sender will transmit until <bytes> bytes of binary data have been sent. The
 parameters correspond to the GET parameters except that if <bytes> equals -1
 it must be replaced by the number of bytes needed to complete the file
 starting at <start_pos>.
@@ -730,8 +783,8 @@ starting at <start_pos>.
 |Client |Server
 |CSUP ADBASE ADTIGR ... |
 | |CSUP ADBASE ADTIGR ...
-| |CINF IDxxx
 |CINF IDxxx TO<token> |
+| |CINF IDxxx
 | |CGET ...
 |CSND ... |
 |<data> |
