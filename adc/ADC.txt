@@ -1,6 +1,6 @@
 = ADC Protocol
 Fredrik Ullner <ullner@gmail.com>
-1.0.2, November 2012
+1.0.2, January 2013
 
 == Abstract
 ADC is a text protocol for a client-server network similar to Neo-Modus'
@@ -25,7 +25,7 @@ and older versions can be downloaded from
 $URL$. 
 This version corresponds to $Revision$.
 
-=== Version 1.0.2, UNRELEASED
+=== Version 1.0.3, 2013-01-31
 Fredrik Ullner <ullner@gmail.com>
 
 * Editorial updates
