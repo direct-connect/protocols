@@ -27,6 +27,7 @@ This version corresponds to $Revision$.
 === Version 1.0.3, UNRELEASED
 
 * Added examples for each command.
+* Features are now described in its own section.
 
 === Version 1.0.2, 2013-01-31
 Fredrik Ullner <ullner@gmail.com>
@@ -321,8 +322,7 @@ More information may be added to the file by extensions, but is not guaranteed
 to be interpreted by other clients.
 
 == BASE messages
-ADC clients/hubs that support the following messages may advertise the feature
-"BASE" in the PROTOCOL phase. 
+ADC clients/hubs that support the following messages must advertise the feature "BASE" .
 
 The connecting party will be known as client, the other as server. For each message, the action code and the
 message contexts under which it is valid are specified. 
@@ -415,6 +415,34 @@ The hub's INF is optionally sent in IDENTIFY or in NORMAL.
 |NORMAL |STA, SUP, INF, MSG, SCH, RES, CTM, RCM, QUI, GET, GFI, SND
 |=====
 
+=== Features
+Features are used to indicate support for protocol commands or functionality. 
+
+The server may use any feature that the client indicates support for regardless of its own SUP and vice versa. A client can announce features in the SUP regardless of the INF's SU field and vice versa.
+
+A feature name consists of four uppercase letters, where the last letter may be changed to a number to indicate a revised version of the feature.
+
+A central register of known features is kept to avoid clashes, see below features in this protocol and the features in the extension document.
+
+==== BASE
+All clients must support the BASE feature (unless a future revision takes its place), which is this protocol.
+
+Clients must add the feature to the INF's SU field.
+
+==== TCP4 / TCP6
+The features TCP4 and TCP6 are used to indicate support for incoming TCP connections. The 4 and 6 indicate IPv4 and IPv6.
+
+Clients should add the feature to the INF's SU field.
+
+Clients that support incoming TCP connections is referenced as 'active' where the opposite is 'passive'.
+
+==== UDP4 / UDP6
+The features UDP4 and UDP6 are used to indicate support for incoming UDP packets. The 4 and 6 indicate UDP with IPv4 and IPv6.
+
+Clients should add the feature to the INF's SU field.
+
+Clients that support incoming UDP packets is referenced as 'active' where the opposite is 'passive'.
+
 === Actions
 ==== STA
  STA code description
@@ -486,13 +514,7 @@ Contexts: F, T, C
 
 States: PROTOCOL, NORMAL
 
-This command identifies which features a specific client / hub supports. The
-feature name consists of four uppercase letters, where the last letter may be
-changed to a number to indicate a revised version of the feature. A central
-register of known features should be kept, to avoid clashes. All ADC clients
-must support the BASE feature (unless a future revision takes its place),
-which is this protocol. The server may use any feature that the client
-indicates support for regardless of its own SUP, and vice versa. 
+This command identifies which features a specific client / hub supports.
 
 This command can also be used to dynamically add / remove features, 'AD'
 meaning add and 'RM' meaning remove. 
@@ -536,10 +558,10 @@ Fields:
 |Code |Type    |Description
 |ID |base32 |The CID of the client. Mandatory for C-C connections.
 |PD |base32 |The PID of the client. Hubs must check that the hash(PID) == CID and then discard the field before broadcasting it to other clients. Must not be sent in C-C connections.
-|I4 |IPv4 |IPv4 address without port. A zero address (0.0.0.0) means that the server should replace it with the real IP of the client. Hubs must check that a specified address corresponds to what the client is connecting from to avoid DoS attacks and only allow trusted clients to specify a different address. Clients should use the zero address when connecting, but may opt not to do so at the user's discretion. Any client that supports incoming TCPv4 connections must also add the feature TCP4 to their SU field.
-|I6 |IPv6 |IPv6 address without port. A zero address (::) means that the server should replace it with the IP of the client. Any client that supports incoming TCPv6 connections must also add the feature TCP6 to their SU field.
-|U4 |integer |Client UDP port. Any client that supports incoming UDPv4 packets must also add the feature UDP4 to their SU field. 
-|U6 |integer |Same as U4, but for IPv6. Any client that supports incoming UDPv6 packets must also add the feature UDP6 to their SU field.
+|I4 |IPv4 |IPv4 address without port. A zero address (0.0.0.0) means that the server should replace it with the real IP of the client. Hubs must check that a specified address corresponds to what the client is connecting from to avoid DoS attacks and only allow trusted clients to specify a different address. Clients should use the zero address when connecting, but may opt not to do so at the user's discretion.
+|I6 |IPv6 |IPv6 address without port. A zero address (::) means that the server should replace it with the IP of the client. 
+|U4 |integer |Client UDP port.
+|U6 |integer |Same as U4, but for IPv6.
 |SS |integer |Share size in bytes
 |SF |integer |Number of shared files
 |VE |string |Client identification, version (client-specific, a short identifier then a dotted version number is recommended)
