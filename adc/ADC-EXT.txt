@@ -1,6 +1,5 @@
 = ADC Extensions
-Fredrik Ullner <ullner@gmail.com>
-1.0.7, November 2012
+1.0.8, UNRELEASED
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -72,6 +71,10 @@ Fredrik Ullner <ullner@gmail.com>, 2012-11-22
 
 * Added application and version separation in INF
 * TIGR should now correctly reference SCH and RES
+
+=== Version 1.0.8, UNRELEASED
+
+* Improved 'NATT' documentation, as according to the original paper.
 
 == Extensions
 
@@ -393,14 +396,16 @@ For TTH roots, b is 192 and a reasonable value for h is 24, giving a maximum k =
 For test vectors, see the http://www.adcportal.com/wiki/index.php/Talk:BLOM[ADC wiki talk page].
 
 === NATT - NAT traversal
-NAT traversal allow two passive clients to connect to each other. For more information about NAT traversal, see https://dcpp.wordpress.com/2010/02/13/passive-mode-c-c-connections-and-nat-traversal[Passive Mode C-C Connections and NAT Traversal].
+NAT traversal allow two passive clients to connect to each other. This specification is based on the TCP hole punching algorithm described in footnoteref:[Peer-to-Peer Communication Across Network Address Translators, B. Ford and P. Srisuresh and and D. Kegel. "Peer-to-Peer Communication Across Network Address Translators". In USENIX Technical Conference 2005 - pages 179–192. Online version: http://www.brynosaurus.com/pub/net/p2pnat/].
 
 If a client does not support TCP4 or TCP6, it will send an RCM to the client it is trying to connect to. If the other client also doesn't support TCP4 (or TCP6 correspondingly), NAT traversal may instead be used. Signal NATT in the INF's SU field.
 
 Do note that the hub must forward I4 or I6 for respective clients' INF.
 
+An endpoint is the tuple of IP and port. The "private endpoint port" refers to the outbound port to the connected hub, as seen by the client. Each client must listen for incoming connections on this port. Note that this protocol extension uses only this port for the TCP hole punching, the use of the "public endpoint port" as specified in footnoteref:[Peer-to-Peer Communication Across Network Address Translators] is not supported.
+
 ==== BASE RCM updates
-When receiving an RCM and the client does not support TCP4 or TCP6, and if NAT-T is supported in the remote client, a NAT command should be sent repeating the protocol and token. The port shall be the outbound port to the connected hub.
+When receiving an RCM and the client does not support TCP4 or TCP6, and if NAT-T is supported in the remote client, a NAT command should be sent repeating the protocol and token. The port shall be the private endpoint port to the connected hub.
 
 ====  NAT
  NAT protocol port token
@@ -409,7 +414,7 @@ Contexts: T
 
 States: NORMAL
 
-Upon receiving this, try and connect to the specified port.  An RNT command should be sent repeating the protocol and token. The port shall be the outbound port to the connected hub. Upon receiving this, try and connect to the specified port.
+Upon receiving this, try and connect to the specified port.  An RNT command should be sent repeating the protocol and token. The port shall be the private endpoint. Upon receiving this, try and connect to the specified port.
 
 ==== RNT
  RNT protocol port token
@@ -421,7 +426,7 @@ States: NORMAL
 Upon receiving this, try and connect to the specified port.
 
 ==== Example
-Client A is connected to hub A with the outbound port 1000 and client B is connected to hub A with the outbound port 2000. Client A has the SID AAAA and client B has the SID BBBB.
+Client A is connected to hub A with the private endpoint 1000 and client B is connected to hub A with the private endpoint 2000. Client A has the SID AAAA and client B has the SID BBBB.
 
 ====
 Client A: DRCM AAAA BBBB ADC/1.0 foobar
