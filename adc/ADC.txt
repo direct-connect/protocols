@@ -28,6 +28,7 @@ This version corresponds to $Revision$.
 
 * Added examples for each command.
 * Features are now described in its own section.
+* Specified token use from server party in client-client connections.
 
 === Version 1.0.2, 2013-01-31
 Fredrik Ullner <ullner@gmail.com>
@@ -667,9 +668,9 @@ States: NORMAL
 Connect to me. Used by active clients that want to connect to someone, or in
 response to RCM. Only TCP active clients may send this. <token> is a string
 that identifies the incoming connection triggered by this command and must be
-present in the INF command of the connecting client. Clients should not accept
-incoming connections with a token they did not send earlier. <protocol> is an
-arbitrary string specifying the protocol to connect with; in the case of an
+present in the INF command of the connecting client. Implementations should not accept
+incoming connections with a token that was not sent earlier. The server party may, but should not, provide the token in its INF. 
+<protocol> is an arbitrary string specifying the protocol to connect with; in the case of an
 ADC 1.0 compliant connection attempt, this should be the string "ADC/1.0". If
 <protocol> is supported, a response to RCM must copy the <token> and
 <protocol> fields directly. If a protocol is not supported, a DSTA must be
