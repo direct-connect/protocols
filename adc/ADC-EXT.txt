@@ -13,45 +13,15 @@ $URL$.
 
 This version corresponds to $Revision$.
 
-=== Version 1.0
-Jacek Sieka <arnetheduck@gmail.com>, 2008-05-02
+=== Version 1.0.8, UNRELEASED
 
-* Initial release created from original ADC 1.0 text.
-* Added 'PING' extension for hub pingers.
+* Improved 'NATT' documentation, as according to the original paper.
 
-=== Version 1.0.1
-Fredrik Ullner <ullner@gmail.com>, 2009-08-04
+=== Version 1.0.7
+Fredrik Ullner <ullner@gmail.com>, 2012-11-22
 
-* Added timestamp field to MSG.
-* Added 'DFAV' extension for distributing hub addresses.
-
-=== Version 1.0.2
-Fredrik Ullner <ullner@gmail.com>, 2010-04-04
-
-* Added 'UCMD' extension for user commands.
-
-=== Version 1.0.3
-Fredrik Ullner <ullner@gmail.com>, 2010-05-26
-
-* Removed optional keywords from UCMD.
-* Added 'BLOM' extension for bloom filters.
-
-=== Version 1.0.4
-Fredrik Ullner <ullner@gmail.com>, 2010-06-29
-
-* Added magnet link extension to UCMD.
-* Added NAT traversal extension 'NATT'.
-* Added referral field to STA.
-* Added upload queue field to STA.
-* Added partial file sharing extension 'PFSR'.
-
-=== Version 1.0.5
-Fredrik Ullner <ullner@gmail.com>, 2010-09-16
-
-* Added locale field to INF.
-* Modified user parameter 'line' in UCMD to handle multiple inputs.
-* Added hidden in enumeration of CT field in INF.
-* Added error code Invalid feature in STA.
+* Added application and version separation in INF
+* TIGR should now correctly reference SCH and RES
 
 === Version 1.0.6
 Fredrik Ullner <ullner@gmail.com>, 2010-09-29
@@ -66,15 +36,45 @@ Fredrik Ullner <ullner@gmail.com>, 2010-09-29
 * Added free slots to the client's INF.
 * Added 'ADCS' extension for encryption in ADC.
 
-=== Version 1.0.7
-Fredrik Ullner <ullner@gmail.com>, 2012-11-22
+=== Version 1.0.5
+Fredrik Ullner <ullner@gmail.com>, 2010-09-16
 
-* Added application and version separation in INF
-* TIGR should now correctly reference SCH and RES
+* Added locale field to INF.
+* Modified user parameter 'line' in UCMD to handle multiple inputs.
+* Added hidden in enumeration of CT field in INF.
+* Added error code Invalid feature in STA.
 
-=== Version 1.0.8, UNRELEASED
+=== Version 1.0.4
+Fredrik Ullner <ullner@gmail.com>, 2010-06-29
 
-* Improved 'NATT' documentation, as according to the original paper.
+* Added magnet link extension to UCMD.
+* Added NAT traversal extension 'NATT'.
+* Added referral field to STA.
+* Added upload queue field to STA.
+* Added partial file sharing extension 'PFSR'.
+
+=== Version 1.0.3
+Fredrik Ullner <ullner@gmail.com>, 2010-05-26
+
+* Removed optional keywords from UCMD.
+* Added 'BLOM' extension for bloom filters.
+
+=== Version 1.0.2
+Fredrik Ullner <ullner@gmail.com>, 2010-04-04
+
+* Added 'UCMD' extension for user commands.
+
+=== Version 1.0.1
+Fredrik Ullner <ullner@gmail.com>, 2009-08-04
+
+* Added timestamp field to MSG.
+* Added 'DFAV' extension for distributing hub addresses.
+
+=== Version 1.0
+Jacek Sieka <arnetheduck@gmail.com>, 2008-05-02
+
+* Initial release created from original ADC 1.0 text.
+* Added 'PING' extension for hub pingers.
 
 == Extensions
 
