@@ -1,6 +1,5 @@
 = ADC Protocol
-Fredrik Ullner <ullner@gmail.com>
-1.0.2, January 2013
+1.0.3, UNRELEASED
 
 == Abstract
 ADC is a text protocol for a client-server network similar to Neo-Modus'
@@ -24,6 +23,10 @@ The latest draft of the next version of this document as well as intermediate
 and older versions can be downloaded from
 $URL$. 
 This version corresponds to $Revision$.
+
+=== Version 1.0.3, UNRELEASED
+
+* Added examples for each command.
 
 === Version 1.0.2, 2013-01-31
 Fredrik Ullner <ullner@gmail.com>
@@ -759,6 +762,8 @@ it must be replaced by the number of bytes needed to complete the file
 starting at <start_pos>.
 
 == Examples
+Note that examples listed here omit the trailing newline character that shall always end a message.
+
 === Client – Hub connection
 
 [options="autowidth,header"]
@@ -788,6 +793,131 @@ starting at <start_pos>.
 | |CGET ...
 |CSND ... |
 |<data> |
+|=====
+
+=== Commands
+
+==== STA
+[options="header"]
+|=====
+|ISTA 211 Hub\sfull |A STA sent from a hub with the severity Fatal (2) and the error code Hub full (11). The descriptive text afterward is to preferably be presented to the user.
+|CSTA 151 File\snot\savailable |A STA is sent in a client to client connection, indicating that the request for a file failed (error code 51), as the file was not vailable. The severity (Recoverable, 1) indicates that an error occured but that the connection will remain.
+|ESTA BBBB CCCC 142 Transfer\sprotocol\sunsupported TO123456789 PRADC/0.5 |A STA is sent from one client to another client in a hub, routed as a E-type message (meaning that the sender should receive it as well), as a response for not supporting transfers of the 'protocol' kind. The token '123456789' is used and the protocol is "ADC/0.5" (see the command CTM for the version that shall be used in this protocol version).
+|=====
+
+==== SUP
+[options="header"]
+|=====
+|Example |Description
+|ISUP ADBASE ADTIGR ADBLOM |A SUP sent from a hub indicating that the hub has added the features BASE, TIGR and BLOM.
+|HSUP RMBLOM ADZLIF |A SUP sent from a client to the hub indicating that the client has added the fature ZLIF and removed the feature BLOM.
+|=====
+
+==== SID
+[options="header"]
+|=====
+|Example |Description
+|ISID BBBB |An SID is sent from the hub indicating that the client's SID from then on shall be BBBB.
+|=====
+
+==== INF
+[options="header"]
+|=====
+|Example |Description
+|IINF CT32 NIexample_hub DEThe\s\simple\shub |An INF is sent from the hub containing its own information: the name is "example_hub" and description "The simple hub".
+|BINF BBBB HN0 HR1 HO2 NIsample_user DEsample\scontent SF123456 SS42 I4192.168.0.1 U46666 IDIPJJWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KC3I PDIJJJWEPPPLCA33F2ZCR7YO4F6ZXWE4NJ3WQ3C3I |An INF sent from a client (with the SID BBBB) containing the following information: the name is "sample_user", the description is "sample content", in three hubs in total (one as registered and two as operator), with a total share size of 42 bytes (with 123456 files) etc.
+|CINF IPJJWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KC3I TO123456789 |An INF is sent in a client to client connection indicating the CID and token.
+|=====
+
+==== MSG
+[options="header"]
+|=====
+|Example |Description
+|IMSG There\sare\s42\susers\sonline |A MSG that is sent from the hub with the message "There are 42 users online".
+|BMSG BBBB likes\scats ME1 |A MSG that is sent from a client (with SID BBBB), spoken in third person with the message "likes cats". This will appear like (or something similar) "john likes cats" (assuming that the user with BBBB has the name john).
+|DMSG CCCC BBBB I\sprefer\sdogs PMCCCC |A MSG is sent from a client to another client, spoken as a "private message", with the message "I prefer dogs".
+|=====
+
+==== SCH
+[options="header"]
+|=====
+|Example |Description
+|BSCH BBBB ANubuntu ANlinux NOgentoo EXISO EXIMG TO123456789 TY1 |A SCH that is sent from a client where the search terms "ubuntu" and "linux" should be in the file (TY1) name, excluding files that have "gentoo" in them. The extension of the file should be ISO or IMG. The token "123456789" is used.
+|BSCH BBBB ANubuntu LE4294967296 TO123456789 |A SCH that is sent from a client where the search term "ubuntu" should be in the file (TY1) name. The token "123456789" is used. The file must be less than 4 GiB in size (4294967296 bytes).
+|FSCH BBBB +TCP4 ANubuntu TO123456789 |A SCH that is sent from a client where the search term "ubuntu" should be in the file (TY1) name. The token "123456789" is used. The hub should only route the SCH to clients that support the feature TCP4.
+|=====
+
+==== RES
+[options="header"]
+|=====
+|Example |Description
+|DRES CCCC BBBB FN/share/linux/ubuntu.iso SI42 SL1 TO123456789 TRIPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII |A RES that is sent from a client (through the hub) indicating a response with the file name "ubuntu.iso" (and its path within the share), where the file sise is 42 bytes. The token "123456789" is used. The TR field indicate the hash of the file (see the TIGR extension).
+|URES IPJJWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII TRIPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII FN/share/linux/ubuntu.iso SI42 TO123456789| A RES that is sent from a client (via UDP) indicating a response with the file name "ubuntu.iso" (and its path within the share), where the file sise is 42 bytes. The token "123456789" is used. The TR field indicate the hash of the file (see the TIGR extension).
+|CRES FN/share/linux/ubuntu.iso SI42 |A RES that is sent from a client indicating a response with the file name "ubuntu.iso" (and its path within the share), where the file sise is 42 bytes.
+|=====
+
+==== CTM
+[options="header"]
+|=====
+|Example |Description
+|DCTM BBBB CCCC ADC/1.0 6666 123456789 |A CTM that is sent from a client to another client indicating that it wants to have a client to client connection. The protocol "ADC/1.0" is used. The port 6666 is used. The token is 123456789. The hub should only send this to the target user (with SID CCCC).
+|ECTM BBBB CCCC ADC/0.5 6666 123456789 |A CTM that is sent from a client to another client indicating that it wants to have a client to client connection. The (fictional) protocol "ADC/1.0" is used. The port 6666 is used. The token is 123456789. The hub should send this to the target user (with SID CCCC) and to the originating party (with SID BBBB).
+|=====
+
+==== RCM
+[options="header"]
+|=====
+|Example |Description
+|DRCM BBBB CCCC ADC/1.0 123456789 |A RCM that is sent from a client to another client indicating that it wants to have a client to client connection. The protocol "ADC/1.0" is used. TThe token is 123456789. The hub should only send this to the target user (with SID CCCC).
+|ERCM BBBB CCCC ADC/0.5 123456789 |A RCM that is sent from a client to another client indicating that it wants to have a client to client connection. The (fictional) protocol "ADC/0.5" is used. TThe token is 123456789. The hub should send this to the target user (with SID CCCC) and to the originating party (with SID BBBB).
+|=====
+
+==== GPA
+[options="header"]
+|=====
+|Example |Description
+|IGPA JJWEPPPLCA3PF2ZCRRYO3333 |A GPA that is sent from the hub indicating the password-response sequence with the random data JJWEPPPLCA3PF2ZCRRYO3333.
+|=====
+
+==== PAS
+[options="header"]
+|=====
+|Example |Description
+|HPAS YO4F2ZX2EV2JMW2KCIIYYYYY |A PAS that is sent from the client where the password and random data is hashed.
+|=====
+
+==== QUI
+[options="header"]
+|=====
+|Example |Description
+|IQUI BBBB |A QUI that is sent from the hub indicating that the client BBBB has disconnected.
+|IQUI BBBB IDCCCC MSCats\sare\horrible DI1 TL-1 |A QUI that is sent from the hub indicating that the client BBBB has disconnected. The originator of the action is the client with the SID CCCC. The message "Cats are horrible" is included. All clients should terminate their connections with the client BBBB (DI1). The client should never attempt to reconnect (TL-1).
+|=====
+
+==== GET
+[options="header"]
+|=====
+|Example |Description
+|CGET file TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII 0 -1 |A GET that is sent from a client as a request for a file with the identifier TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII (see TIGR extension). The sending client should send the entire file.
+|CGET list /share/ 0 -1 RE1 |A GET that is sent from a client as a request for a directory with the identifier /share/. The sending client should send the directory and its subdirectories.
+|CGET file TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII 6666 3333 |A GET that is sent from a client as a request for a file with the identifier TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII (see TIGR extension). The sending client should send the next 3333 bytes, starting at byte position 6666.
+|=====
+
+==== GFI
+[options="header"]
+|=====
+|Example |Description
+|CGFI file TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII |A GFI that is sent from a client as a request for file information for a file with the identifier TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII (see TIGR extension). 
+|CGFI list /share/ |A GFI that is sent from a client as a request for directory information with the identifier /share/.
+|=====
+
+==== SND
+[options="header"]
+|=====
+|Example |Description
+|CSND file TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII 0 9999 |A SND that is sent from a client prior to streaming data for the file with the identifier TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII (see TIGR extension). The sending client indicates that it will send 9999 bytes and start streaming at the byte position 0 (the beginning of the file).
+|CSND list /share/ 0 66 |A SND that is sent from a client prior to streaming data for the directory with the identifier /share/. The sending client indicates that it will send 66 bytes.
+|CSND file TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII 6666 3333 |A SND that is sent from a client prior to streaming data for the file with the identifier TTH/IPPPWEPPPLCA3PF2ZCRRYO4F2ZX2EV2JMW2KCII (see TIGR extension). The sending client indicates that it will send 3333 bytes and start streaming at the byte position 6666.
 |=====
 
 == Terminology
