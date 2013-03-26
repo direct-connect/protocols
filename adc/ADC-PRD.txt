@@ -1,0 +1,112 @@
+= ADC - Protocol Release Description
+1.0.0, UNRELEASED
+
+== Abstract
+New versions of ADC are released on a continuous basis. This document intend to provide a resource for those who are active in the ADC developent process and particularly the release process. This document, Protocol Release Description (PRD), describes the necessary changes and updates to the ADC network and associated resources once a new version of ADC is about to be released and subsequently is released.
+
+This document apply to at least ADC.txt and ADC-EXT.txt but may be extended for any other document as well.
+
+== Version history
+The latest draft of the next version of this document as well as intermediate
+and older versions can be downloaded from
+$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk//ADC-PRD.txt $. 
+This version corresponds to $Revision: 98 $.
+
+=== Version 1.0.0, UNRELEASED
+
+* Initial release
+
+== Changes prior to release
+This chapter is about the necessary changes that should be applied to the referenced document before a new version is released.
+
+These items should be performed in order of appearance.
+
+=== Document version and contact information
+The version information provided in the document's top should be in the form of;
+
+AUTHOR
+
+<MAIL>
+
+version XYZ, MONTH YEAR
+
+Example:
+====
+ John Doe
+ <doe@example.com>
+ version 0.0.1, January 1970
+====
+
+The document version provided in the document's versin history information should be in the form of;
+
+Version XYZ, YYYY-MM-DD
+
+AUTHOR, <MAIL>
+
+* Change1
+
+* Change2
+
+Example:
+====
+ Version 0.0.1, 1970-01-20
+ John Doe, <doe@example.com>
+ * Initial release
+ * Added history information
+====
+
+=== Version control
+The document shall be checked in to the (software) version control system with the validated information.
+
+== Changes after release
+This chapter is about the necessary changes that should performed once a new version is released.
+
+These items need not be performed in order, except when certain items directly have dependencies.
+
+=== Document generation
+The document may be in the form of a ASCIIDoc file. If so, the file should have an accomponaying ".conf" file. With ASCIIDoc, run the following command;
+
+ ASCIIDoc.py -a toc file.txt
+
+This will generate the file "file.html".
+
+Example
+====
+ASCIIDoc.py -a toc ADC.txt
+====
+
+=== Manage web space
+The file generated (if done) shall be uploaded the web space of the ADC project. This file should be put in the /versions subdirectory.
+
+The file versions/index.html should be updated to include the new version.
+
+If a file is located at another place at the web space and is (sym or hard) linked to the previous version, then the link should be updated to point to the new version.
+
+The "news" section should be updated to include the new version. The information about the version should be the content provided in the version history section in the document.
+
+Any other link to the previous version should be updated to point to the new version.
+
+=== Manage forum
+The forum shall be updated to manage the new version. All threads related to the new version are typically at the subform Protocols/Advanced Direct Connection/Protocol ideas.
+
+Each thread that has a note in the form of [Future DOCUMENT X.Y.Z] shall be changed to [DOCUMENT X.Y.Z].
+
+All threads marked [DOCUMENT X.Y.Z] shall be moved to the sub-forum Protocols/Advanced Direct Connection/Pushed ideas. This will clear the current discussions list from content that are already approved and released.
+
+=== Manage blog
+A post shall be created at the blog announcing a new version is released. The post should contain a link to the specific file at the web space (not a link). The post should contain a list of each item of change, where each item should be explored for how it affects developers and users.
+
+=== Manage wiki
+The wiki shall be updated to not list "proposals" that are approved and in the new version, similar to the forum.
+
+=== Manage other Direct Connect resources
+The service "Timetoast" describe a view of the versions and when they were released. This service shall be updated to include the new version and its date of release. If the service is shown on the web space, it will automatically update itself.
+
+The topic of the DCDev hub shall be updated to link to the new version.
+
+The new version shall be announced (in a non-invasive manner) on Twitter and other resources where developers frequent.
+
+=== Manage external resources
+The http://en.wikipedia.org/wiki/Advanced_Direct_Connect[Wikipedia article] on ADC shall be updated to specify the new version.
+
+// vim: set syntax=asciidoc:
