@@ -274,30 +274,91 @@ Result:
 === MSG
 
 ==== A basic MSG with no named parameters
+Purpose: Validate that the server forwards the message unmodified
+
+Expected: The other client receives the message unmodified and display it appropriately
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|2 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|3 |Client A sends "MSG example" |
+|=====
 Result:
 |=====
 | 
 |=====
 
 ==== A basic MSG with ME field
+Purpose: Validate that the server forwards the message unmodified
+
+Expected: The other client receives the message unmodified and display it appropriately
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|2 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|3 |Client A sends "MSG example ME1" |
+|=====
 Result:
 |=====
 | 
 |=====
 
 ==== A basic MSG with PM field
+Purpose: Validate that the server forwards the message unmodified
+
+Expected: The other client receives the message unmodified and display it appropriately
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|2 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|3 |Client A sends "MSG example PMAAAA" (Client A's SID) |
+|=====
 Result:
 |=====
 | 
 |=====
 
 ==== A basic MSG with ME and PM fields
+Purpose: Validate that the server forwards the message unmodified
+
+Expected: The other client receives the message unmodified and display it appropriately
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|2 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|3 |Client A sends "MSG example ME1 PMAAAA" (Client A's SID) |
+|4 |Client A sends "MSG example PMAAAA ME1" (Client A's SID) |
+|=====
 Result:
 |=====
 | 
 |=====
 
 ==== Negative out-of-bounds value in ME field
+Purpose: Validate that the server does not forward the message
+
+Expected: The other client does not receive the message
+
+Steps:
+[options="autowidth, header"]
+|=====
+|Step item |Info |Comment
+|1 |Connect with a client A to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|2 |Connect with a client B to the server. Client initiates the connection by sending a "SUP ADBASE ADTIGR". Continue with normal communication until NORMAL is reached and stabalized |
+|3 |Client A sends "MSG example ME-1" |
+|=====
 Result:
 |=====
 | 
@@ -1097,5 +1158,27 @@ Result:
 Result:
 |=====
 | 
+|=====
+
+=== General
+
+==== Server forwards unknown fields
+Purpose: Validate if the server forwards unknown fields to other clients
+
+Expected: Server forwards the unknown field
+
+Result:
+|=====
+|
+|=====
+
+==== Server forwards unknown commands
+Purpose: Validate that the server forwards the unknwon command
+
+Expected: The server forwards the unknown command
+
+Result:
+|=====
+|
 |=====
 

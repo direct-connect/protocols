@@ -29,6 +29,7 @@ This version corresponds to $Revision$.
 * Added examples for each command.
 * Features are now described in its own section.
 * Specified token use from server party in client-client connections.
+* Changed size in file list schema to an unsigned long to manage files larger than 2 GiB.
 
 === Version 1.0.2, 2013-01-31
 Fredrik Ullner <ullner@gmail.com>
@@ -239,7 +240,7 @@ validate against the following XML schema:
   <xs:attribute name="Generator" type="xs:string"></xs:attribute>
   <xs:attribute name="Incomplete" type="zeroOne" default="0"></xs:attribute>
   <xs:attribute name="Name" type="xs:string"></xs:attribute>
-  <xs:attribute name="Size" type="xs:int"></xs:attribute>
+  <xs:attribute name="Size" type="xs:unsignedLong"></xs:attribute>
   <xs:attribute name="Version" type="xs:int"></xs:attribute>
 
   <xs:element name="FileListing">
@@ -570,7 +571,7 @@ Fields:
 |DS |integer |Maximum download speed, bytes/second
 |SL |integer |Maximum simultaneous upload connections (slots)
 |AS |integer |Automatic slot allocator speed limit, bytes/sec. The client keeps opening slots as long as its total upload speed doesn't exceed this value.
-|AM |integer |Minimum simultaneous upload connectins in automatic slot manager mode
+|AM |integer |Minimum simultaneous upload connections in automatic slot manager mode
 |EM |string |E-mail address
 |NI |string |Nickname (or hub name). The hub must ensure that this is unique in the hub up to case-sensitivity. Valid are all characters in the Unicode character set with code point above 32, although hubs may limit this further as they like with an appropriate error message.
 |DE |string |Description. Valid are all characters in the Unicode character set with code point equal to or greater than 32.

@@ -9,7 +9,7 @@ This document apply to at least ADC.txt and ADC-EXT.txt but may be extended for 
 == Version history
 The latest draft of the next version of this document as well as intermediate
 and older versions can be downloaded from
-$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk//ADC-PRD.txt $. 
+$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-PRD.txt $.
 This version corresponds to $Revision: 98 $.
 
 === Version 1.0.0, UNRELEASED
