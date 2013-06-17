@@ -1,0 +1,125 @@
+= ADC Recommendations
+Fredrik Ullner <ullner@gmail.com>
+1.0.0, June 2013
+
+== Abstract
+These are the services for the ONID command. See ADC-Ext for the ONID specification.
+
+== Version history
+The latest draft of the next version of this document as well as intermediate
+and older versions can be downloaded from
+$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-ONIDServices.txt $.
+
+This version corresponds to $Revision: 1 $.
+
+=== Version 1.0.0
+* Initial release
+
+== Services
+The service names are all case-insensitive. They are written here as lower-case.
+
+=== DCBase
+Service name: dcbase
+
+Required parameters:
+[options="autowidth"]
+|=====
+|ID |The DCBase forum member numeric identifier.
+|=====
+
+=== Facebook
+Service name: facebook
+
+Required parameters:
+[options="autowidth"]
+|=====
+|ID |The public Facebook ID (that appears in a profile page's URL).
+|=====
+
+Optional parameters:
+[options="autowidth"]
+|=====
+|NI |The friendly name.
+|=====
+
+=== Google
+Service name: google
+
+Required parameters:
+[options="autowidth"]
+|=====
+|EM |The Google e-mail.
+|=====
+
+=== League of Legends
+Service name: lol
+
+Required parameters:
+[options="autowidth"]
+|=====
+|SU |The League of Legends summoner name.
+|SE |The server identifier.
+|=====
+
+The server identifier may be one of the following
+[options="autowidth"]
+|=====
+|SU |The League of Legends summoner name.
+|SE |The server identifier that SHOULD be in the server identifier list below.
+|=====
+
+Server identifiers:
+[options="header, autowidth"]
+|=====
+|Identifier |Description
+|br |Brazil
+|eune |EU West
+|kr |Korea
+|na |North America
+|tr |Turkey
+|ru |Russia
+|=====
+
+=== Microsoft Live
+Service name: mslive
+
+Required parameters:
+[options="autowidth"]
+|=====
+|EM |The Microsoft Live e-mail.
+|=====
+
+=== Playstation Network
+Service name: psn
+
+Required parameters:
+[options="autowidth"]
+|=====
+|ID |The Playstation Network ID
+|=====
+
+=== Twitter
+Service name: twitter
+
+Required parameters:
+[options="autowidth"]
+|=====
+|ID |The Twitter profile ID (that appears in a profile page's URL).
+|=====
+
+Optional parameters:
+[options="autowidth"]
+|=====
+|NI |The nick name.
+|=====
+
+=== Yahoo!
+Service name: yahoo
+
+Required parameters:
+[options="autowidth"]
+|=====
+|EM |The Yahoo! e-mail.
+|=====
+
+// vim: set syntax=asciidoc:

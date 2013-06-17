@@ -16,6 +16,7 @@ This version corresponds to $Revision$.
 === Version 1.0.8, UNRELEASED
 
 * Improved 'NATT' documentation, as according to the original paper.
+* Added 'ONID' extension to provide online service integration.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -743,5 +744,51 @@ Example:
 ====
 BINF BBBB APDCPLUSPLUS VE0.782
 ====
+
+=== ONID - Online identification
+The purpose of the OID and OIR commands is to allow users to exchange information about their accounts on various online services. The OID name has been intentionally chosen to be similar to OpenID, although its spread is broader.
+
+New commands are preferrable here over new INF fields to avoid clogging up its 2-letter identifiers. They also allow for more flexibility: multiple profiles of the same type (OIR only); multiple identification parameters.
+
+The OID command is similar to INF, guaranteeing up-to-date information, whereas OIR follows a request/response scheme. OIR parties are therefore not required to keep their OIR information up-to-date.
+
+Parties supporting OID commands MUST advertise the ONID (ONline IDentification) support in the SU field of their INF.
+
+Parameters of the OID and OIR commands:
+
+- Unnamed parameter in first position to designate the service this command is referring to. Known services are listed in the "Known ONID services" (ADC-NOIDServices.txt) document; they are matched case-insensitively. Implementers willing to use an unlisted service SHOULD let ADC managers know about it.
+
+- Optional named parameters whose meanings depend on the service in question.
+
+OID and OIR commands support all contexts (hub-client, client-client). They are allowed in client-client contexts were users to want to avoid their OID/OIR information travelling through hubs. Both clients and hubs MAY provide each other with OID/OIR information.
+
+==== OID
+ OID service
+
+Any party that has sent OID information about itself SHOULD keep it up-to-date.
+
+OID parties MAY provide no information, usually indicating a refusal or inability to communicate it.
+
+Hubs that advertise ONID support MUST dispatch OID information they have received from clients to new clients logging in, similary to INF information.
+
+Clients MAY send OID commands to other clients on hubs that do not advertise ONID support.
+
+==== OIR
+ OIR service
+
+The requesting party MUST send an OIR command with a service parameter only (no optional parameter). The responding party MAY answer with an OIR command containing that same service parameter, and relevant optional parameters.
+
+The responding party MAY send multiple OIR commands in response to one request.
+
+The responding party MAY provide no information, usually indicating a refusal or inability to communicate it.
+
+Any party MAY at any time send an OIR response without any prior request.
+
+==== Examples
+[options="autowidth"]
+|=====
+|BOID BBBB google EMexample@gmail.com
+|BOID BBBB lol SUtest SEkr
+|=====
 
 // vim: set syntax=asciidoc:
