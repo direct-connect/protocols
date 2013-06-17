@@ -792,6 +792,8 @@ Any party MAY at any time send an OIR response without any prior request.
 |BOID BBBB LoL SUtest2 |An updated notification of the League of Legends service with the new summoner name "test2".
 |BOIR BBBB Google EMexample@gmail.com|A notification of the Google service with the e-mail "example@gmail.com".
 |BOIR BBBB mslive EMexample@hotmail.com |A notification of the Microsoft Live service with the e-mail "example@hotmail.com".
+|BOIR BBBB mslive |A request for notifications of the Microsoft Live service.
+|DOIR CCCC BBBB mslive EMexample@live.com |A response for the notification request from BBBB.
 |=====
 
 // vim: set syntax=asciidoc:
