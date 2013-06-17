@@ -756,7 +756,7 @@ Parties supporting OID commands MUST advertise the ONID (ONline IDentification) 
 
 Parameters of the OID and OIR commands:
 
-- Unnamed parameter in first position to designate the service this command is referring to. Known services are listed in the "Known ONID services" (ADC-NOIDServices.txt) document; they are matched case-insensitively. Implementers willing to use an unlisted service SHOULD let ADC managers know about it.
+- Unnamed parameter in first position to designate the service this command is referring to. Known services are listed in the "Known ONID services" (ADC-ONIDServices.txt) document; they are matched case-insensitively. Implementers willing to use an unlisted service SHOULD let ADC managers know about it.
 
 - Optional named parameters whose meanings depend on the service in question.
 

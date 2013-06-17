@@ -61,19 +61,13 @@ Required parameters:
 |SE |The server identifier.
 |=====
 
-The server identifier may be one of the following
-[options="autowidth"]
-|=====
-|SU |The League of Legends summoner name.
-|SE |The server identifier that SHOULD be in the server identifier list below.
-|=====
-
-Server identifiers:
+The server identifier may be one of the following:
 [options="header, autowidth"]
 |=====
 |Identifier |Description
 |br |Brazil
-|eune |EU West
+|eune |EU Nordic and East
+|euw |EU West
 |kr |Korea
 |na |North America
 |tr |Turkey
