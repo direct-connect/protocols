@@ -785,10 +785,13 @@ The responding party MAY provide no information, usually indicating a refusal or
 Any party MAY at any time send an OIR response without any prior request.
 
 ==== Examples
-[options="autowidth"]
+[options="header, autowidth"]
 |=====
-|BOID BBBB google EMexample@gmail.com
-|BOID BBBB lol SUtest SEkr
+|Command |Description
+|BOID BBBB LoL SUtest SEkr |A notification of League of Legends service with the summoner name "test" in the region "Korea".
+|BOID BBBB LoL SUtest2 |An updated notification of the League of Legends service with the new summoner name "test2".
+|BOIR BBBB Google EMexample@gmail.com|A notification of the Google service with the e-mail "example@gmail.com".
+|BOIR BBBB mslive EMexample@hotmail.com |A notification of the Microsoft Live service with the e-mail "example@hotmail.com".
 |=====
 
 // vim: set syntax=asciidoc:
