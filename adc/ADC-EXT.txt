@@ -17,6 +17,7 @@ This version corresponds to $Revision$.
 
 * Improved 'NATT' documentation, as according to the original paper.
 * Added 'ONID' extension to provide online service integration.
+* TIGR now specifies the changes done to the file list.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -130,6 +131,23 @@ In SCH and RES, the following attributes are added:
 |TR |Tiger tree Hash root, encoded with base32.
 |TD |Tree depth, index of the highest level of tree data available, root-only = 0, first level (2 leaves) = 1, second level = 2, etc...
 |=====
+
+The following changes are done to the file list XML schema:
+
+A new type is defined with an appropriate attribute:
+----
+<xs:simpleType name="tthType">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="[A-Za-z2-7]{39}" />
+  </xs:restriction>
+</xs:simpleType>
+<xs:attribute name="TTH" type="tthType" />
+----
+
+The attribute is then referenced in the File element:
+----
+<xs:attribute ref="TTH" use="required" />
+----
 
 === BZIP - File list compressed with bzip2
 This extension adds a special file "files.xml.bz2" in the unnamed root of the
