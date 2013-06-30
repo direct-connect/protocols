@@ -1,5 +1,6 @@
 = ADC - Protocol Release Description
-1.0.0, UNRELEASED
+Fredrik Ullner, <ullner@gmail.com>
+1.0.0, June 2013
 
 == Abstract
 New versions of ADC are released on a continuous basis. This document intend to provide a resource for those who are active in the ADC developent process and particularly the release process. This document, Protocol Release Description (PRD), describes the necessary changes and updates to the ADC network and associated resources once a new version of ADC is about to be released and subsequently is released.

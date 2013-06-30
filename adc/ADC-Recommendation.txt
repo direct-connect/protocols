@@ -49,4 +49,14 @@ The following list include error codes that make no or little sense in one or ma
 53 | Similar to error code 11.
 54 | Must be 2 (fatal).
 
+== ZLIB compression
+
+=== Generic
+
+* Try to keep constant and almost constant named parameters together, that way there is a higher likelyhood for a longer parameter match.
+
+* When possible try to keep similar commands no more than a window size (usually 32 bits if highest rate is used) away, that ensures you will benefit from the redundancy provided by these (this may be particularly important when sending large strings like MOTDs or help and configuration values intertwined with other commands).
+
+* Syncing is important to keep the clients updated but when you sync some bytes are sent (the sync ones and the ones for the Huffman tree of the new packet if it is a type 2 packet) as such it may make sense to keep in different queues commands depending on how much latency matters for them, for example you may want to keep low latency for MSG commands and send them frequently but may prefer to send searches or passive results together each half second or so. Also latencies matter depending on the type of network, on a LAN users expect most things to happen almost inmediately (especially things like MSGs) whilst clients connecting over a classic DSL line may not care that much for higher latencies.
+
 // vim: set syntax=asciidoc:
