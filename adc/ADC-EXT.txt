@@ -18,6 +18,7 @@ This version corresponds to $Revision$.
 * Improved 'NATT' documentation, as according to the original paper.
 * Added 'ONID' extension to provide online service integration.
 * TIGR now specifies the changes done to the file list.
+* Added error code 'ADCS transfers are required' in STA.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -812,6 +813,14 @@ Any party MAY at any time send an OIR response without any prior request.
 |BOIR BBBB mslive EMexample@hotmail.com |A notification of the Microsoft Live service with the e-mail "example@hotmail.com".
 |BOIR BBBB mslive |A request for notifications of the Microsoft Live service.
 |DOIR CCCC BBBB mslive EMexample@live.com |A response for the notification request from BBBB.
+|=====
+
+=== "ADCS transfers are required" error code
+This extension will add "ADCS transfers are required" as error code in STA. A client that has chosen to only allow encrypted transfers (with ADCS) should send this when a user without ADCS support tries to initiate a connection (via CTM/RCM etc).
+
+[options="autowidth"]
+|=====
+|62 |ADCS transfers are required. Flag "TO" is the token in the transfer request.
 |=====
 
 // vim: set syntax=asciidoc:
