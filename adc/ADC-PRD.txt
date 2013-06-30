@@ -24,16 +24,12 @@ These items should be performed in order of appearance.
 === Document version and contact information
 The version information provided in the document's top should be in the form of;
 
-AUTHOR
-
-<MAIL>
-
+AUTHOR, <MAIL>
 version XYZ, MONTH YEAR
 
 Example:
 ====
- John Doe
- <doe@example.com>
+ John Doe, <doe@example.com>
  version 0.0.1, January 1970
 ====
 
@@ -41,7 +37,7 @@ The document version provided in the document's versin history information shoul
 
 Version XYZ, YYYY-MM-DD
 
-AUTHOR, <MAIL>
+AUTHOR <MAIL>
 
 * Change1
 
@@ -50,7 +46,7 @@ AUTHOR, <MAIL>
 Example:
 ====
  Version 0.0.1, 1970-01-20
- John Doe, <doe@example.com>
+ John Doe <doe@example.com>
  * Initial release
  * Added history information
 ====
