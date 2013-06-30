@@ -7,7 +7,7 @@ These are the official recommendations to ADC. This document is based on the inf
 == Version history
 The latest draft of the next version of this document as well as intermediate
 and older versions can be downloaded from
-$URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-Recommendation.txt $.
+$URL: https://svn.code.sf.net/p/adc/code/trunk/ADC-Recommendation.txt $.
 
 This version corresponds to $Revision: 1 $.
 
