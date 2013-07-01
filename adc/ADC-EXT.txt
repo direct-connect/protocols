@@ -19,6 +19,10 @@ This version corresponds to $Revision$.
 * Added 'ONID' extension to provide online service integration.
 * TIGR now specifies the changes done to the file list.
 * Added error code 'ADCS transfers are required' in STA.
+* Added 'ASCH' extension for extended searching capability.
+* Added 'Date' attribute in file list for files and directories.
+* Added 'Size' attribute in file list for directories.
+* Added 'Children' attribute in file list for directories.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -822,5 +826,111 @@ This extension will add "ADCS transfers are required" as error code in STA. A cl
 |=====
 |62 |ADCS transfers are required. Flag "TO" is the token in the transfer request.
 |=====
+
+=== ASCH - Extended searching capability
+
+This extension will increase searching capability in BASE. The extension also imply that searching in partial file lists are now easier.
+
+Signal ASCH in the INF's SU field.
+
+The SCH command is extended to request a response (STA) indicating how many search results were sent. This will allow clients to indicate that all search results have been received (and can aptly indicate as such to the user). STA severity 0 and code 00 should be used.
+
+Additional SCH fields:
+[options="autowidth"]
+|=====
+|MT |Matching options. Only applies to search terms (AD) and not excluded terms (EX).
+|PP |Indicating whether the responding party should send the parent path of the matching item. For files the result should be for the containing files and for directories the result is for the parent directory. The responder should check that only one result is sent for each directory. This is useful when searching in a partial list, so the requester can then download the partial list from a correct path and locate the matching items in the directory by itself (less search results to send).
+|OT |Older than. Newest possible (absolute) time for a responded item. Time specified is seconds since the Unix epoch.
+|NT |Newer than. Oldest possible (absolute) time for a responded item. Time specified is seconds since the Unix epoch.
+|MR |Maximum number of wanted results (implementations should be conservative in which message type). The responder may also choose to send less results if the requested count isn't reasonable.
+|PA |Path in the share where to search from (relative to the unnamed root). This only makes sense for certain message types.
+|RE |Require a STA reply. This only makes sense for certain message types.
+|=====
+
+MT field:
+[options="autowidth"]
+|=====
+|1 |Match full path (partial match).
+|2 |Match file/directory name only (partial match).
+|3 |Match file/directory name only (exact match).
+|=====
+
+PP field:
+[options="autowidth"]
+|=====
+|1 |Send parent path.
+|=====
+
+RE field:
+[options="autowidth"]
+|=====
+|1 |Require a reply.
+|=====
+
+Additional RES fields:
+[options="autowidth"]
+|=====
+|FI |Number of files in a directory (recursive, directory search results only).
+|FO |Numbers of folders in a directory (recursive, directory search results only).
+|DA |Modified date of a file or directory. Time specified is seconds since the Unix epoch.
+|=====
+
+Additional STA fields:
+[options="autowidth"]
+|=====
+|FC |The FCC of the search command (e.g. BSCH, DSCH).
+|TO |Search token.
+|RC |Number of results sent. The client receiving the search should still send the STA with a 0 here, in the event that there were not hits to the aformentioned search.
+|=====
+
+=== 'Date' attribute in file list for files and directories
+This extension adds a 'Date' attribute to files and directories in a file list. The attribute is the last modified date of the file or directory. Time specified is seconds since the Unix epoch.
+
+Implementations should be conservative when it includes the Date attribute. Only including the attribute in partial file lists can decrease overall network load requirements.
+
+The following changes are done to the file list XML schema:
+
+A new attribute is defined:
+----
+<xs:attribute name="Date" type="xs:unsignedLong" />
+----
+
+The attribute is then referenced in the File and Directory element:
+----
+<xs:attribute ref="Date" use="optional" />
+----
+
+=== 'Size' attribute in file list for directories
+This extension adds a 'Size' attribute to directories in a file list. The attribute is the size of the directory as indicated in a RES.
+
+Implementations should be conservative when it includes the Size attribute.
+
+This attribute only makes sense in partial file lists (as it can be calculated in full lists).
+
+The following change is done to the file list XML schema:
+
+The Size attribute from BASE is referenced in the Directory element:
+----
+<xs:attribute ref="Size" use="optional" />
+----
+
+=== 'Children' attribute in file list for directories
+This extension adds a 'Children' attribute to directories in a file list. The attribute indicates whether there are additional sub-directories.
+
+Value '1' indicate that there are children.
+
+This attribute only makes sense in partial file lists.
+
+The following changes are done to the file list XML schema:
+
+A new attribute is defined:
+----
+<xs:attribute name="Children" type="zeroOne" />
+----
+
+The attribute is then referenced in the Directory element:
+----
+<xs:attribute ref="Children" use="optional" />
+----
 
 // vim: set syntax=asciidoc:
