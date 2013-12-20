@@ -26,7 +26,7 @@ This version corresponds to $Revision$.
 
 === Version 1.0.4, UNRELEASED
 
--
+* Separators in the command description for GET, GFI and SND are now explicit.
 
 === Version 1.0.3, 2013-06-30
 Fredrik Ullner <ullner@gmail.com>
@@ -735,7 +735,7 @@ The following flags may be present:
 |=====
 
 ==== GET
- GET type identifier start_pos bytes
+ GET type separator identifier separator start_pos separator bytes
 
 Contexts: C
 
@@ -767,7 +767,7 @@ Note that GET can also be used by extensions for binary transfers between hub
 and client.
 
 ==== GFI
- GFI type identifier
+ GFI type separator identifier
 
 Contexts: C
 
@@ -779,7 +779,7 @@ as for GET, but the identifier may come from any namespace, including the
 unnamed root.
 
 ==== SND
- SND type identifier start_pos bytes
+ SND type separator identifier separator start_pos separator bytes
 
 Contexts: C
 
@@ -829,6 +829,7 @@ Note that examples listed here omit the trailing newline character that shall al
 ==== STA
 [options="header"]
 |=====
+|Example |Description
 |ISTA 211 Hub\sfull |A STA sent from a hub with the severity Fatal (2) and the error code Hub full (11). The descriptive text afterward is to preferably be presented to the user.
 |CSTA 151 File\snot\savailable |A STA is sent in a client to client connection, indicating that the request for a file failed (error code 51), as the file was not vailable. The severity (Recoverable, 1) indicates that an error occured but that the connection will remain.
 |ESTA BBBB CCCC 142 Transfer\sprotocol\sunsupported TO123456789 PRADC/0.5 |A STA is sent from one client to another client in a hub, routed as a E-type message (meaning that the sender should receive it as well), as a response for not supporting transfers of the 'protocol' kind. The token '123456789' is used and the protocol is "ADC/0.5" (see the command CTM for the version that shall be used in this protocol version).
