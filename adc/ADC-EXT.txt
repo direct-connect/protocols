@@ -23,6 +23,7 @@ This version corresponds to $Revision$.
 * Added 'Date' attribute in file list for files and directories.
 * Added 'Size' attribute in file list for directories.
 * Added 'Children' attribute in file list for directories.
+* Added downloaded progress report for uploaders in GET.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -932,5 +933,14 @@ The attribute is then referenced in the Directory element:
 ----
 <xs:attribute ref="Children" use="optional" />
 ----
+
+=== Downloaded progress report for uploaders in GET
+The info in the current GET command does not permit displaying relative upload progress for the uploading party (for the whole file).
+
+To address this, this extension will add an additional field to the GET command for current downloaded (and verified) bytes before the request has been sent. While still not entirely accurate with this information, the uploader can see how much of the file the requesting party actually has instead of either assuming that the requester has the file up to the start position of the request or being forced to only show the progress of the currently requested part of the file. There is potentially a slight delay in the reporting of this info in scenarios where more than one segment of a file is simultaneously requested (by the downloader) and the uploader still lacks information about how many other sources the file is being downloaded from.
+[options="autowidth"]
+|=====
+|DB |Downloaded (and verified) bytes.
+|=====
 
 // vim: set syntax=asciidoc:
