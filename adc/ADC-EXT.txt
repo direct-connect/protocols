@@ -433,7 +433,7 @@ An endpoint is the tuple of IP and port. The "private endpoint port" refers to t
 When receiving an RCM and the client does not support TCP4 or TCP6, and if NAT-T is supported in the remote client, a NAT command should be sent repeating the protocol and token. The port shall be the private endpoint port to the connected hub.
 
 ====  NAT
- NAT protocol port token
+ NAT protocol separator port separator token
 
 Contexts: T
 
@@ -442,7 +442,7 @@ States: NORMAL
 Upon receiving this, try and connect to the specified port.  An RNT command should be sent repeating the protocol and token. The port shall be the private endpoint. Upon receiving this, try and connect to the specified port.
 
 ==== RNT
- RNT protocol port token
+ RNT protocol separator port separator token
 
 Contexts: T
 
