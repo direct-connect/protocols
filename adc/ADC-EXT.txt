@@ -24,6 +24,7 @@ This version corresponds to $Revision$.
 * Added 'Size' attribute in file list for directories.
 * Added 'Children' attribute in file list for directories.
 * Added downloaded progress report for uploaders in GET.
+* Added 'RDEX' for extended redirecting capabilities.
 
 === Version 1.0.7
 Fredrik Ullner <ullner@gmail.com>, 2012-11-22
@@ -941,6 +942,77 @@ To address this, this extension will add an additional field to the GET command 
 [options="autowidth"]
 |=====
 |DB |Downloaded (and verified) bytes.
+|=====
+
+=== RDEX - Redirects Extended
+
+The goal of this extension is to enhance the redirect capabilities provided by BASE by adding support for two new redirect operations and a way for hubs and clients to communicate accepted redirect protocols. It also attempts to make the concept of redirects more unambiguous and less implementation defined. The two new types of redirects added are a multiple choice redirect and so-called permanent redirect as outlined below. These new redirect types are not necessarily mutually exclusive.
+
+==== Redirect Security
+
+Hubs should always aim to include as much information pertaining to a redirect as possible using other fields defined in BASE. Clients may, for example, rely on the availability of such information to check the origin of a redirect before making irreversible decisions, such as accepting a redirect as permanent as defined below.
+
+Clients should not attempt to connect to an unreachable or otherwise invalid destination resources indefinitely or in otherwise abusive manner when responding to redirects. Whether clients respond to redirects using default user information or the same information as used on the hub that initiated the redirect is implementation defined, however, in the case that the same information is used careful consideration should be taken when it comes to automatically sending sensitive information such as passwords to other hubs especially if it provides less security to the user than the original hub.
+
+Both clients and hubs should also take note that the TL field, as defined by BASE, should only impact the current hub and its connection (if re-established) thus it should not be relied on to trigger a delayed response to a redirect.
+
+==== Accepted Redirect Protocols
+
+Support for this extension is indicated by the presence of an RP field in the INF, which defines the accepted redirect protocols for the hub or a client as a bitmask using any combination of following values. Additional compatible values may be defined by other extensions.
+
+[options="header"]
+|=====
+|Protocol |URI Syntax |Flag
+|User action (exclusive) |any supported, as defined below |0
+|ADC (BASE) |adc://adress:port |1
+|<<anchor-ADCS,ADCS Extension>>	|adcs://address:port |2
+|http://nmdc.sf.net[NeoModus Direct Connect] |dchub://address[:port] |4
+|=====
+
+Hubs should treat the absence of the RP field in clients INF as the equivalent of RP with the value of one, thus implying support for BASE. If the ADCS feature is included in the clients feature list this may also be amended to include ADCS. If a client does not define an RP field the hub may choose to omit the RDEX syntax from redirects, although this extension retains full backwards compatibility with BASE. If a hub defines an RP field for itself it should prevent its users from redirecting others to protocols it did not define, including redirects to destinations without an explicit protocol handler. Hubs should always aim to use fully qualified resource identifiers for all redirects, regardless of whether an RP field is defined or not, to avoid ambiguous destinations due to implementation defined default handling.
+
+Clients should refrain from removing support of a previously signalled redirect protocol from their RP field. It is up to the hub to decide a corresponding course of action should the client do so. Additionally a special case is defined for clients as an RP field with the value of zero to indicate that the client may not react to redirects as defined by BASE or this extension at all or may do so only as a result of user action. As such clients defining a non-zero RP field should follow redirects to accepted protocols automatically and conversely any attempts to redirect clients that define RP as zero should result in normal disconnection as per BASE.
+
+==== Multiple Choice Redirect
+
+Multiple choice redirect is defined as a redirect where instead of a single destination resource a set of resource identifiers is provided. The methodology that is used to select the final destination resource for a multiple choice redirect is implementation defined. However, only one final destination resource may be chosen. For example a particular implementation may prefer one protocol over another, encrypted connection over an unencrypted one or even simply choose one at random.
+
+This type of redirect is signalled by the presence of an additional RX field in the QUI as defined for redirects by BASE. The value of the RX field is a comma separated list of resource identifiers to use in the redirect. The RD field should be defined for maximum compatibility and clients should add its value to the list of identifiers defined in RX when selecting the final destination resource.
+
+==== Permanent Redirect
+
+Permanent redirect is defined as a redirect with reference updating. In the case of a permanent redirect, if and only if a successful connection is made to the destination resource, the connecting party will then update all relevant references of the original resource to the destination resource. Examples of such references may be hublist records for pingers or favorite entries for clients.
+
+This type of redirect is signalled by the presence of an additional PT field in the QUI, as defined for redirects by BASE, with the value of one. Upon receiving such redirect clients will proceed to update references as outlined above provided the conditions are met.
+
+==== Examples
+
+Multiple Choice Redirect (BASE compliant)
+[options="header"]
+|=====
+|Example |Description
+|IQUI BBBB IDAAAA RDadc://example.com:1001 RXadcs://example.com:1002,adc://example.org:1020 |Here user BBBB is presented with a choice between three destinations Two on example.com and one on example.org. Old and non-supporting clients will be redirected to adc://example.com:1001. User AAAA is the originator for this redirect.
+|=====
+
+Multiple Choice Redirect (RDEX only, not compatible with old clients thus not recommended)
+[options="header"]
+|=====
+|Example |Description
+|IQUI BBBB IDAAAA RXadc://example.com:1001,adcs://example.com:1002,adc://example.org:1020 |For clients supporting RDEX this is the same as sending the first example. Old and non-supporting clients will be disconnected and they might reconnect to the original hub after an implementation defined time.
+|=====
+
+Permanent Redirect
+[options="header"]
+|=====
+|Example |Description
+|IQUI BBBB IDAAAA MSWe're\smoving! RDadc://example.com:1001 PT1 |Here user BBBB will be redirected to adc://example.com:1001 with the message of "We're moving!" and AAAA as the originator. BBBB should (see section Redirect Security) connect directly to adc://example.com:1001 in the future.
+|=====
+
+Permanent Multiple Choice Redirect
+[options="header"]
+|=====
+|Example |Description
+|IQUI BBBB IDAAAA MSWe\shave\sADCS\snow! RDadc://example.com:1001 RXadcs://example.com:1002 PT1 TL0 |Here user BBBB is redirected permanently with a choice between ADC and ADCS URI, if and only if either of the URI's matches the URI of the current hub connection and the matching URI is chosen BBBB will reconnect immediately. Sending a redirect like this to all connected clients (once) can be used to attempt to migrate them to ADCS instance of a hub.
 |=====
 
 // vim: set syntax=asciidoc:
