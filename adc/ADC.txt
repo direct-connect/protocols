@@ -921,7 +921,7 @@ Note that examples listed here omit the trailing newline character that shall al
 |=====
 |Example |Description
 |IQUI BBBB |A QUI that is sent from the hub indicating that the client BBBB has disconnected.
-|IQUI BBBB IDCCCC MSCats\sare\horrible DI1 TL-1 |A QUI that is sent from the hub indicating that the client BBBB has disconnected. The originator of the action is the client with the SID CCCC. The message "Cats are horrible" is included. All clients should terminate their connections with the client BBBB (DI1). The client should never attempt to reconnect (TL-1).
+|IQUI BBBB IDCCCC MSCats\sare\shorrible DI1 TL-1 |A QUI that is sent from the hub indicating that the client BBBB has disconnected. The originator of the action is the client with the SID CCCC. The message "Cats are horrible" is included. All clients should terminate their connections with the client BBBB (DI1). The client should never attempt to reconnect (TL-1).
 |=====
 
 ==== GET
