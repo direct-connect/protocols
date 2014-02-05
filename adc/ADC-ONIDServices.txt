@@ -1,6 +1,5 @@
 = ADC Recommendations
-Fredrik Ullner <ullner@gmail.com>
-1.0.0, June 2013
+1.0.1, UNRELEASED
 
 == Abstract
 These are the services for the ONID command. See ADC-Ext for the ONID specification.
@@ -13,7 +12,13 @@ $URL: https://adc.svn.sourceforge.net/svnroot/adc/trunk/ADC-ONIDServices.txt $.
 This version corresponds to $Revision: 1 $.
 
 === Version 1.0.0
+Fredrik Ullner <ullner@gmail.com>
+
 * Initial release
+
+=== Version 1.0.1, UNRELEASED
+
+* Added TrackMania
 
 == Services
 The service names are all case-insensitive. They are written here as lower-case.
@@ -114,6 +119,15 @@ Required parameters:
 [options="autowidth"]
 |=====
 |EM |The Yahoo! e-mail.
+|=====
+
+=== TrackMania
+Service name: trackmania
+
+Required parameters:
+[options="autowidth"]
+|=====
+|NI |The TrackMania nick name.
 |=====
 
 // vim: set syntax=asciidoc:
