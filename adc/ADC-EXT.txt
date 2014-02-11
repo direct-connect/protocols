@@ -1,5 +1,6 @@
 = ADC Extensions
-1.0.8, UNRELEASED
+Fredrik Ullner, ullner@gmail.com
+1.0.8, February 2014
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -13,7 +14,8 @@ $URL$.
 
 This version corresponds to $Revision$.
 
-=== Version 1.0.8, UNRELEASED
+=== Version 1.0.8
+Fredrik Ullner <ullner@gmail.com>, 2014-02-11
 
 * Improved 'NATT' documentation, as according to the original paper.
 * Added 'ONID' extension to provide online service integration.
