@@ -19,6 +19,7 @@ Fredrik Ullner <ullner@gmail.com>
 === Version 1.0.1, UNRELEASED
 
 * Added TrackMania
+* Updated LoL regions
 
 == Services
 The service names are all case-insensitive. They are written here as lower-case.
@@ -74,7 +75,10 @@ The server identifier may be one of the following:
 |eune |EU Nordic and East
 |euw |EU West
 |kr |Korea
+|lan |Latin America North
+|las |Latin America South
 |na |North America
+|oce |Oceania
 |tr |Turkey
 |ru |Russia
 |=====
