@@ -1,6 +1,5 @@
 = ADC Extensions
-Fredrik Ullner, ullner@gmail.com
-1.0.8, February 2014
+1.0.9, UNRELEASED
 
 == Abstract
 These are the official extensions to ADC. This document is based on the
@@ -13,6 +12,10 @@ and older versions can be downloaded from
 $URL$.
 
 This version corresponds to $Revision$.
+
+== Version 1.0.9, UNRELEASED
+
+* Clarified HH field in PING to be an ADC URL
 
 === Version 1.0.8
 Fredrik Ullner <ullner@gmail.com>, 2014-02-11
@@ -204,7 +207,7 @@ it means hub has no restrictions in that matter, or non existent):
 [options="header, autowidth"]
 |=====
 |Code | Type | Description
-|HH |string |Hub Host address ( DNS or IP )
+|HH |url |Hub Host address (ADC/ADCS URL address form)
 |WS |url |Hub Website
 |NE |string |Hub Network
 |OW |string |Hub Owner name
@@ -237,7 +240,7 @@ doesn't require additional information about the users).
  -pinger- HSUP ADBASE ADPING AD..
  -hub- ISUP ADBASE ADPING AD..
  -hub- ISID ..
- -hub- IINF NIhubname DEcurrent\stopic VE.. HHexample.org:555 WShttp://example.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
+ -hub- IINF NIhubname DEcurrent\stopic VE.. HHadc://example.org:555 WShttp://example.org/ OWmyname UC2231 SS.. SF.. MS0 ML0 MC5000
  - (pinger may disconnect)
 ====
 
