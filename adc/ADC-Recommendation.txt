@@ -179,73 +179,106 @@ This section describes the necessary parts to implement basic connectivity to a 
 
 ==== Steps
 1. Create a network connection to a hub on the appropriate port.
+
 2. The client shall send the following message:
 * HSUP ADBASE ADTIGR
 ** This indicates that the client is notifying the hub about supporting the base protocol (BASE) and the extension hash method Tiger (TIGR). If the protocol base version is changed, send that instead of BASE. Similarly, if another hash method is preferred, send that instead.
+
 3. The hub will send:
 * ISUP ADBASE ADTIGR
 ** The hub may include other things it "AD"s, but none of these are interesting.
+
 4. The hub will send:
 * ISID ABCD
 ** ABCD is the SID that shall be used in any further communication from the client (where applicable). Store this value.
+
 5. Optionally, a hub may send the following but is not required:
 * IINF CT32 NIhub_name
 ** None of these parameters are needed for continuing the connectivity, although may come in handy in the future. The value in the NI parameter can be used for e.g. the application or tab name.
+
 6. The client shall send the following message
 * BINF ABCD ID<CID> PD<PID> NImy_name
 ** ABCD here is the SID as previously mentioned. The CID and PID are complementary information and are specified in the "Client identification section". The client should generate an internal CID (and associated PID). The CID and PID that the client sends to the hub have been run through a Base32 conversion.
+
 7. If the hub did not send its "IINF" before, it may do so now. Again, the information shouldn't be deemed as required.
+
 8. The hub may send a password request, see section "Other".
+
 9. The hub will send all other users that are logged in:
 * BINF sid ID<CID> NI<nick>
 ** Where SID and CID is the client information. The SID is used to create a mapping between client -> user. Note that the PID is never broadcast.
+
 10. The last BINF to arrive will be the information you connected with:
 * BINF ABCD ID<your-CID> NImy_name
+
 11. The client will now be fully logged in.
 
+=== Chat
+.
+
+=== Downloading
+.
+
+=== Sharing
+.
+
+=== Search
+.
+
+=== Other
+.
+
 == Hub implementation
+A client can be implemented by following this rough outline. The outline may not specify everything to full detail and will not cover the actual application that shall employ the mechanisms.
 
-1) Hub accepts network connection.
-- [client state = new]
+=== Steps
+1. Hub accepts network connection.
+* Set client state to NEW.
 
-2) Hub waits for handshake from client.
-Client: HSUP ADBASE ...
+2. Hub waits for handshake from client.
+* Client will send:
+** HSUP ADBASE ...
 
-3) Hub checks support line responds
-Server: ISUP ADBASE ...
+3. Hub checks support line responds.
 
-4) Hub allocates a SID, and sends it to the client.
-Server: ISID ...
+4. Server sends:
+* ISUP ADBASE ...
 
-5) Hub sends the hub information to the client.
-Server: IINF ...
+5. Hub allocates a SID, and sends it to the client:
+* ISID ...
 
-6) Hub waits for client to send info:
-- [client state = identify]
-Client: BINF ...
+6. Hub sends the hub information to the client:
+* IINF ...
 
-7) Hub validates info from client
-   If password verification is needed, then go to 7.1, otherwise 8.
+7. Hub waits for client to send info:
+* Client will send:
+** BINF ...
+* Set client state to IDENTIFY.
 
-7.1) If user needs to log in, request password
-- [client state = verify]
-Server: IGPA ...
+8. Hub validates info from client
+* If password verification is needed, then go to 9, otherwise 11.
 
-7.2) Wait for and verify password from
-Client: HPAS ...
+9. If user needs to log in, request password
+* Set client state to VERIFY
+* Hub sends:
+** IGPA ...
 
-8) Hub transmits the userlist of all existing users to the client.
-Server: BINF ...
-Server: BINF ...
-...
-Server: BINF ...
+10. Wait for and verify password fromclient:
+* HPAS ...
 
+11. Hub transmits the userlist of all existing users to the client.
 
-9) Hub broadcasts the client's info (BINF) to all users, including the client.
-- [client state = NORMAL]
-Server: BINF ...
+ BINF ...
+ BINF ...
+ ...
+ BINF ...
 
-10) At this point the client is considered logged in, and will receive all
+12. Hub broadcasts the client's info (BINF) to all users, including the client.
+* Set client state to NORMAL.
+* Server sends:
+** BINF ...
+
+13. At this point the client is considered logged in, and will receive all
 broadcast messages and all direct messages from other clients.
 It will also forward messages originating from this client to others, if the
 messages are correct (syntax, formatting, source SID, etc).

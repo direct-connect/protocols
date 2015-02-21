@@ -27,6 +27,7 @@ This version corresponds to $Revision$.
 === Version 1.0.4, UNRELEASED
 
 * Separators in the command description for GET, GFI and SND are now explicit.
+* Clarified UTF-8 encoding note.
 
 === Version 1.0.3, 2013-06-30
 Fredrik Ullner <ullner@gmail.com>
@@ -64,7 +65,8 @@ Jacek Sieka <arnetheduck@gmail.com>
   message. The string "\s" escapes space, "\n" newline and "\\" backslash.
   This version of the protocol reserves all other escapes for future use; any
   message containing unknown escapes must be discarded.
-* All text must be sent as UTF-8 encoded Unicode in normalization form C.
+* All text must be sent as 1-to-4 byte, RFC 3629-compliant UTF-8 encoded Unicode 
+  in normalization form C.
 * Clients must ignore unknown/badly formatted messages. Hubs must ignore
   invalid messages and should dispatch unknown messages according to their
   type.
