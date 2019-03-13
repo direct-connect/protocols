@@ -31,12 +31,12 @@ The initial version of this document was compiled by Fredrik Ullner.
 * This document use `[` and `]` brackets for optional data; any literal occurrence will be noted as such.
 
 There are different types of routed messages:
-* Client to Hub
-* Client to Hub to Client
-* Hub to Client
-* Hub to Hub
-* Hub to Hublist
-* Pinger to Hub
+* Client to Hub (C-H)
+* Client to Hub to Client (C-H-C)
+* Hub to Client (H-C)
+* Hub to Hub (H-H)
+* Hub to Hublist (H-L)
+* Pinger to Hub (P-H)
 
 #### Status messages
 Most clients send a chat message to all users to indicate that a user has been kicked. That is, if a client A kicks client B, client A will send out a message to client C and D to indicate that the client B is kicked. To avoid being potentially flooded by this message, clients have implemented a de facto message to indicate kicks.
@@ -167,7 +167,7 @@ See the URI scheme document following this document.
 <nick> message|
 ```
 
-Contexts: Client -> Hub -> Client, Hub -> Client
+Contexts: C-H-C, H-C
 
 Will send a chat message by `nick`. The hub should broadcast the message to all clients if a client send this.
 
@@ -183,7 +183,7 @@ Example:
 $To: othernick From: nick $<nick> message|
 ```
 
-Contexts: Client -> Hub -> Client, Hub -> Client
+Contexts: C-H-C, H-C, C-C
 
 Will send a private message from one user to another user. The same rules as a basic chat message apply. 
 
@@ -197,7 +197,7 @@ $To: john From: peter $<peter> dogs are more cute|
 $ConnectToMe RemoteNick SenderIp:SenderPort
 ```
 
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
 
 Request that `RemoteNick` connect to the sending user for an active TCP connection for file transfers. Clients sending this must allow incoming TCP connections. There is no default port.
 
@@ -224,7 +224,7 @@ $ConnectToMe peter john 192.168.1.2:412|
 $RevConnectToMe SenderNick RemoteNick|
 ```
 
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
 
 Request that the `RemoteNick` send a `ConnectToMe` back to `SenderNick`. Clients sending do not allow incoming TCP connections whereas the remote user does (or should).
 
@@ -247,7 +247,7 @@ $Ping sender_ip:sender_port|
 $GetPass|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Request that the client send a password that correspond to a user account (matched by the user's nick name).
 
@@ -256,7 +256,7 @@ Request that the client send a password that correspond to a user account (match
 $MyPass password|
 ```
 
-Contexts: Client -> Hub
+Contexts: C-H
 
 Providing the password (in plain text) to the hub after a request. Implementations should be aware of potential pipe and dollar signs in the password.
 
@@ -270,7 +270,7 @@ $MyPass qwerty|
 $LogedIn nick|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Sent to users who successfully log in. Note that the message should only be sent to operators. Note that some implementations do not use this command. The spelling of this command is not a mistake.
 
@@ -284,7 +284,7 @@ $LogedIn john|
 $Get file$offset|
 ```
  
-Contexts: Client -> Client
+Contexts: C-C
 
 `file` is the remote location (including path) of the file.
 
@@ -300,7 +300,7 @@ $Get C:/Uploads/myfile.txt$15|
 $Send|
 ```
  
-Contexts: Client -> Client
+Contexts: C-C
 
 This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
 
@@ -309,7 +309,7 @@ This is used as a way to specify that the file should be sent. The uploader shou
 $FileLength file_size|
 ```
  
-Contexts: Client -> Client
+Contexts: C-C
 
 This command is used as a way to provide the size of the file requested.
 
@@ -318,7 +318,7 @@ This command is used as a way to provide the size of the file requested.
 $GetListLen|
 ```
  
-Contexts: Client -> Client
+Contexts: C-C
 
 Get file list size.
 
@@ -327,7 +327,7 @@ Get file list size.
 $ListLen file_size|
 ```
  
-Contexts: Client -> Client
+Contexts: C-C
 
 This command is used as a way to provide the size of the file list of the client.
 
@@ -336,7 +336,7 @@ This command is used as a way to provide the size of the file list of the client
 $Direction direction number|
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 This command is used as a way to decide which party should be allowed to download. 
 
@@ -371,7 +371,7 @@ Client B will not get a slot because of client A does not have any slots availab
 $Cancel
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 This command is used as way to indicate that the transfer of a file should be cancelled prematurely.
 
@@ -386,7 +386,7 @@ Note that there is no pipe (`|`) at the end of this command!
 $Canceled
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 This command is used as way to indicate that the transfer of a file was cancelled prematurely.
 
@@ -403,7 +403,7 @@ Note that there is no pipe (`|`) at the end of this command!
 $BadPass|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Indicates that the supplied password is invalid. The client shall be immediately disconnected after this message is sent.
 
@@ -412,7 +412,7 @@ Indicates that the supplied password is invalid. The client shall be immediately
 $HubIsFull|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Indicates that the hub has reached its maximum amount of users and will not accept additional users. 
 
@@ -421,7 +421,7 @@ Indicates that the hub has reached its maximum amount of users and will not acce
 $ValidateDenide nick|
 ```
  
-Contexts: Hub -> Client
+Contexts: H-C
 
 The requested nick name is already taken by or is reserved for another user. The spelling of this command is not a mistake.
 
@@ -435,7 +435,7 @@ $ValidateDenide john|
 $MaxedOut|
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 Sent by a client to another when there are no more slots available upon request of files.
 
@@ -446,7 +446,7 @@ See the QP extension for an extended `$MaxedOut`.
 $Failed message|
 ```
 
-Contexts: Client -> Hub, Client -> Hub -> Client, Client -> Client, Hub -> Client
+Contexts: C-H, C-H-C, C-C, H-C
 
 General purpose fail command. Implementations may use this command to signify files that are not available. `$Failed` is usually sent in response to a `GetZBlock`, `UGetBlock` and `UGetZBlock`.
 
@@ -455,7 +455,7 @@ General purpose fail command. Implementations may use this command to signify fi
 $Error message|
 ```
 
-Contexts: Client -> Hub, Client -> Hub -> Client, Client -> Client, Hub -> Client
+Contexts: C-H, C-H-C, C-C, H-C
 
 General purpose fail command. Implementations may use this command to signify files that are not available. `$Failed` is usually sent in response to a `GetZBlock`, `UGetBlock` and `UGetZBlock`.
 
@@ -465,7 +465,7 @@ $Search ip:port search_string|
 $Search Hub:nick search_string|
 ```
  
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
  
 The former is sent by active clients and the latter for passive clients. The `ip` is the client's own IP address and the `port` is an open UDP port that accept incoming UDP traffic. `Hub` should be taken literally. The `nick` is the nickname of the searching user.
 
@@ -519,7 +519,7 @@ $Search Hub:SomeNick F?T?0?9?TTH:TO32WPD6AQE7VA7654HEAM5GKFQGIL7F2BEKFNA
 $SR source_nick result free_slots/total_slots<0x05>hub_name (hubip[:port])[<0x05>target_nick]|
 ```
 
-Contexts: Client -> Hub -> Client, Client -> Client
+Contexts: C-H-C, C-C
 
 Sent by a client when a match to a search is found.
 
@@ -565,7 +565,7 @@ $SR User6 pictures 0/4<0x05>Testhub (192.168.1.1)<0x05>User2|
 $MyINFO $ALL nick description$ $<connection><flag>$mail$share_size$|
 ```
  
-Contexts: Client -> Hub (-> Client)
+Contexts: C-H (C-H-C)
  
 This command is part of the Client-Hub Handshake and during login, and is sent after the client receive $Hello with their own nick. Client resend this on any change. It's broadcasted to all clients. 
 
@@ -669,7 +669,7 @@ $MyINFO $ALL johndoe <++ V:0.673,M:P,H:0/1/0,S:2>$ $LAN(T3)0x31$example@example.
 $GetINFO <other_nick> <nick>|
 ```
  
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
  
 Request (general) client information.
 
@@ -687,7 +687,7 @@ $GetINFO peter john|
 $Hello user|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 When a new user logs in, the hub will send this command to the new user to inform them that they have been accepted for hub entry.
 
@@ -696,7 +696,7 @@ When a new user logs in, the hub will send this command to the new user to infor
 $Version version|
 ```
  
-Contexts: Client -> Hub
+Contexts: C-H
 
 Sent by clients to the hub after `$Hello` is received to denote the version used for the client. This command is nowadays not used to denote the client's version but was used frequently by the original Neo-Modus Direct Connect (NMDC) client. The last version of the Neo-Modus client was 1.0091 and is what is commonly used by current clients. The default system locale is used, which means the period may be a comma etc. 
 
@@ -707,7 +707,7 @@ Version is `1.0091` by default.
 $HubName name|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 The name of the hub that should be displayed by clients to users. The name is sometimes interpreted as the "topic" (current discussion topic or general theme of the hub), in cases where `$HubTopic` does not exist. The hub could send different names to different users, as well as the ability for multiple hubs (that are inherently separated) to have the same name, so the client should not use the hub name as a unique identifier.
 
@@ -716,7 +716,7 @@ The name of the hub that should be displayed by clients to users. The name is so
 $GetNickList|
 ```
  
-Contexts: Client -> Hub
+Contexts: C-H
 
 Request that the hub send the nick names of all users that are connected.
 
@@ -725,7 +725,7 @@ Request that the hub send the nick names of all users that are connected.
 $NickList nick$$nick2$$nick3[...]|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Providing the full listing of users, including bots and operators. List is separated by `$$`.
 
@@ -739,7 +739,7 @@ $NickList john$$peter$$richard$$marie$$sarah|
 $OpList nick$$nick2$$nick3[...]|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Providing the full listing of operators. This is a subset of the users provided in `$NickList`. List is separated by `$$`. 
 
@@ -758,7 +758,7 @@ $OpList john$$peter|
 $Kick victim|
 ```
 
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
 
 Requests that the hub kicks a user (terminates the connection to the user). The hub will validate that the issuing user actually have permission to kick the other user. The message does not specify a reason to the kick; hubs may decide instead to send a default "you have been kicked" message. Time frame (of a potential ban) does not exist in the protocol, as it is decided by the hub's configuration. It is up to the hub to decide the course of action if the user is not allowed to issue the kick, but the majority of implementations will simply ignore the message or send a message back ("you are not allowed to issue the command"). Many clients that issue the Kick command will precede the message with a message directed (either normal main chat or with $To) to the offended user with the reason for the kick.
 
@@ -767,7 +767,7 @@ Requests that the hub kicks a user (terminates the connection to the user). The 
 $Close victim|
 ```
  
-Contexts: Client -> Hub -> Client
+Contexts: C-H-C
 
 Requests that the hub kicks a user (terminates the connection to the user), but no message will be sent to the victim client. All other information is similar to `$Kick`.
 
@@ -775,6 +775,8 @@ Requests that the hub kicks a user (terminates the connection to the user), but 
 ```
 $OpForceMove $Who:victim$Where:address$Msg:reason|
 ```
+
+Contexts: C-H-C, H-C
 
 A request made by privileged users to redirect a user from the hub. The message should be sent to the offending user in a main chat message or in a `$To` message.
 
@@ -794,6 +796,8 @@ $OpForceMove $Who:richard$Where:example.com:411$Msg:I think you'll like this hub
 $ForceMove address|
 ```
 
+Contexts: C-H-C, H-C
+
 Informs the user that it should close its connection and instead connect to the address specified. Many implementations will send `$ForceMove` followed by a main chat message or a `$To` message.
 
 Example:
@@ -807,7 +811,7 @@ $To:richard From: OpNick $<peter> You are being re-directed to example.com:411 b
 $Quit nick|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Inform users in a hub that `nick` has disconnected from the hub. If a user desire to disconnect from a hub, the client should simply terminate the connection and not send `$Quit`.
 
@@ -821,7 +825,7 @@ $Quit peter|
 $Lock lock Pk=pk|
 ```
  
-Contexts: Hub -> Client, Client -> Client
+Contexts: H-C, C-C, L-H
  
 This is a mechanism to request 'certification' for verification. The lock is a command that added by NMDC to keep other clients (such as DC++) from being able to use NMDC hubs. The lock require a response (given in a `$Key`) that needs to be calculated, as per the lock's data. Hubs are not required to check the validity of the response, but must still send it.
 
@@ -857,7 +861,7 @@ $Lock EXTENDEDPROTOCOL_verlihub Pk=version0.9.8e-r2|
 $Key key|
 ```
 
-Contexts: Client -> Hub, Client -> Client
+Contexts: C-H, C-C, H-L
 
 The key is given as a response for a $Lock command, as calculated by the following algorithm. 
 
@@ -934,7 +938,7 @@ For syntax on the parameters, see `$Search`.
 $BotList nick$$nick2$$nick3[...]|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 Providing the full listing of bots. This is a subset of the users provided in `$NickList`. List is separated by `$$`.
 
@@ -950,7 +954,7 @@ $BotList marie|
 $ADCGET type identifier start_pos bytes flag0...flagN|
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 This is a port of the ADC approach of signifying the request. `start_pos` counts 0 as the first byte. `bytes` may be set to `-1` to indicate that the sending client should fill it in with the number of bytes needed to complete the file from `start_pos`. `type` is a `[a-zA-Z0-9]+` string that specifies the namespace for identifier and clients should recognize the type `file`.
 
@@ -965,7 +969,7 @@ Add `ADCGet` to the `$Supports` to indicate support for this. Support for `ADCGe
 $ADCSND type identifier start_pos bytes|
 ```
 
-Contexts: Client -> Client
+Contexts: C-C
 
 This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
 
@@ -979,7 +983,7 @@ $UserIP nick|
 $UserIP nick ip|
 ```
 
-Contexts: Client -> Hub, Hub -> Client
+Contexts: C-H, H-C
 
 A client may request IP address information about clients. The hub will respond with a command with the same name, but with different parameter data.
 
@@ -995,7 +999,7 @@ Example:
 $UserIP nick1 IP1$$nick2 IP2[...]|
 ```
  
-Contexts: Hub -> Client
+Contexts: H-C
 
 This is similar to the other `$UserIP` command, except that there is no request. The hub will, if the client signals support for `UserIP2`, send all users upon login. 
 
@@ -1014,7 +1018,7 @@ Add `UserIP2` to the `$Supports` to indicate support for this.
 $BotINFO description|
 ```
 
-Contexts: Client -> Hub
+Contexts: C-H
  
 Bot description can be any string, usually information regarding, and address of, the hublist.
 
@@ -1025,7 +1029,7 @@ Add `BotINFO` to the `$Supports` to indicate support for this.
 $HubINFO name$address:port$description$max_users$min_share$min_slots$max_hubs$hub_type$hubowner_login|
 ```
  
-Contexts: Hub -> Client
+Contexts: H-C
 
 Hub name, address and description are the items which will be shown in the hublist (some hubs have multiple addresses and this helps to get primary address). Description changes often on some hubs so this helps with updating it.
 
@@ -1044,7 +1048,7 @@ Add `HubINFO` to the `$Supports` to indicate support for this.
 $HubTopic topic|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 The hub topic, be it current discussion topic or general theme of the hub, which allow users to quickly see what the discussion and file sharing themes are. Hub pingers frequently use this message for hub related information. 
 
@@ -1056,7 +1060,7 @@ $Supports extension1 extension2 [...]|
 $Supports extension1 extension2 [...] |
 ```
  
-Contexts: Client -> Hub, Hub -> Client, Client -> Client
+Contexts: C-H, H-C, C-C
 
 This command is used to negotiate and notify about protocol extensions. 
 
@@ -1084,7 +1088,7 @@ $Supports UserCommand NoGetINFO NoHello UserIP2 TTHSearch ZPipe0 GetZBlock|
 $Capabilities [unknown]|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 This command is used to negotiate and notify about protocol extensions, similar to the more popular `$Supports`. Its content is unknown as of date.
 
@@ -1093,7 +1097,7 @@ This command is used to negotiate and notify about protocol extensions, similar 
 $IN nick$data[$data]|
 ```
 
-Contexts: Client -> Hub, Hub -> Client
+Contexts: C-H, H-C
 
 This command is designed to replace the static `$MyINFO`. This command consist of separate smaller parts which all have a 1-byte identifier and are separated by a dollar sign (`$`).
 
@@ -1172,7 +1176,7 @@ Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-D
 $MCTo: target $sender message|
 ```
 
-Contexts: Client -> Hub, Hub -> Client
+Contexts: C-H, H-C
 
 This is a private-message to a single user that should be displayed as an ordinary chat-message.
 
@@ -1195,7 +1199,7 @@ $MCTo peter $john I like dogs|
 $NickChange old_nick new_nick|
 ```
 
-Contexts: Client -> Hub
+Contexts: C-H
 
 This allow a client to change the nick without logging out and logging back in.
 
@@ -1215,6 +1219,8 @@ If the user is an operator, `$OpList` will be updated appropriately as well.
 ```
 $ClientNick new_nick|
 ```
+
+Contexts: H-C
 
 This validates that the hub has acknowledged the change of nick during runtime that was initiated by `$NickChange`.
 
@@ -1265,7 +1271,7 @@ The prefixes are to be defined by the network administrator. In the biggest runn
 $Z blob|
 ```
 
-Contexts: Hub -> Client
+Contexts: H-C
 
 This command's intention is to compress (with ZLib) data to decrease bandwidth use. The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
 
@@ -1283,6 +1289,8 @@ The command adds an escaping sequence:
 $ZOn blob|
 ```
 
+Contexts: H-C
+
 This command's intention is to compress (with ZLib) data to decrease bandwidth use. The blob uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
 
 Compression algorithm shall be LZ77.
@@ -1297,6 +1305,8 @@ The command adds no escaping.
 ```
 $UGetBlock start bytes filename|
 ```
+
+Contexts: C-C
  
 `start` is the 0-based (yes, 0-based, not like get that's 1-based) starting index of the file used
 
@@ -1321,6 +1331,8 @@ Support of `$GetZBlock` also implies support for `$UGetZBlock`.
 $UGetBlock start bytes filename|
 ```
 
+Contexts: C-C
+
 This is the same command as `$GetZBlock` except this command is uncompressed and the filename is UTF-8 encoded.
 
 The `filename` is encoded as UTF-8, which allows filenames to use characters that are not in the system's encoding. `$UGetBlock` must be implemented if `XmlBZList` is advertised.
@@ -1335,6 +1347,8 @@ This command is deprecated and was a test command during the development of `$Ge
 ```
 $Sending diff|
 ```
+
+Contexts: C-C
 
 `diff` is the difference between the end byte and start byte. If the requested bytes was `-1` then diff should be omitted.
 
@@ -1352,6 +1366,8 @@ Add `ClientID` to the `$Supports` to indicate support for this.
 ```
 $UserCommand type context details|
 ```
+
+Contexts: H-C
 
 Add `UserCommand` to the `$Supports` to indicate support for this.
 
@@ -1421,14 +1437,14 @@ $UserCommand 255 1|
 ### Extensions (features)
 
 #### `NoHello`
-Contexts: Client -> Hub
+Contexts: C-H
 
 This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough. `$Hello` is still accepted, for adding bots to the user list. DC++ still sends a `$GetNickList` to indicate that it is interested in the user list. During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick was accepted.
 
 Add `NoHello` to the `$Supports` to indicate support for this.
 
 #### `ChatOnly`
-Contexts: Client -> Hub
+Contexts: C-H
 
 This indicates that the client only support chat capabilities to allow the client to bypass hub rules (that relate to file sharing). The client should be disconnected if it sends a `$Search`, `$ConnectoMe` or `$RevConnect`.
 
@@ -1668,14 +1684,50 @@ Implementations supporting `ACTM` must reply to incoming `$ConnectToMe` and `$Re
 During requests, the clients send a 4-digit hexadecimmal ID. This ID is an incremental number that is given out for each `$CTM` that it sent. When a connection between two clients is established, the other party must echo back this 4-digit ID. This is done after `$Supports` but before `$Direction`. If the 4-digit ID is not any of the unhandled IDs given out by the requesting client, it must signal `$Error Invalid ID` and disconnect.
 
 ##### `CTM`
- Client 1 to hub: `$CTM client2_nick$client1_port$id|`
- Hub forwarding to client 2: `$CTM client1_ip$client1_port$id|`
+```
+$CTM client2_nick$client1_port$id|
+$CTM client1_ip$client1_port$id|
+$CTM id|
+```
+
+Contexts: C-H-C, C-C
+
+Client 1 to hub:
+```
+$CTM client2_nick$client1_port$id|
+```
+Hub forwarding to client 2:
+```
+$CTM client1_ip$client1_port$id|
+```
+Client 2 to client 1:
+```
+$CTM id|
+```
 
 ##### `RCTM`
- Client 1 to hub: `$RCTM client2_nick|`
- Hub forwarding to client 2: `$RCTM client1_nick|`
- Client 2 to hub: `$CTM client1_nick$client2_port$id|`
- Hub forwarding to client 1: `$CTM client2_ip$client2_port$id|`
+```
+$RCTM client2_nick|
+```
+
+Contexts: C-H-C
+
+Client 1 to hub:
+```
+$RCTM client2_nick|
+```
+Hub forwarding to client 2:
+```
+$RCTM client1_nick|
+```
+Client 2 to hub:
+```
+$CTM client1_nick$client2_port$id|
+```
+Hub forwarding to client 1:
+```
+$CTM client2_ip$client2_port$id|
+```
 
 Example handshake:
 
@@ -1719,7 +1771,14 @@ Characteristics of a hub. Indicates that the hub uses additional commands for op
 This feature offers additional protocol commands notice. Feature allows you to track all the actions of the individual or all users benefit from logging these actions, and notify operators of the hub acts committed by a newly created chat room.
 
 #### `SaltPass`
-This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" to the `$GetPass` command.
+```
+$GetPass salt|
+$MyPass hashed_pass|
+```
+
+Contexts: C-H, H-C
+
+This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
 
 The random data should be Base32 encoded.
 
@@ -1727,14 +1786,12 @@ The data that is sent back in the `$MyPass` shall be the password followed by th
 
 Add `SaltPass` to the `$Supports` to indicate support for this.
 
-Note that the example below for `$MyPass` is not literal.
-
 The algorithm here is a port from ADC's `GPA`/`PAS`.
 
 Example
 ```
-$GetPass data|
-$MyPass base32( tiger_hash( password + data ) )|
+$GetPass salt|
+$MyPass hashed_pass|
 ```
 
 #### IPv4
@@ -1787,6 +1844,8 @@ Add `DHT0` to the `$Supports` to indicate support for this.
 $MaxedOut queue_position|
 ```
 
+Contexts: C-C
+
 This feature is a support for a queue numbering system for client-client connections. See [ADC-Ext QP](http://adc.sourceforge.net/ADC-EXT.html#_qp_upload_queue_notification) for further information on the ADC equivalent.
 
 This feature extends `$MaxedOut` by adding a number after it.
@@ -1802,6 +1861,8 @@ $MaxedOut 2|
 ```
 $FailOver [host[,host]]|
 ```
+
+Contexts: H-C
 
 This feature is used to indicate support for providing alternative hub addresses in the event that the hub is unavailable. See [ADC-Ext FO](http://adc.sourceforge.net/ADC-EXT.html#_fo_failover_hub_addresses) for further information on the ADC equivalent.
 
@@ -1822,6 +1883,8 @@ $FailOver example.com,example.org:5555,adc://example.net:6666|
 ```
 $SetIcon image_uri|
 ```
+
+Contexts: H-C
 
 This feature is used to indicate an icon to use for the hub. The `image_uri` is an URI linking to the image that should be used. The URI is specified with `http://`, `https://` or `www.`.
 
