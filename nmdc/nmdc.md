@@ -10,10 +10,10 @@ The protocol's basic outline was written by Jon Hess in 1998 for the NMDC client
 
 This document uses information from many sources, including but not limited to;
 
-* Ptokax Wiki http://wiki.ptokax.ch and http://wiki.ptokax.org
-* TeamFair wiki http://www.teamfair.info/wiki/
-* The Nighthawk forum
-* Mutor protocol doc http://mutor.no-ip.com:413/protocol.htm
+* Ptokax Wiki ([new](http://wiki.ptokax.org), [snapshot](https://github.com/direct-connect/nmdc-code/tree/master/Other/PtokaxWiki), [archive](https://web.archive.org/web/20140108012040/http://wiki.ptokax.ch/)).
+* TeamFair wiki ([snapshot](https://github.com/direct-connect/nmdc-code/tree/master/Other/TeamFair), [archive](https://web.archive.org/web/20090313025627/http://www.teamfair.info/wiki/index.php?title=Main_Page))
+* The Nighthawk forum ([snapshot](https://github.com/direct-connect/nmdc-code/tree/master/Other/The%20NightHawk%20Forum))
+* Mutor protocol doc ([snapshot](https://github.com/direct-connect/nmdc-code/blob/master/Other/mutor_protocoldoc.htm))
 
 The initial version of this document was compiled by Fredrik Ullner.
 
