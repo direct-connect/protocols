@@ -160,7 +160,7 @@ for impending storage capacity limits with a view to prevent local
 denials of service resulting from exceeding them.
 
 ### URI scheme
-See the URI scheme document following this document.
+See the [URI scheme](./nmdc-uri-scheme.txt) document following this document.
 
 ### Commands
 
