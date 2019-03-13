@@ -1,0 +1,213 @@
+﻿(last updated 2015-05-26)
+
+Resource Identifier (RI) Scheme name: dchub 
+Status: Provisional
+
+Scheme syntax:
+
+   The syntax of the 'dchub' URI scheme is specified below in ABNF specified in RFC 5234 [RFC5234]:
+      
+	  dchub-URI   = scheme "://" authority ["/" [path]]
+	  scheme      = "dchub"
+	  authority   = hostname [":" port]
+	  hostname    = hostname as specified in RFC 3986 [RFC3986]
+	  port        = port as specified in RFC 3986 [RFC3986], defaults to 411
+	  path        = user-path ["/" [file-path]]
+	  user-path   = the name of a user
+	  file-path   = the path to a file or directory
+
+   The (same) syntax of the 'dchub' URI scheme is specified below in a less verbose form:
+
+	  dchub://<host>[:<port>][/[<user>[/[<path>]]]]
+
+   The hostname MUST be specified.
+
+   Examples:
+      dchub://example.com
+      dchub://example.com:666
+      dchub://example.com/John/uploads/applications/linux.iso
+      dchub://example.com:411/John/uploads/applications/linux.iso
+
+Scheme semantics:
+
+   Direct Connect is a peer-to-peer file sharing protocol used by Neo-Modus
+   Direct Connect (NMDC) clients and reversed engineered for use in a number
+   of other systems. There is no definitive publicly available specification,
+   but the NMDC Project [DCPROTO] and Wikipedia [WIKI] contain a general
+   description. The 'dchub' URI scheme specifies a hub within the Direct
+   Connect (DC) network. The URI may also indicate a user and a file or
+   directory that they share.
+
+   A Neo-Modus Direct Connect (NMDC) client, given an URL, ought to connect to
+   the specified address with the appropriate protocol commands and sequence. 
+   
+   The connected client ought to request a connection to the user via the
+   appropriate commands and sequence.
+
+   The client ought to queue the file or directory, supplied as the file path,
+   via the appropriate commands and sequence. If the file path is omitted,
+   then the queued file ought to be the user's file list. Path to a directory
+   MUST end in a "/".
+
+Encoding considerations:
+
+   1. Generic Encoding
+
+   The encoding UTF-8 SHALL be used, according to RFC 3986 [RFC3986]. 
+   
+   URIs originating from hubs MUST be encoded as UTF-8 regardless of hub encoding.
+
+   2. String Comparison
+
+   Some hubs MAY treat dchub: URIs that differ only in case of the user
+   component as identifying the same resource.
+
+   The 'file-path' SHOULD be case-insensitive.
+
+   The 'file-path' SHALL be normalized prior to string comparison.
+
+   3. Normalization
+
+   The URI SHOULD be syntax-based normalized according to RFC 3986 [RFC3986]
+   section 6.2.2, with below exceptions.
+
+   Tokens (such as "." and "..") SHALL follow the security considerations of
+   this document.
+
+   Trailing slashes ("/") SHOULD NOT be normalized.
+
+   The URI SHALL use scheme-based normalization according to RFC 3986 [RFC3986] section 6.2.3. I.e., the following URIs are equivalent:
+         dchub://example.com
+		 dchub://example.com/
+		 dchub://example.com:411
+		 dchub://example.com:411/
+
+Applications/protocols that use this scheme name:
+
+   The 'dchub' URI scheme is intended to be used by applications that are 
+   using the NMDC protocol or are referencing NMDC hubs, users and files as network resources.
+
+   Most Direct Connect applications support the 'dchub' URI scheme (or parts of it). 
+   Applications that are supporting the file-path syntax (implicitly) 
+   support the user syntax and applications that support the user syntax (implicitly) support the generic syntax.
+
+   Applications and systems that are using the 'dchub' URI scheme include hub lists (e.g. in XML and HTTP form), 
+   hub owners and operators (e.g. for redirecting and referencing other hubs), 
+   client implementations (spanning multiple operating systems) and more.
+
+   Support for the 'dchub' URI scheme include the original NMDC client (1999).
+
+Interoperability considerations:
+
+   1. Inconsistency of Hub and User Accessibility
+
+   NMDC hubs may impose constraints on connecting clients that 'dchub' URIs
+   do not encode, including requirements to authenticate with a username
+   and password, to advertise a share of a certain size or composition,
+   or to originate from certain IP addresses. Similarly, a user named in
+   an 'dchub' URI might not be available to transfer a file, or have
+   removed the specified file from their share. Therefore, software
+   processing an 'dchub' URI SHOULD anticipate frequent failure.
+
+   2. File-Path
+
+   The file-path reflect the user's shared files and does 
+   NOT reflect a system's underlying file system.
+
+   3. Separator
+
+   Path separator is a slash ("/").
+
+Security considerations:
+   See the protocol specification for generic NMDC security considerations.
+
+   1. Distributed Denial of Service Potential
+
+   The ongoing operation of NMDC's peer to peer connections provides
+   opportunities for both malicious clients on certain hubs and
+   malicious hubs to coordinate clients of those hubs in connecting en
+   masse to an arbitrarily specified IP address and port.
+
+   Both clients and hubs SHOULD verify that search and peer to peer
+   connection requests contain valid IP addresses and ports.
+
+   Hubs SHOULD mitigate these risks by only relaying such connection requests
+   when they can verify IP addresses and ports are valid and belong to clients
+   initiating such peer to peer connection requests.
+
+   Hubs receiving malicious connections SHOULD signal to clients that they are
+   not clients and thereby mitigate harm by preventing future malicious
+   connections.
+
+   Clients SHOULD effect similar amelioration through attempting to reconnect
+   only to hubs to which they have initially connected once; by refusing
+   further peer to peer connection requests to addresses identifying as hubs;
+   and by providing upon connection referrer information regarding which hub
+   has relayed to them the IP and port to which they are connecting.
+
+   2. URI Path Encoding
+
+   Client software SHOULD verify that 'dchub' URI paths remain within
+   shares by ensuring that "/", "\", ".", ":", "..", and other
+   meaningful tokens either do not appear or appear only where they do
+   not allow unintended behavior. Client software which translates 'dchub'
+   URIs directly into file system calls, especially, MUST disallow path
+   components of "." and "..".
+
+   In service of such a requirement, clients SHOULD either convert all
+   UTF-8 text they receive to canonical form or check against prohibited
+   and controlled path tokens in any form in which they might appear.
+
+   3. Case-sensitivity Mismatches and Duplicated Shares Entries
+
+   Matches and shares both accidentally due to differences in filesystem
+   case-sensitivity assumptions and intentionally by malicious clients can
+   arise filelists containing either entirely or up to case identical. Client
+   software SHOULD detect these cases and avoid wasteful downloading.
+
+   4. Attacks Confusing User and Path URI Elements
+
+   The user and path portions of 'dchub' URIs overlap in appearance
+   sufficiently to allow malicious construction of URIs which
+   deceive users into navigating to a URI to a client the share of which
+   they would not intentionally view by embeddeding a string resembling
+   a user name within the path. Clients cannot entirely eliminate this
+   risk.
+
+   Similarly, syntactically special URI tokens such as "/" and "\" might
+   appear in the name of a user. Client software SHOULD prevent unintended
+   behavior when following such a URI.
+
+   5. Generic URI Syntax Considerations
+
+   RFC 3986 [RFC3986] section 7 and in particular section 7.4, "Rare IP Address
+   Formats", applies to 'dchub' URIs.
+
+   6. Contact
+
+   Registering party: Fredrik Ullner <ullner [at] gmail.com>
+   Scheme creator: Jonathan Hess
+
+   7. Author/Change Controller
+
+   The registering party or a member of the NMDC project
+
+   8. References
+   8.1 Normative References
+
+   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66,
+              RFC 3986, January 2005.
+
+   [RFC5234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
+              Specifications: ABNF", STD 68, RFC 5234, January 2008.
+
+   8.2 Informative References
+
+   [DCPROTO]  "NMDC Protocol",
+              <http://nmdc.sourceforge.net/NMDC.html>.
+
+   [WIKI]     "Direct Connect (protocol)",
+              <https://en.wikipedia.org/wiki/Direct_Connect_(protocol)>.
+
+(file created 2013-02-08)
