@@ -18,6 +18,7 @@ This document uses information from many sources, including but not limited to;
 The initial version of this document was compiled by Fredrik Ullner.
 
 ## Protocol
+
 ### General
 * Most messages begin with a `$` (dollar sign).
 * Most messages end with a `|` (pipe).
@@ -162,9 +163,10 @@ denials of service resulting from exceeding them.
 See the URI scheme document following this document.
 
 ### Commands
+
 #### Chat message
 ```
-<nick> message|
+<nick> message text|
 ```
 
 Contexts: C-H-C, H-C
@@ -175,8 +177,71 @@ Note that the brackets (`<` and `>`) are required. Some implementations allow sp
 
 Example:
 ```
+|
+hub message or status|
 <John> cats are cute|
 ```
+
+##### Keep-alive messages
+
+Most implementations will send an empty chat messages to each other as a form of keep-alive
+messages. This message consists of a single pipe character (`|`) and should be ignored.
+
+Example:
+```
+|
+```
+
+##### Protocol error messages
+
+On earlier protocol stages, suck as `Lock`/`Key` handshake, `ValidateNick`, `GetPass` and
+others, the hub won't usually send an `$Error` or `$Failed` messages, and instead will
+send a regular chat message followed by a connection close.
+
+| Client | Hub
+|--- |---
+| | `$GetPass\|`
+| `$GetNickList\|` |
+| | `unexpected protocol message: GetNickList\|`
+| | `<connection closed>`
+
+##### Parsing considerations
+
+Implementations should be prepared to handle the following cases:
+
+Keep-alive messages (no nick and no text):
+```
+|
+```
+
+Hub-initiated messages (only a message, or empty nick):
+```
+message text|
+<> message text|
+```
+
+Empty messages:
+```
+<nick>|
+<nick> |
+```
+
+Messages with a line-break (`\n`) delimiter instead of a space (` `):
+```
+<nick>
+message text
+second line|
+```
+
+Some implementations also allow a nickname to contain `<` and `>` characters and/or spaces:
+```
+<< nick >> message|
+```
+Here a `< nick >` is the full nickname of a user.
+
+The best parsing strategy is to first ensure that the message has a `<` prefix, and then
+find the first `>` characters that is followed by any whitespace character (` `, `\n`, `\t`)
+or the end of the message.
 
 #### `$To`
 ```
