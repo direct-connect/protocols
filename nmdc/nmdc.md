@@ -78,6 +78,9 @@
     + [`$HubINFO`](#hubinfo)
   * [`$NickChange`](#nickchange)
   * [`$ClientNick`](#clientnick)
+  * [`NickRule`](#nickrule)
+    + [`$NickRule`](#nickrule)
+    + [`$BadNick`](#badnick)
   * [`FeaturedNetworks`](#featurednetworks)
   * [`$GetZBlock`](#getzblock)
   * [`$UGetBlock`](#ugetblock)
@@ -1635,6 +1638,69 @@ This validates that the hub has acknowledged the change of nick during runtime t
 `new_nick` is the new user nick.
 
 Add `ClientNick` to the `$Supports` to indicate support for this.
+
+### `NickRule`
+
+#### `$NickRule`
+```
+$NickRule Min nick_min$$Max nick_max$$Char char_1 char_2$$Pref pref_1 pref_2|
+```
+
+Contexts: H-C
+
+This validates that the hub has acknowledged the change of nick during runtime that was initiated by [`$NickChange`](#nickchange).
+
+`Min` field specifies minimum nick length (`nick_min`).
+
+`Max` field specifies maximum nick length (`nick_max`).
+
+`Char` field specifies space separated list of decimals character codes forbidden to use in nick.
+
+`Pref` field specifies space separated list of nick prefixes required for usage in the hub.
+
+Not all of the above parameters must be specified, the list is based on hub configuration.
+
+Client has a chance to automatically update its nick before sending [`$ValidateNick`](#validatenick) command. 
+
+Add `NickRule` to the `$Supports` to indicate support for this.
+
+#### `$BadNick`
+```
+$BadNick [reason]|
+```
+
+Contexts: H-C
+
+Clients that support [`NickRule`](#nickrule) but send invalid nick anyway, will receive `$BadNick` command with error specification.
+
+Nick is too short:
+```
+$BadNick Min 3|
+```
+
+Nick is too long:
+```
+$BadNick Max 64|
+```
+
+Bad characters found in nick:
+```
+$BadNick Char 60 62|
+```
+
+Bad prefix found in nick:
+```
+$BadNick Pref|
+```
+
+One of prefixes missing in nick:
+```
+$BadNick Pref [ISP1] [ISP2]|
+```
+
+Client should then automatically correct its nick and reconnect to the hub. Meaning of this extension is to avoid extra reconnects when nick usage is heavily restricted. This applies only to non registered nicks.
+
+Add `NickRule` to the `$Supports` to indicate support for this.
 
 ### `FeaturedNetworks`
 `$FeaturedNetworks` is a protocol extension of the APN MultiHubChatsystem to identify the different hubs and other entry points (IRC, Telnet) etc. It was primarily created to aid APN developers and to allow a better integration of multi hub chat systems.
