@@ -13,15 +13,9 @@
   * [`$To`](#to)
   * [`$ConnectToMe`](#connecttome)
   * [`$RevConnectToMe`](#revconnecttome)
-  * [`$Ping`](#ping)
   * [`$GetPass`](#getpass)
   * [`$MyPass`](#mypass)
   * [`$LogedIn`](#logedin)
-  * [`$Get`](#get)
-  * [`$Send`](#send)
-  * [Provide file size](#provide-file-size)
-  * [`$GetListLen`](#getlistlen)
-  * [`$ListLen`](#listlen)
   * [`$Direction`](#direction)
   * [`$Cancel`](#cancel)
   * [`$Canceled`](#canceled)
@@ -34,12 +28,10 @@
   * [`$Search`](#search)
   * [`$SR`](#sr)
   * [`$MyINFO`](#myinfo)
-  * [`$GetINFO`](#getinfo)
   * [`$Hello`](#hello)
   * [`$Version`](#version)
   * [`$HubName`](#hubname)
   * [`$GetNickList`](#getnicklist)
-  * [`$NickList`](#nicklist)
   * [`$OpList`](#oplist)
   * [`$Kick`](#kick)
   * [`$Close`](#close)
@@ -48,13 +40,23 @@
   * [`$Quit`](#quit)
   * [`$Lock`](#lock)
   * [`$Key`](#key)
-  * [`$MultiConnectToMe`](#multiconnecttome)
-  * [`$MultiSearch`](#multisearch)
+  * [Legacy commands](#legacy-commands)
+    + [`$Ping`](#ping)
+    + [`$GetINFO`](#getinfo)
+    + [`$NickList`](#nicklist)
+    + [`$Get`](#get)
+    + [`$Send`](#send)
+    + [`$FileLength`](#filelength)
+    + [`$GetListLen`](#getlistlen)
+    + [`$ListLen`](#listlen)
+    + [`$MultiConnectToMe`](#multiconnecttome)
+    + [`$MultiSearch`](#multisearch)
 - [Standard extensions](#standard-extensions)
   * [`$Supports`](#supports)
   * [`NoHello`](#nohello)
   * [`NoGetINFO`](#nogetinfo)
   * [`$HubTopic`](#hubtopic)
+  * [`SaltPass`](#saltpass)
   * [`$UserIP` extension (`UserIP2`)](#userip-extension-userip2)
   * [`$MCTo`](#mcto)
   * [`$ZOn`](#zon)
@@ -62,12 +64,12 @@
   * [`TTHSearch`](#tthsearch)
   * [`XmlBZList`](#xmlbzlist)
   * [`TTHF`](#tthf)
-  * [`SaltPass`](#saltpass)
+  * [`ADCGet`](#adcget)
+    + [`$ADCGET`](#adcget)
+    + [`$ADCSND`](#adcsnd)
   * [TLS](#tls)
 - [Extensions (commands)](#extensions-commands)
   * [`$BotList`](#botlist)
-  * [`$ADCGET`](#adcget)
-  * [`$ADCSND`](#adcsnd)
   * [`$UserIP`](#userip)
   * [`$BotINFO`](#botinfo)
   * [`$HubINFO`](#hubinfo)
@@ -87,8 +89,8 @@
   * [TTHL](#tthl)
   * [`ZLIG`](#zlig)
   * [`ACTM`](#actm)
-    + [`CTM`](#ctm)
-    + [`RCTM`](#rctm)
+    + [`$CTM`](#ctm)
+    + [`$RCTM`](#rctm)
   * [`BZList`](#bzlist)
   * [`CHUNK`](#chunk)
   * [`OpPlus`](#opplus)
@@ -107,6 +109,7 @@
 - [Examples](#examples)
   * [Client – Hub connection](#client-%E2%80%93-hub-connection)
   * [Client – Client connection](#client-%E2%80%93-client-connection)
+- [License](#license)
 
 ## Abstract
 Neo-Modus Direct Connect (NMDC) is a text protocol for a client-server network. The same protocol structure is used both for client-hub and client-client communication. This document is split into two parts; the first shows the structure of the protocol, while the second implements a specific system using this structure.
@@ -409,15 +412,6 @@ Example:
 $RevConnectToMe peter john|
 ```
 
-### `$Ping`
-```
-$Ping sender_ip:sender_port|
-```
-
-`sender_ip` is the IP address of the remote client.
-
-`sender_port` is the port of the remote client that is being listened to.
-
 ### `$GetPass`
 ```
 $GetPass|
@@ -454,58 +448,6 @@ Example:
 ```
 $LogedIn john|
 ```
-
-### `$Get`
-```
-$Get file$offset|
-```
- 
-Contexts: C-C
-
-`file` is the remote location (including path) of the file.
-
-`offset` is the byte offset to start at for resuming files.
-
-Example:
-```
-$Get C:/Uploads/myfile.txt$15|
-```
-
-### `$Send`
-```
-$Send|
-```
- 
-Contexts: C-C
-
-This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
-
-### Provide file size
-```
-$FileLength file_size|
-```
- 
-Contexts: C-C
-
-This command is used as a way to provide the size of the file requested.
-
-### `$GetListLen`
-```
-$GetListLen|
-```
- 
-Contexts: C-C
-
-Get file list size.
-
-### `$ListLen`
-```
-$ListLen file_size|
-```
- 
-Contexts: C-C
-
-This command is used as a way to provide the size of the file list of the client.
 
 ### `$Direction`
 ```
@@ -840,24 +782,6 @@ Note that the example uses `0x31` for signaling the flag as "Normal", for ease o
 $MyINFO $ALL johndoe <++ V:0.673,M:P,H:0/1/0,S:2>$ $LAN(T3)0x31$example@example.com$1234$\|
 ```
 
-### `$GetINFO`
-```
-$GetINFO <other_nick> <nick>|
-```
- 
-Contexts: C-H-C
- 
-Request (general) client information.
-
-`<nick>` is this sending client's nick. 
-
-`<other_nick>` is the nick of the user that `<nick>` wants to know about. The server must respond with exactly the `$MyINFO` command sent by `<other_nick>` to the hub. 
- 
-Example:
-```
-$GetINFO peter john|
-```
-
 ### `$Hello`
 ```
 $Hello user|
@@ -865,7 +789,10 @@ $Hello user|
 
 Contexts: H-C
 
-When a new user logs in, the hub will send this command to the new user to inform them that they have been accepted for hub entry.
+When a new user logs in, the hub will send this command to the new user to inform them that
+they have been accepted for hub entry.
+
+See [`NoHello`](#nohello).
 
 ### `$Version`
 ```
@@ -895,20 +822,6 @@ $GetNickList|
 Contexts: C-H
 
 Request that the hub send the nick names of all users that are connected.
-
-### `$NickList`
-```
-$NickList nick$$nick2$$nick3[...]|
-```
-
-Contexts: H-C
-
-Providing the full listing of users, including bots and operators. List is separated by `$$`.
-
-Example:
-```
-$NickList john$$peter$$richard$$marie$$sarah| 
-```
 
 ### `$OpList`
 ```
@@ -1080,7 +993,121 @@ Note that this (and every other) example uses `011010110110010101111001` as key,
 $Key 011010110110010101111001|
 ```
 
-### `$MultiConnectToMe`
+### Legacy commands
+
+Commands in this section were defined in the original protocol and were either superseded
+by extensions, or are not used by implementations.
+
+#### `$Ping`
+```
+$Ping sender_ip:sender_port|
+```
+
+`sender_ip` is the IP address of the remote client.
+
+`sender_port` is the port of the remote client that is being listened to.
+
+Not used by any implementations.
+
+#### `$GetINFO`
+```
+$GetINFO <other_nick> <nick>|
+```
+ 
+Contexts: C-H-C
+ 
+Request (general) client information.
+
+`<nick>` is this sending client's nick. 
+
+`<other_nick>` is the nick of the user that `<nick>` wants to know about. The server must respond with exactly the `$MyINFO` command sent by `<other_nick>` to the hub. 
+ 
+Example:
+```
+$GetINFO peter john|
+```
+
+Superseded by [`NoGetINFO`](#nogetinfo) extension.
+
+#### `$NickList`
+```
+$NickList nick$$nick2$$nick3[...]|
+```
+
+Contexts: H-C
+
+Providing the full listing of users, including bots and operators. List is separated by `$$`.
+
+Example:
+```
+$NickList john$$peter$$richard$$marie$$sarah| 
+```
+
+Superseded by [`NoHello`](#nohello) and [`NoGetINFO`](#nogetinfo) extensions.
+
+#### `$Get`
+```
+$Get file$offset|
+```
+ 
+Contexts: C-C
+
+`file` is the remote location (including path) of the file.
+
+`offset` is the byte offset to start at for resuming files.
+
+Example:
+```
+$Get C:/Uploads/myfile.txt$15|
+```
+
+Superseded by [`$ADCGET`](#adcget).
+
+#### `$Send`
+```
+$Send|
+```
+ 
+Contexts: C-C
+
+This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
+
+Superseded by [`$ADCSND`](#adcsnd).
+
+#### `$FileLength`
+```
+$FileLength file_size|
+```
+ 
+Contexts: C-C
+
+This command is used as a way to provide the size of the file requested.
+
+Superseded by [`$ADCSND`](#adcsnd).
+
+#### `$GetListLen`
+```
+$GetListLen|
+```
+ 
+Contexts: C-C
+
+Get file list size.
+
+Superseded by [`XmlBZList`](#xmlbzlist) and [`$ADCGET`](#adcget).
+
+#### `$ListLen`
+```
+$ListLen file_size|
+```
+ 
+Contexts: C-C
+
+This command is used as a way to provide the size of the file list of the client.
+
+Superseded by [`XmlBZList`](#xmlbzlist) and [`$ADCSND`](#adcsnd).
+
+#### `$MultiConnectToMe`
 ```
 $MultiConnectToMe remote_nick sender_ip:sender_port
 ```
@@ -1096,7 +1123,9 @@ Example:
 $MultiConnectToMe peter 192.168.0.138:19346
 ```
 
-### `$MultiSearch`
+Not used by any implementations.
+
+#### `$MultiSearch`
 ```
 $MultiSearch ip:port search_string|
 ```
@@ -1106,6 +1135,8 @@ This command is a client side command to take advantage of hub linking feature i
 This command is used in conjunction with `$MultiConnectToMe`.
 
 For syntax on the parameters, see `$Search`.
+
+Not used by any implementations.
 
 ## Standard extensions
 
@@ -1145,7 +1176,16 @@ $Supports UserCommand NoGetINFO NoHello UserIP2 TTHSearch ZPipe0 GetZBlock|
 ### `NoHello`
 Contexts: C-H
 
-This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough. `$Hello` is still accepted, for adding bots to the user list. DC++ still sends a `$GetNickList` to indicate that it is interested in the user list. During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick was accepted.
+This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it
+when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough.
+
+`$Hello` is still accepted for adding bots to the user list, but implementations tend to use
+[`$MyINFO`](#myinfo) and/or [`$BotList`](#botlist) so `$Hello` is considered deprecated
+for this purpose.
+
+Clients should still send a `$GetNickList` to indicate that it is interested in the user list.
+During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick
+was accepted.
 
 Add `NoHello` to the `$Supports` to indicate support for this.
 
@@ -1164,6 +1204,30 @@ Contexts: H-C
 The hub topic, be it current discussion topic or general theme of the hub, which allow users to quickly see what the discussion and file sharing themes are. Hub pingers frequently use this message for hub related information. 
 
 Add `HubTopic` to the `$Supports` to indicate support for this.
+
+### `SaltPass`
+```
+$GetPass salt|
+$MyPass hashed_pass|
+```
+
+Contexts: C-H, H-C
+
+This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
+
+The random data should be Base32 encoded.
+
+The data that is sent back in the `$MyPass` shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
+
+Add `SaltPass` to the `$Supports` to indicate support for this.
+
+The algorithm here is a port from ADC's `GPA`/`PAS`.
+
+Example
+```
+$GetPass salt|
+$MyPass hashed_pass|
+```
 
 ### `$UserIP` extension (`UserIP2`)
 ```
@@ -1366,29 +1430,44 @@ The naming scheme is valid in all types (i e also for getting TTH leaves)
 
 Add `TTHF` to the `$Supports` to indicate support for this.
 
-### `SaltPass`
+### `ADCGet`
+
+Contexts: C-C
+
+Support for `ADCGet` imply support for both  [`$ADCGET`](#adcget) and [`$ADCSND`](#adcsnd).
+
+It supersedes [`$Get`](#get) and [`$Send`](#send), but implementations should be ready to
+accept both versions.
+
+Add `ADCGet` to the `$Supports` to indicate support for this. 
+
+#### `$ADCGET`
 ```
-$GetPass salt|
-$MyPass hashed_pass|
+$ADCGET type identifier start_pos bytes flag0...flagN|
 ```
 
-Contexts: C-H, H-C
+Contexts: C-C
 
-This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
+This is a port of the ADC approach of signifying the request. `start_pos` counts 0 as the first byte.
 
-The random data should be Base32 encoded.
+`bytes` may be set to `-1` to indicate that the sending client should fill it in with the number of bytes needed to complete the file from `start_pos`.
 
-The data that is sent back in the `$MyPass` shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
+`type` is a `[a-zA-Z0-9]+` string that specifies the namespace for identifier and clients should recognize the type `file`.
 
-Add `SaltPass` to the `$Supports` to indicate support for this.
+`file` transfers transfer the file data in binary, starting at `start_pos` and sending `bytes` bytes. Identifying must come from the namespace of the current hash.
 
-The algorithm here is a port from ADC's `GPA`/`PAS`.
+`flag0...flagN` is a reference to the fields in ADC's `GET` command. Fields available for `GET` can also be added here in the same way as in ADC.
 
-Example
+#### `$ADCSND`
 ```
-$GetPass salt|
-$MyPass hashed_pass|
+$ADCSND type identifier start_pos bytes|
 ```
+
+Contexts: C-C
+
+This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
+
+This is a port of the ADC approach of signifying sending. The parameters correspond to the `ADCGET` parameters except that if `bytes` equals `-1` it must be replaced by the number of bytes needed to complete the file starting at `start_pos`.
 
 ### TLS
 This feature is used to indicate support for TLS encrypted client-client connections.
@@ -1419,34 +1498,6 @@ Example:
 ```
 $BotList marie| 
 ```
-
-### `$ADCGET`
-```
-$ADCGET type identifier start_pos bytes flag0...flagN|
-```
-
-Contexts: C-C
-
-This is a port of the ADC approach of signifying the request. `start_pos` counts 0 as the first byte. `bytes` may be set to `-1` to indicate that the sending client should fill it in with the number of bytes needed to complete the file from `start_pos`. `type` is a `[a-zA-Z0-9]+` string that specifies the namespace for identifier and clients should recognize the type `file`.
-
-`file` transfers transfer the file data in binary, starting at `start_pos` and sending `bytes` bytes. Identifying must come from the namespace of the current hash.
-
-`flag0...flagN` is a reference to the fields in ADC's `GET` command. Fields available for `GET` can also be added here in the same way as in ADC.
-
-Add `ADCGet` to the `$Supports` to indicate support for this. Support for `ADCGet` imply support for both `$ADCGET` and `$ADCSND`.
-
-### `$ADCSND`
-```
-$ADCSND type identifier start_pos bytes|
-```
-
-Contexts: C-C
-
-This is used as a way to specify that the file should be sent. The uploader should proceed to stream the amount of bytes requested previously.
-
-This is a port of the ADC approach of signifying sending. The parameters correspond to the `ADCGET` parameters except that if `bytes` equals `-1` it must be replaced by the number of bytes needed to complete the file starting at `start_pos`.
-
-Add `ADCGet` to the `$Supports` to indicate support for this. Support for `ADCGet` imply support for both `$ADCGET` and `$ADCSND`.
 
 ### `$UserIP`
 ```
@@ -1671,7 +1722,7 @@ Implementations supporting `ACTM` must reply to incoming `$ConnectToMe` and `$Re
 
 During requests, the clients send a 4-digit hexadecimmal ID. This ID is an incremental number that is given out for each `$CTM` that it sent. When a connection between two clients is established, the other party must echo back this 4-digit ID. This is done after `$Supports` but before `$Direction`. If the 4-digit ID is not any of the unhandled IDs given out by the requesting client, it must signal `$Error Invalid ID` and disconnect.
 
-#### `CTM`
+#### `$CTM`
 ```
 $CTM client2_nick$client1_port$id|
 $CTM client1_ip$client1_port$id|
@@ -1693,7 +1744,7 @@ Client 2 to client 1:
 $CTM id|
 ```
 
-#### `RCTM`
+#### `$RCTM`
 ```
 $RCTM client2_nick|
 ```
