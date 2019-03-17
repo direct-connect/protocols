@@ -21,7 +21,9 @@
   * [`$Canceled`](#canceled)
   * [`$BadPass`](#badpass)
   * [`$HubIsFull`](#hubisfull)
+  * [`$ValidateNick`](#validatenick)
   * [`$ValidateDenide`](#validatedenide)
+  * [`$MyNick`](#mynick)
   * [`$MaxedOut`](#maxedout)
   * [`$Failed`](#failed)
   * [`$Error`](#error)
@@ -80,10 +82,7 @@
   * [`$GetZBlock`](#getzblock)
   * [`$UGetBlock`](#ugetblock)
   * [`$UGetZBlock`](#ugetzblock)
-  * [`$GetTestZBlock`](#gettestzblock)
   * [`$Sending`](#sending)
-  * [`$ClientID`](#clientid)
-  * [`$GetCID`](#getcid)
   * [`ChatOnly`](#chatonly)
   * [`Minislots`](#minislots)
   * [TTHL](#tthl)
@@ -92,7 +91,6 @@
     + [`$CTM`](#ctm)
     + [`$RCTM`](#rctm)
   * [`BZList`](#bzlist)
-  * [`CHUNK`](#chunk)
   * [`OpPlus`](#opplus)
   * [`Feed`](#feed)
   * [IPv4](#ipv4)
@@ -105,6 +103,9 @@
   * [`$Capabilities`](#capabilities)
   * [`$IN`](#in)
   * [`$Z`](#z)
+  * [`CHUNK`](#chunk)
+  * [`$GetTestZBlock`](#gettestzblock)
+  * [`ClientID`](#clientid)
   * [`QuickList`](#quicklist)
 - [Examples](#examples)
   * [Client – Hub connection](#client-%E2%80%93-hub-connection)
@@ -160,7 +161,7 @@ The key aspect here is the two phrases `is kicking` and `because:`. Including th
 Note that the hub will not actually treat this as a kick.
 
 ### Reference to hub in `$Lock`
-To identify the source of the hub in a client - client connection, some clients add a reference to the hub in the `$Lock` that is sent, where the information is placed in the `Pk` parameter.
+To identify the source of the hub in a client - client connection, some clients add a reference to the hub in the [`$Lock`](#lock) that is sent, where the information is placed in the `Pk` parameter.
 
 This information can also be provided in a client - hub connection.
 
@@ -175,7 +176,7 @@ There are two ways protocol delimiters are displayable (dollar sign, pipe etc);
 #### Method 1
 By using `/%DCNXXX%/` where `XXX` is the decimal number for an ASCII character. 
 
-This escape sequence method is used by all implementations for the `$Key`/`$Lock` sequence (see below). This is also used by multiple implementations for normal viewing purposes (e.g. in a chat message). 
+This escape sequence method is used by all implementations for the [`$Lock`](#lock)/[`$Key`](#key) sequence (see below). This is also used by multiple implementations for normal viewing purposes (e.g. in a chat message). 
 
 This escape sequence predates the second method listed below. 
 
@@ -200,7 +201,7 @@ By using the HTML equivalent of the character.
 
 This escape sequence was created in and is used by DC++.
 
-Note that DC++ uses the first method for the `$Key`/`$Lock` sequence. DC++ uses this method for displayment purposes (e.g. chat messages).
+Note that DC++ uses the first method for the [`$Lock`](#lock)/[`$Key`](#key) sequence. DC++ uses this method for displayment purposes (e.g. chat messages).
 
 The following escape sequences exist for this method;
 
@@ -220,7 +221,7 @@ After the first NMDC client and hub was introduced, others began to create their
 
 This exchange is typically referenced as a pseudo-Diffie-Hellman key exchange for its similarity, although they are not equivalent.
 
-The `$Key` and `$Lock` commands are not listed as extensions as they exist in at least NMDC hub 1.0.25 and NMDC client 1.0 Preview Build 9.1.
+The [`$Key`](#key) and [`$Lock`](#lock) commands are not listed as extensions as they exist in at least NMDC hub 1.0.25 and NMDC client 1.0 Preview Build 9.1.
 
 ## Security Considerations
 
@@ -238,7 +239,7 @@ reconnect only to hubs to which they have initially connected once
 and by providing upon connection referrer information regarding which
 hub has relayed to them the IP and port to which they are connecting.
 
-See also "Reference to hub in `$Lock`".
+See also [Reference to hub in `$Lock`](#reference-to-hub-in-lock).
 
 ### Case-sensitivity Mismatches and Duplicated Shares Entries
 
@@ -302,9 +303,10 @@ Example:
 
 #### Protocol error messages
 
-On earlier protocol stages, suck as `Lock`/`Key` handshake, `ValidateNick`, `GetPass` and
-others, the hub won't usually send an `$Error` or `$Failed` messages, and instead will
-send a regular chat message followed by a connection close.
+On earlier protocol stages, such as [`$Lock`](#lock)/[`$Key`](#key) handshake,
+[`$ValidateNick`](#validatenick), [`$GetPass`](#getpass) and others, the hub won't usually
+send an [`$Error`](#error) or [`$Failed`](#failed) messages, and instead will send a regular
+chat message followed by a connection close.
 
 | Client | Hub
 |--- |---
@@ -421,6 +423,8 @@ Contexts: H-C
 
 Request that the client send a password that correspond to a user account (matched by the user's nick name).
 
+See also [`SaltPass`](#saltpass) extension.
+
 ### `$MyPass`
 ```
 $MyPass password|
@@ -434,6 +438,8 @@ Example:
 ```
 $MyPass qwerty|
 ```
+
+See also [`SaltPass`](#saltpass) extension that allows to hash the password.
 
 ### `$LogedIn`
 ```
@@ -458,17 +464,17 @@ Contexts: C-C
 
 This command is used as a way to decide which party should be allowed to download. 
 
-The `direction` is either `Upload` or `Download`, depending on whether the connection request is a `ConnectToMe` or `ReverseConnectToMe`.
+The `direction` is either `Upload` or `Download`, depending on whether the connection request is a [`$ConnectToMe`](#connecttome) or [`$RevConnectToMe`](#revconnecttome).
 
 The `number` is a random number (above 0), typically between 1 and 32767. If both clients want to download, the client with the highest number gets to start downloading first. If the numbers are equal, the connection is closed. 
 
 This command should be sent;
 
-* After a `$Key` command or
+* After a [`$Key`](#key) command or
 
-* After a `$Lock` command with `EXTENDED` information
+* After a [`$Lock`](#lock) command with `EXTENDED` information
 
-I.e., if the `$Lock` is `EXTENDED`, `$Direction` MUST be sent after the `$Lock` command and not the `$Key` command.
+I.e., if the [`$Lock`](#lock) is `EXTENDED`, `$Direction` MUST be sent after the [`$Lock`](#lock) command and not the [`$Key`](#key) command.
 
 Implementation note: The highest number DC++ sends is 32767 (2^15-1, 0x7FFF) as the Neo-Modus Direct Connect client will disconnect if it receives a higher number. Clients can send a higher value, in risk of losing compatibility.
 
@@ -493,7 +499,7 @@ Contexts: C-C
 
 This command is used as way to indicate that the transfer of a file should be cancelled prematurely.
 
-This command is sent by the downloader. When the uploader receives the message, it should stop sending data followed by a `$Canceled`. It is possible that some implementations continue to send some data after the `$Cancel` and `$Canceled`; the downloader should discard this data.
+This command is sent by the downloader. When the uploader receives the message, it should stop sending data followed by a [`$Canceled`](#canceled). It is possible that some implementations continue to send some data after the `$Cancel` and [`$Canceled`](#canceled); the downloader should discard this data.
 
 This command was only implemented in NMDC v.1 and not in subsequent version or in other clients.
 
@@ -534,6 +540,31 @@ Contexts: H-C
 
 Indicates that the hub has reached its maximum amount of users and will not accept additional users. 
 
+### `$ValidateNick`
+```
+$ValidateNick nick|
+```
+ 
+Contexts: C-H
+
+The request is sent during the client-hub handshake to check if the nickname is available.
+
+The hub will either respond with [`$Hello`](#hello) on success or [`$ValidateDenide`](#validatedenide) on failure.
+
+Example (success):
+```
+$ValidateNick john|
+
+$Hello john|
+```
+
+Example (failure):
+```
+$ValidateNick john|
+
+$ValidateDenide john|
+```
+
 ### `$ValidateDenide`
 ```
 $ValidateDenide nick|
@@ -546,6 +577,20 @@ The requested nick name is already taken by or is reserved for another user. The
 Example:
 ```
 $ValidateDenide john|
+```
+
+### `$MyNick`
+```
+$MyNick nick|
+```
+ 
+Contexts: C-C
+
+The request is sent during the client-client handshake to identify connecting peers.
+
+Example:
+```
+$MyNick john|
 ```
 
 ### `$MaxedOut`
@@ -566,7 +611,7 @@ $Failed message|
 
 Contexts: C-H, C-H-C, C-C, H-C
 
-General purpose fail command. Implementations may use this command to signify files that are not available. `$Failed` is usually sent in response to a `GetZBlock`, `UGetBlock` and `UGetZBlock`.
+General purpose fail command. Implementations may use this command to signify files that are not available. `$Failed` is usually sent in response to a [`$GetZBlock`](#getzblock), [`$UGetBlock`](#ugetblock) and [`$UGetZBlock`](#ugetzblock).
 
 ### `$Error`
 ```
@@ -575,7 +620,7 @@ $Error message|
 
 Contexts: C-H, C-H-C, C-C, H-C
 
-General purpose fail command. Implementations may use this command to signify files that are not available. `$Failed` is usually sent in response to a `GetZBlock`, `UGetBlock` and `UGetZBlock`.
+General purpose fail command. Implementations may use this command to signify files that are not available. `$Error` is usually sent in response to a [`$GetZBlock`](#getzblock), [`$UGetBlock`](#ugetblock) and [`$UGetZBlock`](#ugetzblock).
 
 ### `$Search`
 ```
@@ -641,7 +686,7 @@ Contexts: C-H-C, C-C
 
 Sent by a client when a match to a search is found.
 
-If the `$Search` was a passive one, the `$SR` is returned via the hub connection (TCP). In this case, `<0x05>target_nick` must be included on the end of the `$SR`. The hub must strip the deliminator and `<target_nick>` before sending the `$SR` to `target_nick`. If the search was active, it is sent to the IP address and port specified in the `$Search` via UDP.
+If the [`$Search`](#search) was a passive one, the `$SR` is returned via the hub connection (TCP). In this case, `<0x05>target_nick` must be included on the end of the `$SR`. The hub must strip the deliminator and `<target_nick>` before sending the `$SR` to `target_nick`. If the search was active, it is sent to the IP address and port specified in the [`$Search`](#search) via UDP.
 
 Result is one of the following:
 
@@ -801,9 +846,11 @@ $Version version|
  
 Contexts: C-H
 
-Sent by clients to the hub after `$Hello` is received to denote the version used for the client. This command is nowadays not used to denote the client's version but was used frequently by the original Neo-Modus Direct Connect (NMDC) client. The last version of the Neo-Modus client was 1.0091 and is what is commonly used by current clients. The default system locale is used, which means the period may be a comma etc. 
+Sent by clients to the hub after [`$Hello`](#hello) is received to denote the version used for the client. This command is nowadays not used to denote the client's version but was used frequently by the original Neo-Modus Direct Connect (NMDC) client. The last version of the Neo-Modus client was 1.0091 and is what is commonly used by current clients. The default system locale is used, which means the period may be a comma etc. 
 
 Version is `1.0091` by default.
+
+The implementations should also accept `1,0091` and `1,0098`.
 
 ### `$HubName`
 ```
@@ -812,7 +859,7 @@ $HubName name|
 
 Contexts: H-C
 
-The name of the hub that should be displayed by clients to users. The name is sometimes interpreted as the "topic" (current discussion topic or general theme of the hub), in cases where `$HubTopic` does not exist. The hub could send different names to different users, as well as the ability for multiple hubs (that are inherently separated) to have the same name, so the client should not use the hub name as a unique identifier.
+The name of the hub that should be displayed by clients to users. The name is sometimes interpreted as the "topic" (current discussion topic or general theme of the hub), in cases where [`$HubTopic`](#hubtopic) does not exist. The hub could send different names to different users, as well as the ability for multiple hubs (that are inherently separated) to have the same name, so the client should not use the hub name as a unique identifier.
 
 ### `$GetNickList`
 ```
@@ -830,7 +877,7 @@ $OpList nick$$nick2$$nick3[...]|
 
 Contexts: H-C
 
-Providing the full listing of operators. This is a subset of the users provided in `$NickList`. List is separated by `$$`. 
+Providing the full listing of operators. This is a subset of the users provided in [`$NickList`](#nicklist) or [`$MyINFO`](#myinfo). List is separated by `$$`. 
 
 The following should be sent if there are no operators online:
 ```
@@ -858,7 +905,7 @@ $Close victim|
  
 Contexts: C-H-C
 
-Requests that the hub kicks a user (terminates the connection to the user), but no message will be sent to the victim client. All other information is similar to `$Kick`.
+Requests that the hub kicks a user (terminates the connection to the user), but no message will be sent to the victim client. All other information is similar to [`$Kick`](#kick).
 
 ### `$OpForceMove`
 ```
@@ -867,7 +914,7 @@ $OpForceMove $Who:victim$Where:address$Msg:reason|
 
 Contexts: C-H-C, H-C
 
-A request made by privileged users to redirect a user from the hub. The message should be sent to the offending user in a main chat message or in a `$To` message.
+A request made by privileged users to redirect a user from the hub. The message should be sent to the offending user in a main chat message or in a [`$To`](#to) message.
 
 `victim` is nick name of the victim.
 
@@ -887,7 +934,7 @@ $ForceMove address|
 
 Contexts: C-H-C, H-C
 
-Informs the user that it should close its connection and instead connect to the address specified. Many implementations will send `$ForceMove` followed by a main chat message or a `$To` message.
+Informs the user that it should close its connection and instead connect to the address specified. Many implementations will send [`$ForceMove`](#forcemove) followed by a main chat message or a [`$To`](#to) message.
 
 Example:
 ```
@@ -916,11 +963,11 @@ $Lock lock Pk=pk|
  
 Contexts: H-C, C-C, L-H
  
-This is a mechanism to request 'certification' for verification. The lock is a command that added by NMDC to keep other clients (such as DC++) from being able to use NMDC hubs. The lock require a response (given in a `$Key`) that needs to be calculated, as per the lock's data. Hubs are not required to check the validity of the response, but must still send it.
+This is a mechanism to request 'certification' for verification. The lock is a command that added by NMDC to keep other clients (such as DC++) from being able to use NMDC hubs. The lock require a response (given in a [`$Key`](#key)) that needs to be calculated, as per the lock's data. Hubs are not required to check the validity of the response, but must still send it.
 
 Note this command, and its use, are used for all connections. 
 
-This command should be the first to be sent in a client to hub connection. This command should be sent after both have used `$MyNick` in a client to client connection. Both clients (in a client to client connection) should send $Lock.
+This command should be the first to be sent in a client to hub connection. This command should be sent after both have used [`$MyNick`](#mynick) in a client to client connection. Both clients (in a client to client connection) should send $Lock.
 
 The lock data is a sequence of random characters, excluding space (` `), dollar sign (`$`) and a pipe (`|`).
 
@@ -936,7 +983,7 @@ Implementation note: In NMDC hub;
 
 Example:
 
-See `$Supports` for the use of `EXTENDED`.
+See [`$Supports`](#supports) for the use of `EXTENDED`.
 
 ```
 $Lock EXTENDEDPROTOCOLABCABCABCABCABCABC Pk=DCPLUSPLUS0.706ABCABC|
@@ -1020,7 +1067,7 @@ Request (general) client information.
 
 `<nick>` is this sending client's nick. 
 
-`<other_nick>` is the nick of the user that `<nick>` wants to know about. The server must respond with exactly the `$MyINFO` command sent by `<other_nick>` to the hub. 
+`<other_nick>` is the nick of the user that `<nick>` wants to know about. The server must respond with exactly the [`$MyINFO`](#myinfo) command sent by `<other_nick>` to the hub. 
  
 Example:
 ```
@@ -1112,9 +1159,9 @@ Superseded by [`XmlBZList`](#xmlbzlist) and [`$ADCSND`](#adcsnd).
 $MultiConnectToMe remote_nick sender_ip:sender_port
 ```
 
-This command is a client side command to take advantage of hub linking feature in the NeoModus Direct Connect Hub software. When a local client sends `$MultiConnectToMe` to the hub, it is forwarded on to every hub which is linked to by UDP, as in the `$Search` hub<->hub protocol command. 
+This command is a client side command to take advantage of hub linking feature in the NeoModus Direct Connect Hub software. When a local client sends `$MultiConnectToMe` to the hub, it is forwarded on to every hub which is linked to by UDP, as in the [`$Search`](#search) hub<->hub protocol command. 
 
-This command is used in conjunction with $MultiSearch. 
+This command is used in conjunction with [`$MultiSearch`](#multisearch). 
 
 This support was problematic, as the NeoModus Direct Connect Hub did not provide a way to indicate that it was part of a link, and further did not provide the ability to broadcast joins and parts of remote users. Some implementations would send `$MultiConnectToMe` commands even when the remote user was offline.
 
@@ -1132,9 +1179,9 @@ $MultiSearch ip:port search_string|
 
 This command is a client side command to take advantage of hub linking feature in the NeoModus Direct Connect Hub software. When a local client sends `$MultiSearch` to the hub, it is forwarded on to every hub which is linked to by UDP, as in the `$Search` hub<->hub protocol command. 
 
-This command is used in conjunction with `$MultiConnectToMe`.
+This command is used in conjunction with [`$MultiConnectToMe`](#multiconnecttome).
 
-For syntax on the parameters, see `$Search`.
+For syntax on the parameters, see [`$Search`](#search).
 
 Not used by any implementations.
 
@@ -1154,9 +1201,9 @@ Contexts: C-H, H-C, C-C
 
 This command is used to negotiate and notify about protocol extensions. 
 
-If a client or hub implements an extension, the `$Lock` command MUST start with `EXTENDEDPROTOCOL`.
+If a client or hub implements an extension, the [`$Lock`](#lock) command MUST start with `EXTENDEDPROTOCOL`.
 
-This command MUST be sent before `$Key`. 
+This command MUST be sent before [`$Key`](#key). 
 
 Implementations should only send extension specific messages if the other party has signaled support for it.
 
@@ -1164,7 +1211,7 @@ There must be at least 1 (one) supported extension.
 
 For client extensions, the extension name should be the same as the command name.
 
-Note that DC++ 0.XXX added a space after the last extension. I.e., the first form is the original implementation of `$Supports`.
+Note that DC++ 0.XXX added a space after the last extension. I.e., the first form is the original implementation of [`$Supports`](#supports).
 
 Example:
 
@@ -1176,21 +1223,23 @@ $Supports UserCommand NoGetINFO NoHello UserIP2 TTHSearch ZPipe0 GetZBlock|
 ### `NoHello`
 Contexts: C-H
 
-This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it
-when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough.
+This indicates that the client doesn't need either [`$Hello`](#hello) or [`$NickList`](#nicklist) to be sent to it
+when connecting to a hub. To populate its user list, a [`$MyINFO`](#myinfo) for each user is enough.
 
-`$Hello` is still accepted for adding bots to the user list, but implementations tend to use
-[`$MyINFO`](#myinfo) and/or [`$BotList`](#botlist) so `$Hello` is considered deprecated
+[`$Hello`](#hello) is still accepted for adding bots to the user list, but implementations tend to use
+[`$MyINFO`](#myinfo) and/or [`$BotList`](#botlist) so [`$Hello`](#hello) is considered deprecated
 for this purpose.
 
-Clients should still send a `$GetNickList` to indicate that it is interested in the user list.
-During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick
+Clients should still send a [`$GetNickList`](#getnicklist) to indicate that it is interested in the user list.
+During login, hubs must still send [`$Hello`](#hello) after [`$ValidateNick`](#validatenick) to indicate that the nick
 was accepted.
 
 Add `NoHello` to the `$Supports` to indicate support for this.
 
 ### `NoGetINFO`
-This indicates that the hub doesn't need to receive a `$GetINFO` from a client to send out `$MyINFO`. This is a variation of the `QuickList` proposal that is easy to implement and does half of `QuickList`'s job.
+This indicates that the hub doesn't need to receive a [`$GetINFO`](#getinfo) from a client to send out [`$MyINFO`](#myinfo).
+
+This is a variation of the `QuickList` proposal that is easy to implement and does half of [`QuickList`](#quicklist)'s job.
 
 Add `NoGetINFO` to the `$Supports` to indicate support for this.
 
@@ -1213,11 +1262,11 @@ $MyPass hashed_pass|
 
 Contexts: C-H, H-C
 
-This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
+This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the [`$GetPass`](#getpass) command.
 
 The random data should be Base32 encoded.
 
-The data that is sent back in the `$MyPass` shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
+The data that is sent back in the [`$MyPass`](#mypass) shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
 
 Add `SaltPass` to the `$Supports` to indicate support for this.
 
@@ -1236,7 +1285,7 @@ $UserIP nick1 IP1$$nick2 IP2[...]|
  
 Contexts: H-C
 
-This is similar to the other `$UserIP` command, except that there is no request. The hub will, if the client signals support for `UserIP2`, send all users upon login. 
+This is similar to the other [`$UserIP`](#userip) command, except that there is no request. The hub will, if the client signals support for `UserIP2`, send all users upon login. 
 
 The list consist of each user and their IP, including the connecting client. The hub should send each new client's IP when they login. 
 
@@ -1279,7 +1328,7 @@ $ZOn|blob
 Contexts: H-C
 
 This command's intention is to compress (with ZLib) data to decrease bandwidth use.
-The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
+The `blob` uncompressed is one or more commands, e.g. a [`$Search`](#search) followed by a [`$MyINFO`](#myinfo).
 
 Compression algorithm shall be LZ77.
 
@@ -1363,7 +1412,7 @@ $UserCommand 255 1|
 ```
 
 ### `TTHSearch`
-This indicates that the client support searching for queued files by TTH. See `$Search` for details.
+This indicates that the client support searching for queued files by TTH. See [`$Search`](#search) for details.
 
 Add `TTHSearch` to the `$Supports` to indicate support for this.
 
@@ -1393,10 +1442,10 @@ compressed using bzip2.
 
 To retrieve unicode files from the file list, the client may also support
 the above `GetZBlock` and its utf-8 derivatives. Support for `XmlBZList`
-implies support for `$UGetBlock`, so files are guaranteed to be retrievable.
+implies support for [`$UGetBlock`](#ugetblock), so files are guaranteed to be retrievable.
 
-`$UGetBlock` follows `$UGetZBlock` semantics, but without compressing 
-the data. The `bytes` parameter of `$Sending` specifies how many bytes
+[`$UGetBlock`](#ugetblock) follows [`$UGetZBlock`](#ugetzblock) semantics, but without compressing 
+the data. The `bytes` parameter of [`$Sending`](#sending) specifies how many bytes
 will be sent.
 
 Don't touch `Version`. Add your own, with a different name, if you feel 
@@ -1472,7 +1521,7 @@ This is a port of the ADC approach of signifying sending. The parameters corresp
 ### TLS
 This feature is used to indicate support for TLS encrypted client-client connections.
 
-Implementations shall add an `S` to the (TLS) port in a `$ConnectToMe`.
+Implementations shall add an `S` to the (TLS) port in a [`$ConnectToMe`](#connecttome).
 
 Add `TLS` to the `$Supports` to indicate support for this.
 
@@ -1490,7 +1539,7 @@ $BotList nick$$nick2$$nick3[...]|
 
 Contexts: H-C
 
-Providing the full listing of bots. This is a subset of the users provided in `$NickList`. List is separated by `$$`.
+Providing the full listing of bots. This is a subset of the users provided in [`$NickList`](#nicklist) or [`$MyINFO`](#myinfo). List is separated by `$$`.
 
 Add `BotList` to the `$Supports` to indicate support for this.
 
@@ -1563,11 +1612,11 @@ This allow a client to change the nick without logging out and logging back in.
 
 Add `NickChange` to the `$Supports` to indicate support for this.
 
-The client will have to update its own `$MyINFO` string and user list. 
+The client will have to update its own [`$MyINFO`](#myinfo) string and user list. 
 
-The hub will will send `$ClientNick` to the client to validate that the change is done. To all other users, a `$Quit old_nick` will be sent and a `$MyINFO $ALL` of the user with the new nick.
+The hub will will send [`$ClientNick`](#clientnick) to the client to validate that the change is done. To all other users, a `$Quit old_nick` will be sent and a `$MyINFO $ALL` of the user with the new nick.
 
-If the user is an operator, `$OpList` will be updated appropriately as well.
+If the user is an operator, [`$OpList`](#oplist) will be updated appropriately as well.
 
 ### `$ClientNick`
 ```
@@ -1576,7 +1625,7 @@ $ClientNick new_nick|
 
 Contexts: H-C
 
-This validates that the hub has acknowledged the change of nick during runtime that was initiated by `$NickChange`.
+This validates that the hub has acknowledged the change of nick during runtime that was initiated by [`$NickChange`](#nickchange).
 
 `new_nick` is the new user nick.
 
@@ -1635,7 +1684,7 @@ Contexts: C-C
 
 The other client then responds `$Sending <bytes>|<compressed data>`, if the sending is ok or `$Failed <errordescription>|` if it isn't.
 
-If everything's ok, the data is sent until the whole uncompressed length has been sent. `bytes` specifies how many uncompressed bytes will be sent, not compressed, as the sending client doesn't know how well the file will compress. `$Sending` is needed to be able to distinguish the failure command from file data. Only one roundtrip is done for each block though, minimizing the need for maintaining states.
+If everything's ok, the data is sent until the whole uncompressed length has been sent. `bytes` specifies how many uncompressed bytes will be sent, not compressed, as the sending client doesn't know how well the file will compress. [`$Sending`](#sending) is needed to be able to distinguish the failure command from file data. Only one roundtrip is done for each block though, minimizing the need for maintaining states.
 
 Compression: Compression is done using ZLib (v 1.1.4 in DC++ 0.21's case), 
 using dynamic compression level. The compression level can of course be 
@@ -1643,7 +1692,7 @@ changed by the implementator to reduce CPU usage, or even just store
 compression in the case of non-compressible files, which then works as 
 adler32 check of the transferred data.
 
-Support of `$GetZBlock` also implies support for `$UGetZBlock`.
+Support of `$GetZBlock` also implies support for [`$UGetBlock`](#ugetblock).
 
 ### `$UGetBlock`
 ```
@@ -1652,15 +1701,12 @@ $UGetBlock start bytes filename|
 
 Contexts: C-C
 
-This is the same command as `$GetZBlock` except this command is uncompressed and the filename is UTF-8 encoded.
+This is the same command as [`$GetZBlock`](#getzblock) except this command is uncompressed and the filename is UTF-8 encoded.
 
-The `filename` is encoded as UTF-8, which allows filenames to use characters that are not in the system's encoding. `$UGetBlock` must be implemented if `XmlBZList` is advertised.
+The `filename` is encoded as UTF-8, which allows filenames to use characters that are not in the system's encoding. `$UGetBlock` must be implemented if [`XmlBZList`](#xmlbzlist) is advertised.
 
 ### `$UGetZBlock`
-This is the same as `$UGetBlock` except that the stream is compressed.
-
-### `$GetTestZBlock`
-This command is deprecated and was a test command during the development of `$GetZBlock`. Implementations should not use this command.
+This is the same as [`$UGetBlock`](#ugetblock) except that the stream is compressed.
 
 ### `$Sending`
 ```
@@ -1671,20 +1717,14 @@ Contexts: C-C
 
 `diff` is the difference between the end byte and start byte. If the requested bytes was `-1` then diff should be omitted.
 
-This is sent as a response to `$GetZBlock`, `$UGetBlock` and `$UGetZBlock`.
+This is sent as a response to [`$GetZBlock`](#getzblock), [`$UGetBlock`](#ugetblock) and [`$UGetZBlock`](#ugetzblock).
 
 The start and end byte are 0-based; the first byte of a file is assumed to be the byte number 0.
-
-### `$ClientID`
-Add `ClientID` to the `$Supports` to indicate support for this.
-
-### `$GetCID`
-Add `ClientID` to the `$Supports` to indicate support for this.
 
 ### `ChatOnly`
 Contexts: C-H
 
-This indicates that the client only support chat capabilities to allow the client to bypass hub rules (that relate to file sharing). The client should be disconnected if it sends a `$Search`, `$ConnectoMe` or `$RevConnect`.
+This indicates that the client only support chat capabilities to allow the client to bypass hub rules (that relate to file sharing). The client should be disconnected if it sends a [`$Search`](#search), [`$ConnectToMe`](#connecttome) or [`$RevConnectToMe`](#revconnecttome).
 
 Add `ChatOnly` to the `$Supports` to indicate support for this.
 
@@ -1709,18 +1749,18 @@ Add `TTHL` to the `$Supports` to indicate support for this.
 
 ### `ZLIG`
 
-Supporting this means that zlib compressed `$ADCGET` transfers are supported.
+Supporting this means that zlib compressed [`ADCGet`](#adcget) transfers are supported.
 
 Add `ZLIG` to the `$Supports` to indicate support for this.
 
 ### `ACTM`
-Advanced Connect To Me (`ACTM`) is a replacement for the `$ConnectToMe` and `$RevConnectToMe` commands.
+Advanced Connect To Me (`ACTM`) is a replacement for the [`$ConnectToMe`](#connecttome) and [`$RevConnectToMe`](#revconnecttome) commands.
 
 Add `ACTM` to the `$Supports` to indicate support for this.
 
-Implementations supporting `ACTM` must reply to incoming `$ConnectToMe` and `$RevConnectToMe` requests, but will themselves always send `$CTM` or `$RCTM`.
+Implementations supporting `ACTM` must reply to incoming [`$ConnectToMe`](#connecttome) and [`$RevConnectToMe`](#revconnecttome) requests, but will themselves always send [`$CTM`](#ctm) or [`$RCTM`](#rctm).
 
-During requests, the clients send a 4-digit hexadecimmal ID. This ID is an incremental number that is given out for each `$CTM` that it sent. When a connection between two clients is established, the other party must echo back this 4-digit ID. This is done after `$Supports` but before `$Direction`. If the 4-digit ID is not any of the unhandled IDs given out by the requesting client, it must signal `$Error Invalid ID` and disconnect.
+During requests, the clients send a 4-digit hexadecimmal ID. This ID is an incremental number that is given out for each [`$CTM`](#ctm) that it sent. When a connection between two clients is established, the other party must echo back this 4-digit ID. This is done after `$Supports` but before [`$Direction`](#direction). If the 4-digit ID is not any of the unhandled IDs given out by the requesting client, it must signal `$Error Invalid ID` and disconnect.
 
 #### `$CTM`
 ```
@@ -1790,16 +1830,9 @@ Signals support for BZIP2 compressed file list instead of the Huffman encoded li
 
 Add `BZList` to the `$Supports` to indicate support for this.
 
-### `CHUNK`
-This is a protocol extension by Valknut that allows retrieval of sections of a file through a modified `$Get` syntax. The syntax is:
-```
-$Get <filename>$<start-position>$<chunk-size>|
-```
-
-Add `CHUNK` to the `$Supports` to indicate support for this.
-
 ### `OpPlus`
-Characteristics of a hub. Indicates that the hub uses additional commands for operators. For example: `$Ban`, `$TempBan`, `$UnBan`, `$GetBanList`, `$WhoIP`, `$Banned`, `$GetTopic`, `$SetTopic` and more.
+Characteristics of a hub. Indicates that the hub uses additional commands for operators.
+For example: `$Ban`, `$TempBan`, `$UnBan`, `$GetBanList`, `$WhoIP`, `$Banned`, `$GetTopic`, `$SetTopic` and more.
 
 ### `Feed`
 This feature offers additional protocol commands notice. Feature allows you to track all the actions of the individual or all users benefit from logging these actions, and notify operators of the hub acts committed by a newly created chat room.
@@ -1807,11 +1840,11 @@ This feature offers additional protocol commands notice. Feature allows you to t
 ### IPv4
 This feature is used to indicate IPv4 support when a client is connecting from a IPv6 address. 
 
-The hub should send a `$ConnectToMe` to the client, to indicate a download from the hub. The client will connect to the hub address and port as in a normal client to client connection, this time using the client's IPv4 address. The hub should disconnect after it has received the `$MyNick` command.
+The hub should send a [`$ConnectToMe`](#connecttome) to the client, to indicate a download from the hub. The client will connect to the hub address and port as in a normal client to client connection, this time using the client's IPv4 address. The hub should disconnect after it has received the [`$MyNick`](#mynick) command.
 
 The hub should later verify in connection attempts with other IPv4 clients that the IPv4 address matches.
 
-Once the hub has received an IPv4 connection and gathered the IPv4 address, it should set the IPv4 bit in the `$MyINFO` command.
+Once the hub has received an IPv4 connection and gathered the IPv4 address, it should set the IPv4 bit in the [`$MyINFO`](#myinfo) command.
 
 Add IPv4 to the `$Supports` to indicate support for this.
 
@@ -1824,9 +1857,9 @@ If the client has an IPv4 connection, it should also signal the use of IPv4. Cli
 
 The hub is required to set the IPv6 bit in the $MyINFO command.
 
-The connection mode in the `$MyINFO` tag changes from `M:X` where `X` is the connection mode (`A` = Active, `B` = Passive, `5` = SOCKS5) to `M:XY` where `X` is the connection mode of IPv4 and `Y` is the connection mode of IPv6. If a client does not support IPv4 or the IPv4 check failed, the first character will be `N` for not supported.
+The connection mode in the [`$MyINFO`](#myinfo) tag changes from `M:X` where `X` is the connection mode (`A` = Active, `B` = Passive, `5` = SOCKS5) to `M:XY` where `X` is the connection mode of IPv4 and `Y` is the connection mode of IPv6. If a client does not support IPv4 or the IPv4 check failed, the first character will be `N` for not supported.
 
-Add `IP64` to the $Supports to indicate support for this.
+Add `IP64` to the `$Supports` to indicate support for this.
 
 A client that support IPv4 and IPv6 will only use one form when sending messages to a hub. The hub is responsible for translating the command into the correct IPv4/IPv6 address. E.g., if a $Search is sent with a IPv6 address, the hub will send the client's IPv4 address to those who only support IPv4. This minimizes the amount of traffic toward the hub. If a client sent a passive search request, then it is only sent to active users supporting the same TCP/IP protocol. This is regardless if the client is active in the other protocol. I.e., if a passive search request is sent with a IPv4 address, that search request will only be forwarded to IPv4 users and not 'converted' to an IPv6 request, regardless if the client is active in IPv6.
 
@@ -1846,7 +1879,7 @@ Contexts: C-C
 
 This feature is a support for a queue numbering system for client-client connections. See [ADC-Ext QP](http://adc.sourceforge.net/ADC-EXT.html#_qp_upload_queue_notification) for further information on the ADC equivalent.
 
-This feature extends `$MaxedOut` by adding a number after it.
+This feature extends [`$MaxedOut`](#maxedout) by adding a number after it.
 
 Note that there is no feature to announce in `$Supports`.
 
@@ -1915,7 +1948,7 @@ $IN nick$data[$data]|
 
 Contexts: C-H, H-C
 
-This command is designed to replace the static `$MyINFO`. This command consist of separate smaller parts which all have a 1-byte identifier and are separated by a dollar sign (`$`).
+This command is designed to replace the static [`$MyINFO`](#myinfo). This command consist of separate smaller parts which all have a 1-byte identifier and are separated by a dollar sign (`$`).
 
 If a client wishes to remove a part of its `$IN` (say for example its description), it must send this parts identifier immediatly followed by the dollar sign (`$`), indicating it is empty.
 
@@ -1923,7 +1956,7 @@ The order in which parts are sent is free to choose, but tag parts should be gro
 
 Add `IN` to the `$Supports` to indicate support for this.
 
-This command deprecates `$OpList` and `$BotList`.
+This command was meant to deprecate [`$OpList`](#oplist) and [`$BotList`](#botlist).
 
 A client tag has only one identifier indicating it is concerning the tag, but all parts of this tag also have their own 1-byte identifier. In the tag, the parts are delimited with a space (` `).
 
@@ -1985,7 +2018,7 @@ The status is a 32-bit integers where the bits are according to the following ta
 
 Bit 5 and Bit 6 of the 32-bit status flag are used to indicate wether a user is an OP or wether the `$IN` string send by the hubsoft belongs to a bot. These values are read-only and should never be changed by a client. The hubsoft must disconnect for this. If a client connects and has successfully logged in with the correct password, the hubsoft will set bit 5 of the status flag and sends this part to all connected users, including the newly connected OP. The connecting client must save the status flag it received from the hub and use it when updating status such as away and fireball. However, as said, it is not allowed to set or reset bit 5 and bit 6 of the status flag.
 
-Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending `$To` strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. `$To` strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
+Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending [`$To`](#to) strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. [`$To`](#to) strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
 
 Although the extension has a good design, it was never supported by most clients/hubs.
 The extension is no longer seen in the wild.
@@ -1998,7 +2031,7 @@ $Z blob|
 Contexts: H-C
 
 This command's intention was to compress (with ZLib) data to decrease bandwidth use.
-The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
+The `blob` uncompressed is one or more commands, e.g. a [`$Search`](#search) followed by a [`$MyINFO`](#myinfo).
 
 `ZLine` in the `$Supports` indicated support for this.
 
@@ -2011,6 +2044,28 @@ The command added an escaping sequence:
 
 Because an additional escaping was needed, this command was superseded by [`$ZOn`](#zon).
 that doesn't require any escaping.
+
+### `CHUNK`
+This is a protocol extension by Valknut that allows retrieval of sections of a file through a modified [`$Get`](#get) syntax. The syntax is:
+```
+$Get <filename>$<start-position>$<chunk-size>|
+```
+
+Superseded by [`ADCGet`](#adcget).
+
+Add `CHUNK` to the `$Supports` to indicate support for this.
+
+### `$GetTestZBlock`
+This command is deprecated and was a test command during the development of [`$GetZBlock`](#getzblock).
+
+Implementations should not use this command.
+
+### `ClientID`
+Extension was designed to add support for ADC CIDs to NMDC protocol, but the extension was not adopted.
+
+It adds two additional commands: `$ClientID` and `$GetCID`.
+
+Add `ClientID` to the `$Supports` to indicate support for this.
 
 ### `QuickList`
 This extension clarifies the protocol flow, defines the protocol stages and allowed commands
@@ -2036,8 +2091,8 @@ the same meaning as in the internet RFC specs.
 |---
 | A DC connects to QHUB and does nothing
 | QHUB sends $Lock which starts with `EXTENDEDPROTOCOL`
-| QHUB also sends `$HubName`
-| A DC must send `$Key`
+| QHUB also sends [`$HubName`](#hubname)
+| A DC must send [`$Key`](#key)
 | A DC may also send `$Supports QuickList\|` to signal in is in fact a QDC
 | QHUB responds with `$Supports QuickList\|`
 
@@ -2045,28 +2100,28 @@ the same meaning as in the internet RFC specs.
 
 | Description
 |---
-| A QDC may but should not send `$Version`
-| A QDC must send `$MyINFO`
+| A QDC may but should not send [`$Version`](#version)
+| A QDC must send [`$MyINFO`](#myinfo)
 
 ##### Authentication
 
 | Description
 |---
-| QHUB may send `$GetPass`
-| QDC responds with `$MyPass`
-| QHUB may send `$BadPass` and disconnect
-| QHUB may send `$ValidateDenide` and disconnect
+| QHUB may send [`$GetPass`](#getpass)
+| QDC responds with [`$MyPass`](#mypass)
+| QHUB may send [`$BadPass`](#badpass) and disconnect
+| QHUB may send [`$ValidateDenide`](#validatedenide) and disconnect
 
 
 ##### Acceptance
 
 | Description
 |---
-| QHUB may send `$LogedIn` to signal that `H:` should not be incremented
-| QHUB sends all clients `MyINFO` to the QDC
-| QHUB sends `$OpList` to the QDC
-| QHUB may send `$Hello` to all clients but should send it to non QDC only
-| QHUB sends `$MyINFO` to all QDC clients
+| QHUB may send [`$LogedIn`](#logedin) to signal that `H:` should not be incremented
+| QHUB sends all clients [`$MyINFO`](#myinfo) to the QDC
+| QHUB sends [`$OpList`](#oplist) to the QDC
+| QHUB may send [`$Hello`](#hello) to all clients but should send it to non QDC only
+| QHUB sends [`$MyINFO`](#myinfo) to all QDC clients
 
 #### Explanation
 
@@ -2074,25 +2129,25 @@ the same meaning as in the internet RFC specs.
 
 This part has been through some changes. There was an argument of having the client start with `$Supports` and then having the hub respond to that. Having the client start with `$Supports` as a response to `EXTENDEDPROTOCOL` is in a sense much cleaner.
 
-* It has been found that `$HubName` can be sent pretty much at any time. Typically done in conjunction with `$Lock`.
+* It has been found that [`$HubName`](#hubname) can be sent pretty much at any time. Typically done in conjunction with [`$Lock`](#lock).
 
 * `$Supports` are in the same format as in the client protocol; `$Supports <feat1> <feat2> <feat3>|`
 
 ##### Identification
 
-* sending `$MyPass` early has been removed from the spec.
+* sending [`$MyPass`](#mypass) early has been removed from the spec.
 
 ##### Authentication
 
-* As previously mentioned `$GetPass` is only sent if the user has an account and the `$MyPass` was not sent in the identification process. `$BadPass` or `$ValidateDenide` is sent when proper as usual.
+* As previously mentioned [`$GetPass`](#getpass) is only sent if the user has an account and the [`$MyPass`](#mypass) was not sent in the identification process. [`$BadPass`](#badpass) or [`$ValidateDenide`](#validatedenide) is sent when proper as usual.
 
 ##### Acceptance
 
-From testing it has been found that `$Hello` and `$MyINFO` can be sent together without having to wait for a `$GetINFO`.
+From testing it has been found that [`$Hello`](#hello) and [`$MyINFO`](#myinfo) can be sent together without having to wait for a [`$GetINFO`](#getinfo).
 
 * Let the hub decide if the account should be treated as a VIP, i.e. not increment `H:` in the tag, hence it is not mandatory for accounts. A QDC should only respond to this message for account logins only.
 
-* `$OpList` was missing.
+* [`$OpList`](#oplist) was missing.
 
 #### Commands Sent
 
