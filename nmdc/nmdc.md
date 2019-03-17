@@ -8,7 +8,6 @@
   * [Escape sequences](#escape-sequences)
   * [`$Key`/`$Lock` sequence](#keylock-sequence)
 - [Security Considerations](#security-considerations)
-- [URI scheme](#uri-scheme)
 - [Commands](#commands)
   * [Chat message](#chat-message)
   * [`$To`](#to)
@@ -127,6 +126,7 @@ This document uses information from many sources, including but not limited to;
 The initial version of this document was compiled by Fredrik Ullner.
 
 ## General
+* URI scheme is `dchub://`. For more details see the [URI scheme](./nmdc-uri-scheme.txt) document.
 * Most messages begin with a `$` (dollar sign).
 * Most messages end with a `|` (pipe).
 * Command names and parameters use single space (` `) and additional dollar signs as separators. 
@@ -265,9 +265,6 @@ substantially more rapidly for the downloading client than network
 bandwidth would indicate. Client software SHOULD monitor downloads
 for impending storage capacity limits with a view to prevent local
 denials of service resulting from exceeding them.
-
-## URI scheme
-See the [URI scheme](./nmdc-uri-scheme.txt) document following this document.
 
 ## Commands
 
