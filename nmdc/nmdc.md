@@ -68,11 +68,12 @@
     + [`$ADCGET`](#adcget)
     + [`$ADCSND`](#adcsnd)
   * [TLS](#tls)
-- [Extensions (commands)](#extensions-commands)
+- [Extensions](#extensions)
   * [`$BotList`](#botlist)
   * [`$UserIP`](#userip)
-  * [`$BotINFO`](#botinfo)
-  * [`$HubINFO`](#hubinfo)
+  * [Pinger (`BotINFO` and `HubINFO`)](#pinger-botinfo-and-hubinfo)
+    + [`$BotINFO`](#botinfo)
+    + [`$HubINFO`](#hubinfo)
   * [`$NickChange`](#nickchange)
   * [`$ClientNick`](#clientnick)
   * [`FeaturedNetworks`](#featurednetworks)
@@ -83,7 +84,6 @@
   * [`$Sending`](#sending)
   * [`$ClientID`](#clientid)
   * [`$GetCID`](#getcid)
-- [Extensions (features)](#extensions-features)
   * [`ChatOnly`](#chatonly)
   * [`Minislots`](#minislots)
   * [TTHL](#tthl)
@@ -1481,7 +1481,7 @@ Example:
 $ConnectToMe john 192.168.0.1:412S|
 ```
 
-## Extensions (commands)
+## Extensions
 
 ### `$BotList`
 ```
@@ -1516,23 +1516,25 @@ Example:
 | `$UserIP johndoe\|` |
 | | `$UserIP johndoe 192.168.1.2\|`
 
-### `$BotINFO`
+### Pinger (`BotINFO` and `HubINFO`)
+
+#### `$BotINFO`
 ```
 $BotINFO description|
 ```
 
-Contexts: C-H
+Contexts: P-H
  
 Bot description can be any string, usually information regarding, and address of, the hublist.
 
 Add `BotINFO` to the `$Supports` to indicate support for this.
 
-### `$HubINFO`
+#### `$HubINFO`
 ```
 $HubINFO name$address:port$description$max_users$min_share$min_slots$max_hubs$hub_type$hubowner_login|
 ```
  
-Contexts: H-C
+Contexts: H-P
 
 Hub name, address and description are the items which will be shown in the hublist (some hubs have multiple addresses and this helps to get primary address). Description changes often on some hubs so this helps with updating it.
 
@@ -1678,8 +1680,6 @@ Add `ClientID` to the `$Supports` to indicate support for this.
 
 ### `$GetCID`
 Add `ClientID` to the `$Supports` to indicate support for this.
-
-## Extensions (features)
 
 ### `ChatOnly`
 Contexts: C-H
