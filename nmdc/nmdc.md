@@ -1843,7 +1843,7 @@ This allows the other client to use a free slot for small files / file list.
 
 Add `Minislots` to the `$Supports` to indicate support for this.
 
-### TTHL
+### `TTHL`
 
 Supporting this means supporting the upload of tth leaf data. Instead
 of transferring the file itself, the TTH data of all leaves is transferred
@@ -1854,6 +1854,44 @@ obviosly check that the received leaf data is correct by rebuilding the
 tree and checking that it's recorded root matches.
 
 Add `TTHL` to the `$Supports` to indicate support for this.
+
+### `TTHS` (`$SA` and `$SP`)
+```
+$SA tth ip:port|
+$SP tth nick|
+```
+Contexts: C-H-C
+
+This extension adds support for short TTH search commands. Not to be confused with [`TTHSearch`](#tthsearch) extension.
+
+Add `TTHS` to the `$Supports` to indicate support for this.
+
+Examples:
+
+Active search request:
+```
+$SA LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ 1.2.3.4:412|
+```
+
+Passive search request
+```
+$SP LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ user|
+```
+
+Difference between old and new TTH search commands:
+```
+$Search 1.2.3.4:5 F?T?0?9?TTH:LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ|
+$SA LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ 1.2.3.4:5|
+```
+70 vs 54 bytes for active command.
+
+```
+$Search Hub:user F?T?0?9?TTH:LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ|
+$SP LWPNACQDBZRYXW3VHJVCJ64QBZNGHOHHHZWCLNQ user|
+```
+70 vs 50 bytes for passive command.
+
+Meaning of this extension is to save some server upload bandwidth by shortening down the most frequently sent command in outgoing protocol of a hub.
 
 ### `ZLIG`
 
