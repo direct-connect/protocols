@@ -102,7 +102,7 @@
   * [DHT](#dht)
   * [Queue position](#queue-position)
   * [FailOver](#failover)
-  * [Hub icon](#hub-icon)
+  * [Hub icon (`$SetIcon` and `$SetLogo`)](#hub-icon-seticon-and-setlogo)
 - [Deprecated extensions](#deprecated-extensions)
   * [`$Capabilities`](#capabilities)
   * [`$IN`](#in)
@@ -2018,22 +2018,38 @@ $FailOver example.com:412|
 $FailOver example.com,example.org:5555,adc://example.net:6666|
 ```
 
-### Hub icon
+### Hub icon (`$SetIcon` and `$SetLogo`)
 ```
 $SetIcon image_uri|
+$SetLogo image_uri|
 ```
 
-Contexts: H-C
+Contexts: H-P, H-C
 
-This feature is used to indicate an icon to use for the hub. The `image_uri` is an URI linking to the image that should be used. The URI is specified with `http://`, `https://` or `www.`.
+This feature specifies hub icon URL to display on hublist or hub tab in some clients.
 
-Hubs that send this also support `HubINFO`.
+The `image_uri` is an URI linking to the image that should be used. The URI is specified with `http://`, `https://` or `www.` prefix.
+
+The display size of icon must be relatively small. Some hublists downsize the icon to maximum of 16x16 pixels.
+
+For security reason only `image/*` MIME types can be used.
+
+Hubs that send this also support [`$HubINFO`](#hubinfo).
 
 Examples:
 ```
 $SetIcon www.example.com/images/myimage.ico|
 $SetIcon http://hub.example.org/img/image.ico|
 ```
+
+Hub can also send `$SetLogo` command to set hub logotype. Similar rules apply to this command, except that image display size is not limited, it's up to hublist to downsize the image to any size that fits best on hub information page.
+
+Example:
+```
+$SetLogo https://hub.example.org/img/logo.png|
+```
+
+Both commands are usually sent at the same time before [`$HubINFO`](#hubinfo) command, because usually hublist pingers disconnect from the hub right after they receive the [`$HubINFO`](#hubinfo) command, that way they will not miss image links. This extension should be strengthened with some kind of support flag, but that is yet to accomplish.
 
 ## Deprecated extensions
 
