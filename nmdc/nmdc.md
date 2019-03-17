@@ -81,6 +81,7 @@
   * [`NickRule`](#nickrule)
     + [`$NickRule`](#nickrule)
     + [`$BadNick`](#badnick)
+  * [`SearchRule`](#searchrule)
   * [`FeaturedNetworks`](#featurednetworks)
   * [`$GetZBlock`](#getzblock)
   * [`$UGetBlock`](#ugetblock)
@@ -1701,6 +1702,42 @@ $BadNick Pref [ISP1] [ISP2]|
 Client should then automatically correct its nick and reconnect to the hub. Meaning of this extension is to avoid extra reconnects when nick usage is heavily restricted. This applies only to non registered nicks.
 
 Add `NickRule` to the `$Supports` to indicate support for this.
+
+### `$SearchRule`
+```
+$SearchRule Min min_query$$Max max_query$$Num max_req$$Int interval_active$$IntPas interval_passive$$Share min_share|
+```
+
+Contexts: H-C
+
+This extension specifies list of search rules currently being used by hub configuration. The command is sent from hub to client right after the user is successfully logged in.
+
+Example:
+```
+$SearchRule Min 3$$Max 256$$Num 1$$Int 4$$IntPas 6$$Share 10737418240|
+```
+
+`Min` specifies minimum search string length (`min_query`).
+
+`Max` specifies maximum search command length (`max_query`).
+
+`Num` specifies number of searches available for use during a period of time (`max_req`).
+
+`Int` specifies the period itself in seconds (`interval_active`) for active search requests for current user profile.
+
+`IntPas` specifies the period in seconds (`interval_passive`) for passive search requests for current user profile.
+
+`Share` specifies minimum share size in bytes (`min_share`) required for search for current user profile.
+
+Not all of the above parameters must be specified, the list is based on hub configuration.
+
+Client has a chance to automatically update its search interval settings for each hub, compare its share size with required size and prepare other kind of actions before sending any search request commands.
+
+`Int` and `IntPas` might be set to `0` which means that user is actually allowed to search without time limit, and might be set to `-1` which means that user is not allowed to use search at all due to low profile or any other kind of restrictions.
+
+Meaning of this extension is to avoid extra search requests to the hub, which are not going to bring any search results to the client anyway.
+
+Add `SearchRule` to the `$Supports` to indicate support for this.
 
 ### `FeaturedNetworks`
 `$FeaturedNetworks` is a protocol extension of the APN MultiHubChatsystem to identify the different hubs and other entry points (IRC, Telnet) etc. It was primarily created to aid APN developers and to allow a better integration of multi hub chat systems.
