@@ -127,9 +127,10 @@ The initial version of this document was compiled by Fredrik Ullner.
 
 ## General
 * URI scheme is `dchub://`. For more details see the [URI scheme](./nmdc-uri-scheme.txt) document.
-* Most messages begin with a `$` (dollar sign).
-* Most messages end with a `|` (pipe).
-* Command names and parameters use single space (` `) and additional dollar signs as separators. 
+* Messages begin with a `$` (dollar sign). The only exception are [chat messages](#chat-message).
+* Messages end with a `|` (pipe). Exceptions are [`$Cancel`](#cancel) and [`$Canceled`](#canceled) that are used in binary data transfer.
+* Command names use a single space (` `) as a separator.
+* Depending on the command, parameters use single space (` `), single (`$`) or double (`$$`) dollar signs, question marks (`?`) and code point 5 (`0x05`) as separators.
 * There is no standardization on code page to use. The local charset of the computer system is commonly used. The original implementation used `win-1252`.
 * Hub port defaults to `411`. The client should then try `412`, `413` etc.
 * Client - Client port defaults to `412`. 
