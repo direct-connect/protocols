@@ -1585,15 +1585,20 @@ $HubINFO name$address:port$description$max_users$min_share$min_slots$max_hubs$hu
  
 Contexts: H-P
 
-Hub name, address and description are the items which will be shown in the hublist (some hubs have multiple addresses and this helps to get primary address). Description changes often on some hubs so this helps with updating it.
+Hub `name`, `address` and `description` are the items which will be shown in the hublist (some hubs have multiple addresses and this helps to get primary address). Description changes often on some hubs so this helps with updating it.
 
-Max users, min share, min slots and maximum number of open hubs for the client helps users to find suitable hubs.
+`max_users`, `min_share`, `min_slots` and `max_hubs` (maximum number of open hubs) for the client helps users to find suitable hubs.
  
-Hub type gives information about the hub software and script which gave the information.
+`hub_type` gives information about the hub software and script which gave the information.
 
-Hubowner login is meant to help hubowners to edit information about their hub directly from the hublist portal It is usually an email address where the account/password information should be sent.
+`hubowner_login` is meant to help hubowners to edit information about their hub directly from the hublist portal It is usually an email address where the account/password information should be sent.
 
-If the hub address is `127.0.0.1`, the `Hublist.org` pinger will remove the hub from its database. (Or is supposed to.) 
+If the hub address is `127.0.0.1`, the hublist should remove the hub from its database.
+
+Some hubs support a different variation of this command with 11 (or more) parameters:
+```
+$HubINFO name$address$description$max_users$min_share$min_slots$max_hubs$hub_type$hubowner$privacy$encoding|
+```
 
 Add `HubINFO` to the `$Supports` to indicate support for this.
 
