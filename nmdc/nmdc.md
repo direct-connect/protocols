@@ -1,111 +1,112 @@
 # NMDC Protocol
 
-* [Abstract](#abstract)
-* [Authors](#authors)
-* [General](#general)
-  + [Status messages](#status-messages)
-  + [Reference to hub in `$Lock`](#reference-to-hub-in-lock)
-  + [Escape sequences](#escape-sequences)
-  + [`$Key`/`$Lock` sequence](#keylock-sequence)
-* [Security Considerations](#security-considerations)
-* [URI scheme](#uri-scheme)
-* [Commands](#commands)
-  + [Chat message](#chat-message)
-  + [`$To`](#to)
-  + [`$ConnectToMe`](#connecttome)
-  + [`$RevConnectToMe`](#revconnecttome)
-  + [`$Ping`](#ping)
-  + [`$GetPass`](#getpass)
-  + [`$MyPass`](#mypass)
-  + [`$LogedIn`](#logedin)
-  + [`$Get`](#get)
-  + [`$Send`](#send)
-  + [Provide file size](#provide-file-size)
-  + [`$GetListLen`](#getlistlen)
-  + [`$ListLen`](#listlen)
-  + [`$Direction`](#direction)
-  + [`$Cancel`](#cancel)
-  + [`$Canceled`](#canceled)
-  + [`$BadPass`](#badpass)
-  + [`$HubIsFull`](#hubisfull)
-  + [`$ValidateDenide`](#validatedenide)
-  + [`$MaxedOut`](#maxedout)
-  + [`$Failed`](#failed)
-  + [`$Error`](#error)
-  + [`$Search`](#search)
-  + [`$SR`](#sr)
-  + [`$MyINFO`](#myinfo)
-  + [`$GetINFO`](#getinfo)
-  + [`$Hello`](#hello)
-  + [`$Version`](#version)
-  + [`$HubName`](#hubname)
-  + [`$GetNickList`](#getnicklist)
-  + [`$NickList`](#nicklist)
-  + [`$OpList`](#oplist)
-  + [`$Kick`](#kick)
-  + [`$Close`](#close)
-  + [`$OpForceMove`](#opforcemove)
-  + [`$ForceMove`](#forcemove)
-  + [`$Quit`](#quit)
-  + [`$Lock`](#lock)
-  + [`$Key`](#key)
-  + [`$MultiConnectToMe`](#multiconnecttome)
-  + [`$MultiSearch`](#multisearch)
-* [Extensions (commands)](#extensions-commands)
-  + [`$BotList`](#botlist)
-  + [`$ADCGET`](#adcget)
-  + [`$ADCSND`](#adcsnd)
-  + [`$UserIP`](#userip)
-  + [`$UserIP` extension](#userip-extension)
-  + [`$BotINFO`](#botinfo)
-  + [`$HubINFO`](#hubinfo)
-  + [`$HubTopic`](#hubtopic)
-  + [`$Supports`](#supports)
-  + [`Capabilities`](#capabilities)
-  + [`IN`](#in)
-  + [`MCTo`](#mcto)
-  + [`$NickChange`](#nickchange)
-  + [`$ClientNick`](#clientnick)
-  + [`FeaturedNetworks`](#featurednetworks)
-  + [`$Z`](#z)
-  + [`$ZOn`](#zon)
-  + [`$GetZBlock`](#getzblock)
-  + [`$UGetBlock`](#ugetblock)
-  + [`$UGetZBlock`](#ugetzblock)
-  + [`$GetTestZBlock`](#gettestzblock)
-  + [`$Sending`](#sending)
-  + [`$ClientID`](#clientid)
-  + [`$GetCID`](#getcid)
-  + [`$UserCommand`](#usercommand)
-* [Extensions (features)](#extensions-features)
-  + [`NoHello`](#nohello)
-  + [`ChatOnly`](#chatonly)
-  + [`QuickList`](#quicklist)
-  + [`TTHSearch`](#tthsearch)
-  + [`XmlBZList`](#xmlbzlist)
-  + [`Minislots`](#minislots)
-  + [TTHL](#tthl)
-  + [`TTHF`](#tthf)
-  + [`ZLIG`](#zlig)
-  + [`ACTM`](#actm)
-    - [`CTM`](#ctm)
-    - [`RCTM`](#rctm)
-  + [`NoGetINFO`](#nogetinfo)
-  + [`BZList`](#bzlist)
-  + [`CHUNK`](#chunk)
-  + [`OpPlus`](#opplus)
-  + [`Feed`](#feed)
-  + [`SaltPass`](#saltpass)
-  + [IPv4](#ipv4)
-  + [IPv6](#ipv6)
-  + [TLS](#tls)
-  + [DHT](#dht)
-  + [Queue position](#queue-position)
-  + [FailOver](#failover)
-  + [Hub icon](#hub-icon)
-* [Examples](#examples)
-  + [Client – Hub connection](#client-%E2%80%93-hub-connection)
-  + [Client – Client connection](#client-%E2%80%93-client-connection)
+- [Abstract](#abstract)
+- [Authors](#authors)
+- [General](#general)
+  * [Status messages](#status-messages)
+  * [Reference to hub in `$Lock`](#reference-to-hub-in-lock)
+  * [Escape sequences](#escape-sequences)
+  * [`$Key`/`$Lock` sequence](#keylock-sequence)
+- [Security Considerations](#security-considerations)
+- [URI scheme](#uri-scheme)
+- [Commands](#commands)
+  * [Chat message](#chat-message)
+  * [`$To`](#to)
+  * [`$ConnectToMe`](#connecttome)
+  * [`$RevConnectToMe`](#revconnecttome)
+  * [`$Ping`](#ping)
+  * [`$GetPass`](#getpass)
+  * [`$MyPass`](#mypass)
+  * [`$LogedIn`](#logedin)
+  * [`$Get`](#get)
+  * [`$Send`](#send)
+  * [Provide file size](#provide-file-size)
+  * [`$GetListLen`](#getlistlen)
+  * [`$ListLen`](#listlen)
+  * [`$Direction`](#direction)
+  * [`$Cancel`](#cancel)
+  * [`$Canceled`](#canceled)
+  * [`$BadPass`](#badpass)
+  * [`$HubIsFull`](#hubisfull)
+  * [`$ValidateDenide`](#validatedenide)
+  * [`$MaxedOut`](#maxedout)
+  * [`$Failed`](#failed)
+  * [`$Error`](#error)
+  * [`$Search`](#search)
+  * [`$SR`](#sr)
+  * [`$MyINFO`](#myinfo)
+  * [`$GetINFO`](#getinfo)
+  * [`$Hello`](#hello)
+  * [`$Version`](#version)
+  * [`$HubName`](#hubname)
+  * [`$GetNickList`](#getnicklist)
+  * [`$NickList`](#nicklist)
+  * [`$OpList`](#oplist)
+  * [`$Kick`](#kick)
+  * [`$Close`](#close)
+  * [`$OpForceMove`](#opforcemove)
+  * [`$ForceMove`](#forcemove)
+  * [`$Quit`](#quit)
+  * [`$Lock`](#lock)
+  * [`$Key`](#key)
+  * [`$MultiConnectToMe`](#multiconnecttome)
+  * [`$MultiSearch`](#multisearch)
+- [Standard extensions](#standard-extensions)
+  * [`$Supports`](#supports)
+  * [`NoHello`](#nohello)
+  * [`NoGetINFO`](#nogetinfo)
+  * [`$HubTopic`](#hubtopic)
+  * [`$UserIP` extension (`UserIP2`)](#userip-extension-userip2)
+  * [`$MCTo`](#mcto)
+  * [`$ZOn`](#zon)
+  * [`$UserCommand`](#usercommand)
+  * [`TTHSearch`](#tthsearch)
+  * [`XmlBZList`](#xmlbzlist)
+  * [`TTHF`](#tthf)
+  * [`SaltPass`](#saltpass)
+  * [TLS](#tls)
+- [Extensions (commands)](#extensions-commands)
+  * [`$BotList`](#botlist)
+  * [`$ADCGET`](#adcget)
+  * [`$ADCSND`](#adcsnd)
+  * [`$UserIP`](#userip)
+  * [`$BotINFO`](#botinfo)
+  * [`$HubINFO`](#hubinfo)
+  * [`Capabilities`](#capabilities)
+  * [`IN`](#in)
+  * [`$NickChange`](#nickchange)
+  * [`$ClientNick`](#clientnick)
+  * [`FeaturedNetworks`](#featurednetworks)
+  * [`$Z`](#z)
+  * [`$GetZBlock`](#getzblock)
+  * [`$UGetBlock`](#ugetblock)
+  * [`$UGetZBlock`](#ugetzblock)
+  * [`$GetTestZBlock`](#gettestzblock)
+  * [`$Sending`](#sending)
+  * [`$ClientID`](#clientid)
+  * [`$GetCID`](#getcid)
+- [Extensions (features)](#extensions-features)
+  * [`ChatOnly`](#chatonly)
+  * [`QuickList`](#quicklist)
+  * [`Minislots`](#minislots)
+  * [TTHL](#tthl)
+  * [`ZLIG`](#zlig)
+  * [`ACTM`](#actm)
+    + [`CTM`](#ctm)
+    + [`RCTM`](#rctm)
+  * [`BZList`](#bzlist)
+  * [`CHUNK`](#chunk)
+  * [`OpPlus`](#opplus)
+  * [`Feed`](#feed)
+  * [IPv4](#ipv4)
+  * [IPv6](#ipv6)
+  * [DHT](#dht)
+  * [Queue position](#queue-position)
+  * [FailOver](#failover)
+  * [Hub icon](#hub-icon)
+- [Examples](#examples)
+  * [Client – Hub connection](#client-%E2%80%93-hub-connection)
+  * [Client – Client connection](#client-%E2%80%93-client-connection)
 
 ## Abstract
 Neo-Modus Direct Connect (NMDC) is a text protocol for a client-server network. The same protocol structure is used both for client-hub and client-client communication. This document is split into two parts; the first shows the structure of the protocol, while the second implements a specific system using this structure.
@@ -1107,6 +1108,301 @@ This command is used in conjunction with `$MultiConnectToMe`.
 
 For syntax on the parameters, see `$Search`.
 
+## Standard extensions
+
+Extensions listed in this section become a de-facto standard for NMDC protocol. Although
+it's possible to omit any of them, most implementations in the wild support all of them,
+thus it is highly recommended to implement these extensions.
+
+### `$Supports`
+```
+$Supports extension1 extension2 [...]|
+$Supports extension1 extension2 [...] |
+```
+ 
+Contexts: C-H, H-C, C-C
+
+This command is used to negotiate and notify about protocol extensions. 
+
+If a client or hub implements an extension, the `$Lock` command MUST start with `EXTENDEDPROTOCOL`.
+
+This command MUST be sent before `$Key`. 
+
+Implementations should only send extension specific messages if the other party has signaled support for it.
+
+There must be at least 1 (one) supported extension. 
+
+For client extensions, the extension name should be the same as the command name.
+
+Note that DC++ 0.XXX added a space after the last extension. I.e., the first form is the original implementation of `$Supports`.
+
+Example:
+
+The following example signals support for 7 (seven) different extensions. See corresponding command/extension for description.
+```
+$Supports UserCommand NoGetINFO NoHello UserIP2 TTHSearch ZPipe0 GetZBlock|
+```
+
+### `NoHello`
+Contexts: C-H
+
+This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough. `$Hello` is still accepted, for adding bots to the user list. DC++ still sends a `$GetNickList` to indicate that it is interested in the user list. During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick was accepted.
+
+Add `NoHello` to the `$Supports` to indicate support for this.
+
+### `NoGetINFO`
+This indicates that the hub doesn't need to receive a `$GetINFO` from a client to send out `$MyINFO`. This is a variation of the `QuickList` proposal that is easy to implement and does half of `QuickList`'s job.
+
+Add `NoGetINFO` to the `$Supports` to indicate support for this.
+
+### `$HubTopic`
+```
+$HubTopic topic|
+```
+
+Contexts: H-C
+
+The hub topic, be it current discussion topic or general theme of the hub, which allow users to quickly see what the discussion and file sharing themes are. Hub pingers frequently use this message for hub related information. 
+
+Add `HubTopic` to the `$Supports` to indicate support for this.
+
+### `$UserIP` extension (`UserIP2`)
+```
+$UserIP nick1 IP1$$nick2 IP2[...]|
+```
+ 
+Contexts: H-C
+
+This is similar to the other `$UserIP` command, except that there is no request. The hub will, if the client signals support for `UserIP2`, send all users upon login. 
+
+The list consist of each user and their IP, including the connecting client. The hub should send each new client's IP when they login. 
+
+Note that `$$` is used as delimiter.
+
+Add `UserIP2` to the `$Supports` to indicate support for this.
+
+| Client | Server
+|--- |---
+| | `$UserIP johndoe 192.168.1.2$$janedoe 192.168.1.3\|`
+
+### `$MCTo`
+```
+$MCTo: target $sender message|
+```
+
+Contexts: C-H, H-C
+
+This is a private-message to a single user that should be displayed as an ordinary chat-message.
+
+Add `MCTo` to the `$Supports` to indicate support for this.
+
+`target` is the client nick that should receive the message.
+
+`sender` is the client nick that is the sender
+
+`message` is the actual message.
+
+Examples:
+```
+$MCTo john $peter Cats are cute|
+$MCTo peter $john I like dogs|
+```
+
+### `$ZOn`
+```
+$ZOn|blob
+```
+
+Contexts: H-C
+
+This command's intention is to compress (with ZLib) data to decrease bandwidth use.
+The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
+
+Compression algorithm shall be LZ77.
+
+The end of the `blob` is an `EOF` indicated by ZLib. Following commands will have no
+compression until the next `$ZOn` is received.
+
+Add `ZPipe0` to the `$Supports` to indicate support for this.
+
+The command adds no escaping.
+
+### `$UserCommand`
+```
+$UserCommand type context details|
+```
+
+Contexts: H-C
+
+Add `UserCommand` to the `$Supports` to indicate support for this.
+
+`type` is a positive integer describing the kind of command:
+
+| Value | Description
+|--- |---
+| 0 | Separator
+| 1 | Raw
+| 2 | Raw nick limited (same as raw with the exception that it should only be used once per `%[nick]`)
+| 255 | Erase all previously sent commands
+
+
+`context` is a integer that controls which contexts the menus will be shown. The value is derived by logical OR of the following values;
+
+| Value | Description
+|--- |---
+| 1 | Hub context
+| 2 | User context
+| 4 | Search context
+| 8 | File list
+
+`details` differ depending on the type.
+
+| Type | Detail information
+|--- |---
+| 0 and 255 | Leave this field empty
+| 1 and 2 | Detail should be `title$command`.
+
+#### Escaping
+Escaping of dollar and pipe is necessary for the `<command>` in 'raw' mode. The DC++ escape sequence will be used. i.e. `&#124;` for pipe, `&#36;` for dollar and `&amp;` for the ampersand. Escaping is used for all fields before they are sent to the hub / shown to the user. As with all NMDC commands, they must be terminated by the pipe character
+
+#### Details: Separator
+```
+$UserCommand 0 <context>|
+```
+
+Will add a menu separator (vertical bar) to the specified contexts (`<context>`). It is legal to add text (after the space) before the pipe, but it won't be used (yet).
+
+#### Details: Raw
+```
+$UserCommand 1 <context> <title>$<raw>|
+```
+
+Will add a raw menu item with title `<title>` with command `<raw>`. This command must end with a `&#124;`, if not it should be discarded. The raw command may be used to specify multiple commands to be sent to the hub.
+
+#### Details: Raw nick limited
+```
+$UserCommand 2 <context> <title>$<raw>|
+```
+ 
+Is exactly the same as Raw, except that the command should only be run once per `%[nick]`. This is to prevent the client from sending out more than one message that disconnects someone. Generally, this is only useful in the User-File context (e.g. viewing Search Results) where it is possible to select one user multiple times.
+
+#### Details: Erase
+```
+$UserCommand 255 <context>|
+```
+
+Will erase all commands that the hub has sent previously. This is for hubs/scripts that allow for updates while running. The erase all is intentional, keeping it simple. Note that contexts must still be used, and that erasing will remove all commands that match any of those ORed contexts (i.e. 7 will remove commands previously sent with any context of 1 through 7) but only from that context
+
+Examples:
+```
+$UserCommand 2 6 Kick$&#36;To: %[nick] From: %[mynick] &#36;<%[mynick]> You are being kicked====|&#36;Kick %[nick]&#124;|
+$UserCommand 255 1|
+```
+
+### `TTHSearch`
+This indicates that the client support searching for queued files by TTH. See `$Search` for details.
+
+Add `TTHSearch` to the `$Supports` to indicate support for this.
+
+### `XmlBZList`
+
+Usage: Supporting this means supporting utf-8 XML file lists with the 
+following general structure:
+
+```xml
+<FileList Version="1" Generator="dc client name and version">
+ <Directory Name="xxx">
+  <Directory Name="yyy">
+   <File Name="zzz" Size="1"/>
+  </Directory>
+ </Directory>
+</FileList>
+```
+
+In each directory, including the root, the name of the entity must be
+case-insensitive unique in that level of the hierarchy. 
+
+Other fields may be added as necessary. DC++ for instance adds the
+`TTH` attribute to each file it knows the TTH root of in base32 encoding.
+
+The file list is available as `files.xml.bz2` (vs `MyList.DcLst`), and is
+compressed using bzip2.
+
+To retrieve unicode files from the file list, the client may also support
+the above `GetZBlock` and its utf-8 derivatives. Support for `XmlBZList`
+implies support for `$UGetBlock`, so files are guaranteed to be retrievable.
+
+`$UGetBlock` follows `$UGetZBlock` semantics, but without compressing 
+the data. The `bytes` parameter of `$Sending` specifies how many bytes
+will be sent.
+
+Don't touch `Version`. Add your own, with a different name, if you feel 
+compelled.
+
+Don't trust `Generator` to determine features of the file list. It's there
+mainly for debugging and informative purposes.
+
+Add `XmlBZList` to the `$Supports` to indicate support for this.
+
+DC++ supported the feature `XMLBZList` and the commands `$GetBlock`, `$UGetBlock` and `$UGetZBlock` in versions 0.307 to 0.695. DC++ dropped support for the commands in version 0.696, whilst not removing the feature announcement. I.e., DC++ signals in the `$Supports XMLBzList` while it does not support the actual commands.
+
+### `TTHF`
+
+Supporting this means supporting file identification by TTH root. This
+means supporting downloads by TTH root instead of share directory and
+name. The advantage is that moved files can still be found by the
+downloader without requeuing the file.
+
+The extension adds a namespace `TTH` before the ADC file root. A TTHF
+filename has the following syntax:
+
+```
+TTH/<TTH root in base32, 192 binary bits>
+```
+
+i e the TTH namespace consists of TTH root values directly under the
+`TTH/` root.
+
+The naming scheme is valid in all types (i e also for getting TTH leaves)
+
+Add `TTHF` to the `$Supports` to indicate support for this.
+
+### `SaltPass`
+```
+$GetPass salt|
+$MyPass hashed_pass|
+```
+
+Contexts: C-H, H-C
+
+This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
+
+The random data should be Base32 encoded.
+
+The data that is sent back in the `$MyPass` shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
+
+Add `SaltPass` to the `$Supports` to indicate support for this.
+
+The algorithm here is a port from ADC's `GPA`/`PAS`.
+
+Example
+```
+$GetPass salt|
+$MyPass hashed_pass|
+```
+
+### TLS
+This feature is used to indicate support for TLS encrypted client-client connections.
+
+Implementations shall add an `S` to the (TLS) port in a `$ConnectToMe`.
+
+Add `TLS` to the `$Supports` to indicate support for this.
+
+Example:
+```
+$ConnectToMe john 192.168.0.1:412S|
+```
+
 ## Extensions (commands)
 
 ### `$BotList`
@@ -1170,25 +1466,6 @@ Example:
 | `$UserIP johndoe\|` |
 | | `$UserIP johndoe 192.168.1.2\|`
 
-### `$UserIP` extension
-```
-$UserIP nick1 IP1$$nick2 IP2[...]|
-```
- 
-Contexts: H-C
-
-This is similar to the other `$UserIP` command, except that there is no request. The hub will, if the client signals support for `UserIP2`, send all users upon login. 
-
-The list consist of each user and their IP, including the connecting client. The hub should send each new client's IP when they login. 
-
-Note that `$$` is used as delimiter.
-
-Add `UserIP2` to the `$Supports` to indicate support for this.
-
-| Client | Server
-|--- |---
-| | `$UserIP johndoe 192.168.1.2$$janedoe 192.168.1.3\|`
-
 ### `$BotINFO`
 ```
 $BotINFO description|
@@ -1218,46 +1495,6 @@ Hubowner login is meant to help hubowners to edit information about their hub di
 If the hub address is `127.0.0.1`, the `Hublist.org` pinger will remove the hub from its database. (Or is supposed to.) 
 
 Add `HubINFO` to the `$Supports` to indicate support for this.
-
-### `$HubTopic`
-```
-$HubTopic topic|
-```
-
-Contexts: H-C
-
-The hub topic, be it current discussion topic or general theme of the hub, which allow users to quickly see what the discussion and file sharing themes are. Hub pingers frequently use this message for hub related information. 
-
-Add `HubTopic` to the `$Supports` to indicate support for this.
-
-### `$Supports`
-```
-$Supports extension1 extension2 [...]|
-$Supports extension1 extension2 [...] |
-```
- 
-Contexts: C-H, H-C, C-C
-
-This command is used to negotiate and notify about protocol extensions. 
-
-If a client or hub implements an extension, the `$Lock` command MUST start with `EXTENDEDPROTOCOL`.
-
-This command MUST be sent before `$Key`. 
-
-Implementations should only send extension specific messages if the other party has signaled support for it.
-
-There must be at least 1 (one) supported extension. 
-
-For client extensions, the extension name should be the same as the command name.
-
-Note that DC++ 0.XXX added a space after the last extension. I.e., the first form is the original implementation of `$Supports`.
-
-Example:
-
-The following example signals support for 7 (seven) different extensions. See corresponding command/extension for description.
-```
-$Supports UserCommand NoGetINFO NoHello UserIP2 TTHSearch ZPipe0 GetZBlock|
-```
 
 ### `Capabilities`
 ```
@@ -1346,29 +1583,6 @@ The status is a 32-bit integers where the bits are according to the following ta
 Bit 5 and Bit 6 of the 32-bit status flag are used to indicate wether a user is an OP or wether the `$IN` string send by the hubsoft belongs to a bot. These values are read-only and should never be changed by a client. The hubsoft must disconnect for this. If a client connects and has successfully logged in with the correct password, the hubsoft will set bit 5 of the status flag and sends this part to all connected users, including the newly connected OP. The connecting client must save the status flag it received from the hub and use it when updating status such as away and fireball. However, as said, it is not allowed to set or reset bit 5 and bit 6 of the status flag.
 
 Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending `$To` strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. `$To` strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
-
-### `MCTo`
-```
-$MCTo: target $sender message|
-```
-
-Contexts: C-H, H-C
-
-This is a private-message to a single user that should be displayed as an ordinary chat-message.
-
-Add `MCTo` to the `$Supports` to indicate support for this.
-
-`target` is the client nick that should receive the message.
-
-`sender` is the client nick that is the sender
-
-`message` is the actual message.
-
-Examples:
-```
-$MCTo john $peter Cats are cute|
-$MCTo peter $john I like dogs|
-```
 
 ### `$NickChange`
 ```
@@ -1460,25 +1674,6 @@ The command adds an escaping sequence:
 | ` \ ` | `\\`
 | `\|` | `\P`
 
-### `$ZOn`
-```
-$ZOn|blob
-```
-
-Contexts: H-C
-
-This command's intention is to compress (with ZLib) data to decrease bandwidth use.
-The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
-
-Compression algorithm shall be LZ77.
-
-The end of the `blob` is an `EOF` indicated by ZLib. Following commands will have no
-compression until the next `$ZOn` is received.
-
-Add `ZPipe0` to the `$Supports` to indicate support for this.
-
-The command adds no escaping.
-
 ### `$GetZBlock`
 ```
 $UGetBlock start bytes filename|
@@ -1540,86 +1735,7 @@ Add `ClientID` to the `$Supports` to indicate support for this.
 ### `$GetCID`
 Add `ClientID` to the `$Supports` to indicate support for this.
 
-### `$UserCommand`
-```
-$UserCommand type context details|
-```
-
-Contexts: H-C
-
-Add `UserCommand` to the `$Supports` to indicate support for this.
-
-`type` is a positive integer describing the kind of command:
-
-| Value | Description
-|--- |---
-| 0 | Separator
-| 1 | Raw
-| 2 | Raw nick limited (same as raw with the exception that it should only be used once per `%[nick]`)
-| 255 | Erase all previously sent commands
-
-
-`context` is a integer that controls which contexts the menus will be shown. The value is derived by logical OR of the following values;
-
-| Value | Description
-|--- |---
-| 1 | Hub context
-| 2 | User context
-| 4 | Search context
-| 8 | File list
-
-`details` differ depending on the type.
-
-| Type | Detail information
-|--- |---
-| 0 and 255 | Leave this field empty
-| 1 and 2 | Detail should be `title$command`.
-
-#### Escaping
-Escaping of dollar and pipe is necessary for the `<command>` in 'raw' mode. The DC++ escape sequence will be used. i.e. `&#124;` for pipe, `&#36;` for dollar and `&amp;` for the ampersand. Escaping is used for all fields before they are sent to the hub / shown to the user. As with all NMDC commands, they must be terminated by the pipe character
-
-#### Details: Separator
-```
-$UserCommand 0 <context>|
-```
-
-Will add a menu separator (vertical bar) to the specified contexts (`<context>`). It is legal to add text (after the space) before the pipe, but it won't be used (yet).
-
-#### Details: Raw
-```
-$UserCommand 1 <context> <title>$<raw>|
-```
-
-Will add a raw menu item with title `<title>` with command `<raw>`. This command must end with a `&#124;`, if not it should be discarded. The raw command may be used to specify multiple commands to be sent to the hub.
-
-#### Details: Raw nick limited
-```
-$UserCommand 2 <context> <title>$<raw>|
-```
- 
-Is exactly the same as Raw, except that the command should only be run once per `%[nick]`. This is to prevent the client from sending out more than one message that disconnects someone. Generally, this is only useful in the User-File context (e.g. viewing Search Results) where it is possible to select one user multiple times.
-
-#### Details: Erase
-```
-$UserCommand 255 <context>|
-```
-
-Will erase all commands that the hub has sent previously. This is for hubs/scripts that allow for updates while running. The erase all is intentional, keeping it simple. Note that contexts must still be used, and that erasing will remove all commands that match any of those ORed contexts (i.e. 7 will remove commands previously sent with any context of 1 through 7) but only from that context
-
-Examples:
-```
-$UserCommand 2 6 Kick$&#36;To: %[nick] From: %[mynick] &#36;<%[mynick]> You are being kicked====|&#36;Kick %[nick]&#124;|
-$UserCommand 255 1|
-```
-
 ## Extensions (features)
-
-### `NoHello`
-Contexts: C-H
-
-This indicates that the client doesn't need either `$Hello` or `$NickList` to be sent to it when connecting to a hub. To populate its user list, a `$MyINFO` for each user is enough. `$Hello` is still accepted, for adding bots to the user list. DC++ still sends a `$GetNickList` to indicate that it is interested in the user list. During login, hubs must still send `$Hello` after `$ValidateNick` to indicate that the nick was accepted.
-
-Add `NoHello` to the `$Supports` to indicate support for this.
 
 ### `ChatOnly`
 Contexts: C-H
@@ -1759,53 +1875,6 @@ Notes
 * `$GetINFO` deprecated and ignored
 * `$MyINFO` is always accepted as valid and denotes a new or updated client.
 
-### `TTHSearch`
-This indicates that the client support searching for queued files by TTH. See `$Search` for details.
-
-Add `TTHSearch` to the `$Supports` to indicate support for this.
-
-### `XmlBZList`
-
-Usage: Supporting this means supporting utf-8 XML file lists with the 
-following general structure:
-
-```xml
-<FileList Version="1" Generator="dc client name and version">
- <Directory Name="xxx">
-  <Directory Name="yyy">
-   <File Name="zzz" Size="1"/>
-  </Directory>
- </Directory>
-</FileList>
-```
-
-In each directory, including the root, the name of the entity must be
-case-insensitive unique in that level of the hierarchy. 
-
-Other fields may be added as necessary. DC++ for instance adds the
-`TTH` attribute to each file it knows the TTH root of in base32 encoding.
-
-The file list is available as `files.xml.bz2` (vs `MyList.DcLst`), and is
-compressed using bzip2.
-
-To retrieve unicode files from the file list, the client may also support
-the above `GetZBlock` and its utf-8 derivatives. Support for `XmlBZList`
-implies support for `$UGetBlock`, so files are guaranteed to be retrievable.
-
-`$UGetBlock` follows `$UGetZBlock` semantics, but without compressing 
-the data. The `bytes` parameter of `$Sending` specifies how many bytes
-will be sent.
-
-Don't touch `Version`. Add your own, with a different name, if you feel 
-compelled.
-
-Don't trust `Generator` to determine features of the file list. It's there
-mainly for debugging and informative purposes.
-
-Add `XmlBZList` to the `$Supports` to indicate support for this.
-
-DC++ supported the feature `XMLBZList` and the commands `$GetBlock`, `$UGetBlock` and `$UGetZBlock` in versions 0.307 to 0.695. DC++ dropped support for the commands in version 0.696, whilst not removing the feature announcement. I.e., DC++ signals in the `$Supports XMLBzList` while it does not support the actual commands.
-
 ### `Minislots`
 This allows the other client to use a free slot for small files / file list. 
 
@@ -1824,27 +1893,6 @@ obviosly check that the received leaf data is correct by rebuilding the
 tree and checking that it's recorded root matches.
 
 Add `TTHL` to the `$Supports` to indicate support for this.
-
-### `TTHF`
-
-Supporting this means supporting file identification by TTH root. This
-means supporting downloads by TTH root instead of share directory and
-name. The advantage is that moved files can still be found by the
-downloader without requeuing the file.
-
-The extension adds a namespace `TTH` before the ADC file root. A TTHF
-filename has the following syntax:
-
-```
-TTH/<TTH root in base32, 192 binary bits>
-```
-
-i e the TTH namespace consists of TTH root values directly under the
-`TTH/` root.
-
-The naming scheme is valid in all types (i e also for getting TTH leaves)
-
-Add `TTHF` to the `$Supports` to indicate support for this.
 
 ### `ZLIG`
 
@@ -1924,15 +1972,10 @@ Example handshake:
 | `$Key ...\|` |
 | | `$Get files.xml.bz2$1\|`
 
-### `NoGetINFO`
-This indicates that the hub doesn't need to receive a `$GetINFO` from a client to send out `$MyINFO`. This is a variation of the `QuickList` proposal that is easy to implement and does half of `QuickList`'s job.
-
-Add `NoGetINFO` to the `$Supports` to indicate support for this.
-
 ### `BZList`
 Signals support for BZIP2 compressed file list instead of the Huffman encoded list that NMDC pioneered. The compressed file list is available for download under the name `MyList.bz2` instead of `MyList.DcLst` and `files.xml.bz2` instead of `files.xml`.
 
-Add `BZList` to the $Supports to indicate support for this.
+Add `BZList` to the `$Supports` to indicate support for this.
 
 ### `CHUNK`
 This is a protocol extension by Valknut that allows retrieval of sections of a file through a modified `$Get` syntax. The syntax is:
@@ -1947,30 +1990,6 @@ Characteristics of a hub. Indicates that the hub uses additional commands for op
 
 ### `Feed`
 This feature offers additional protocol commands notice. Feature allows you to track all the actions of the individual or all users benefit from logging these actions, and notify operators of the hub acts committed by a newly created chat room.
-
-### `SaltPass`
-```
-$GetPass salt|
-$MyPass hashed_pass|
-```
-
-Contexts: C-H, H-C
-
-This feature offers passwords to be salted and hashed, which means that passwords are no longer sent in plaintext. This adds "random data" (`salt`) to the `$GetPass` command.
-
-The random data should be Base32 encoded.
-
-The data that is sent back in the `$MyPass` shall be the password followed by the random data, passed through the Tiger algorithm and then encoded with Base32. I.e., `base32( tiger_hash( password + data ) )`.
-
-Add `SaltPass` to the `$Supports` to indicate support for this.
-
-The algorithm here is a port from ADC's `GPA`/`PAS`.
-
-Example
-```
-$GetPass salt|
-$MyPass hashed_pass|
-```
 
 ### IPv4
 This feature is used to indicate IPv4 support when a client is connecting from a IPv6 address. 
@@ -1997,18 +2016,6 @@ The connection mode in the `$MyINFO` tag changes from `M:X` where `X` is the con
 Add `IP64` to the $Supports to indicate support for this.
 
 A client that support IPv4 and IPv6 will only use one form when sending messages to a hub. The hub is responsible for translating the command into the correct IPv4/IPv6 address. E.g., if a $Search is sent with a IPv6 address, the hub will send the client's IPv4 address to those who only support IPv4. This minimizes the amount of traffic toward the hub. If a client sent a passive search request, then it is only sent to active users supporting the same TCP/IP protocol. This is regardless if the client is active in the other protocol. I.e., if a passive search request is sent with a IPv4 address, that search request will only be forwarded to IPv4 users and not 'converted' to an IPv6 request, regardless if the client is active in IPv6.
-
-### TLS
-This feature is used to indicate support for TLS encrypted client-client connections.
-
-Implementations shall add an `S` to the (TLS) port in a `$ConnectToMe`.
-
-Add `TLS` to the `$Supports` to indicate support for this.
-
-Example:
-```
-$ConnectToMe john 192.168.0.1:412S|
-```
 
 ### DHT
 This feature is used to indicate support for Distributed Hash Tables (DHT) for client-client connections. 
