@@ -1357,16 +1357,18 @@ The command adds an escaping sequence:
 
 #### `$ZOn`
 ```
-$ZOn blob|
+$ZOn|blob
 ```
 
 Contexts: H-C
 
-This command's intention is to compress (with ZLib) data to decrease bandwidth use. The blob uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
+This command's intention is to compress (with ZLib) data to decrease bandwidth use.
+The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
 
 Compression algorithm shall be LZ77.
 
-The end of the block is an `EOF`.
+The end of the `blob` is an `EOF` indicated by ZLib. Following commands will have no
+compression until the next `$ZOn` is received.
 
 Add `ZPipe0` to the `$Supports` to indicate support for this.
 
