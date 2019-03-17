@@ -233,6 +233,11 @@ message text
 second line|
 ```
 
+Messages with no space delimiter after `>`:
+```
+<nick>message text|
+```
+
 Some implementations also allow a nickname to contain `<` and `>` characters and/or spaces:
 ```
 << nick >> message|
@@ -241,7 +246,8 @@ Here a `< nick >` is the full nickname of a user.
 
 The best parsing strategy is to first ensure that the message has a `<` prefix, and then
 find the first `>` characters that is followed by any whitespace character (` `, `\n`, `\t`)
-or the end of the message.
+or the end of the message. If none character followed by a space were found, use the last
+`>` character as a delimiter.
 
 #### `$To`
 ```
