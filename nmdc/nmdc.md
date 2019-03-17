@@ -72,12 +72,9 @@
   * [`$UserIP`](#userip)
   * [`$BotINFO`](#botinfo)
   * [`$HubINFO`](#hubinfo)
-  * [`Capabilities`](#capabilities)
-  * [`IN`](#in)
   * [`$NickChange`](#nickchange)
   * [`$ClientNick`](#clientnick)
   * [`FeaturedNetworks`](#featurednetworks)
-  * [`$Z`](#z)
   * [`$GetZBlock`](#getzblock)
   * [`$UGetBlock`](#ugetblock)
   * [`$UGetZBlock`](#ugetzblock)
@@ -87,7 +84,6 @@
   * [`$GetCID`](#getcid)
 - [Extensions (features)](#extensions-features)
   * [`ChatOnly`](#chatonly)
-  * [`QuickList`](#quicklist)
   * [`Minislots`](#minislots)
   * [TTHL](#tthl)
   * [`ZLIG`](#zlig)
@@ -104,6 +100,11 @@
   * [Queue position](#queue-position)
   * [FailOver](#failover)
   * [Hub icon](#hub-icon)
+- [Deprecated extensions](#deprecated-extensions)
+  * [`$Capabilities`](#capabilities)
+  * [`$IN`](#in)
+  * [`$Z`](#z)
+  * [`QuickList`](#quicklist)
 - [Examples](#examples)
   * [Client – Hub connection](#client-%E2%80%93-hub-connection)
   * [Client – Client connection](#client-%E2%80%93-client-connection)
@@ -1496,94 +1497,6 @@ If the hub address is `127.0.0.1`, the `Hublist.org` pinger will remove the hub 
 
 Add `HubINFO` to the `$Supports` to indicate support for this.
 
-### `Capabilities`
-```
-$Capabilities [unknown]|
-```
-
-Contexts: H-C
-
-This command is used to negotiate and notify about protocol extensions, similar to the more popular `$Supports`. Its content is unknown as of date.
-
-### `IN`
-```
-$IN nick$data[$data]|
-```
-
-Contexts: C-H, H-C
-
-This command is designed to replace the static `$MyINFO`. This command consist of separate smaller parts which all have a 1-byte identifier and are separated by a dollar sign (`$`).
-
-If a client wishes to remove a part of its `$IN` (say for example its description), it must send this parts identifier immediatly followed by the dollar sign (`$`), indicating it is empty.
-
-The order in which parts are sent is free to choose, but tag parts should be grouped together.
-
-Add `IN` to the `$Supports` to indicate support for this.
-
-This command deprecates `$OpList` and `$BotList`.
-
-A client tag has only one identifier indicating it is concerning the tag, but all parts of this tag also have their own 1-byte identifier. In the tag, the parts are delimited with a space (` `).
-
-The data consist of two elements: identifier and its data.
-
-The following table lists the identifiers:
-
-| Identifier (character code) | Description
-|--- |---
-| `D` (`68`) | Description
-| `T` (`84`) | Tag
-| `C` (`67`) | Connection
-| `F` (`70`) | Status flag
-| `E` (`69`) | E-mail address
-| `S` (`83`) | Share size in bytes
-
-Examples:
-```
-$IN john$Dmy_new_description|
-$IN john$S1024|
-$IN john$S1024$$Dmy_new_description|
-```
-
-The tag has the following identifiers in the data:
-
-| Identifier (character code) | Description
-|--- |---
-| `c` (`99`) | Client
-| `v` (`118`) | Version
-| `m` (`109`) | Mode
-| `h` (`104`) | Hub count, `x/y/z` (where `x` is the number of hubs as a normal user, `y` as the number of hubs as registered and `z` as the number of hubs as operator)
-| `s` (`115`) | Slots
-| `f` (`102`) | Free slots
-| `l` (`108`) | Bandwidth limit (`L:` and `B:` in `$MyINFO`)
-| `o` (`111`) | `O:` in `$MyINFO`
-| `r` (`114`) | `R:` in `$MyINFO`
-
-Tag identifiers are separated by a space (` `).
-
-Examples:
-```
-$IN john$Ts3|
-$IN john$Tc++ v0.666|
-```
-
-The status is a 32-bit integers where the bits are according to the following table:
-
-| Bit | Description
-|--- |---
-| 1 | Default value
-| 2 | User is away
-| 3 | USer is server
-| 4 | User is fireball
-| 5 | User is OP
-| 6 | Client is a bot
-| 7 | Client is in DND mode
-| 8 | Client support encryption
-| 9 | Client supports partial search
-
-Bit 5 and Bit 6 of the 32-bit status flag are used to indicate wether a user is an OP or wether the `$IN` string send by the hubsoft belongs to a bot. These values are read-only and should never be changed by a client. The hubsoft must disconnect for this. If a client connects and has successfully logged in with the correct password, the hubsoft will set bit 5 of the status flag and sends this part to all connected users, including the newly connected OP. The connecting client must save the status flag it received from the hub and use it when updating status such as away and fireball. However, as said, it is not allowed to set or reset bit 5 and bit 6 of the status flag.
-
-Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending `$To` strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. `$To` strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
-
 ### `$NickChange`
 ```
 $NickChange old_nick new_nick|
@@ -1656,24 +1569,6 @@ The prefixes are to be defined by the network administrator. In the biggest runn
 
 `$FeaturedNetworks` can be implemented by virtually any hub by either using the MHC bot or by injecting it into the server ? client stream using a textfile (like a MOTD).
 
-### `$Z`
-```
-$Z blob|
-```
-
-Contexts: H-C
-
-This command's intention is to compress (with ZLib) data to decrease bandwidth use. The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
-
-Add `ZLine` to the `$Supports` to indicate support for this.
-
-The command adds an escaping sequence:
-
-| Character | Escape
-|--- |---
-| ` \ ` | `\\`
-| `\|` | `\P`
-
 ### `$GetZBlock`
 ```
 $UGetBlock start bytes filename|
@@ -1743,137 +1638,6 @@ Contexts: C-H
 This indicates that the client only support chat capabilities to allow the client to bypass hub rules (that relate to file sharing). The client should be disconnected if it sends a `$Search`, `$ConnectoMe` or `$RevConnect`.
 
 Add `ChatOnly` to the `$Supports` to indicate support for this.
-
-### `QuickList`
-The terms NDC and NHUB are used to denote a client or hub not featuring `QuickList` and QDC and QHUB for those that do. The term DC is used when the type is not yet established or of no importance. EACH and ALL signals that a message is sent N times, one message for each connected user. Also note that the terms IF, MAY, SHOULD and MUST, have the same meaning as in the internet RFC specs.
-
-#### Walkthrough
-
-##### Connecting
-
-| Description
-|---
-| A DC connects to QHUB and does nothing
-| QHUB sends $Lock which starts with `EXTENDEDPROTOCOL`
-| QHUB also sends `$HubName`
-| A DC must send `$Key`
-| A DC may also send `$Supports QuickList\|` to signal in is in fact a QDC
-| QHUB responds with `$Supports QuickList\|`
-
-##### Identification
-
-| Description
-|---
-| A QDC may but should not send `$Version`
-| A QDC must send `$MyINFO`
-
-##### Authentication
-
-| Description
-|---
-| QHUB may send `$GetPass`
-| QDC responds with `$MyPass`
-| QHUB may send `$BadPass` and disconnect
-| QHUB may send `$ValidateDenide` and disconnect
-
-
-##### Acceptance
-
-| Description
-|---
-| QHUB may send `$LogedIn` to signal that `H:` should not be incremented
-| QHUB sends all clients `MyINFO` to the QDC
-| QHUB sends `$OpList` to the QDC
-| QHUB may send `$Hello` to all clients but should send it to non QDC only
-| QHUB sends `$MyINFO` to all QDC clients
-
-#### Explanation
-
-##### Connecting
-
-This part has been through some changes. There was an argument of having the client start with `$Supports` and then having the hub respond to that. Having the client start with `$Supports` as a response to `EXTENDEDPROTOCOL` is in a sense much cleaner.
-
-* It has been found that `$HubName` can be sent pretty much at any time. Typically done in conjunction with `$Lock`.
-
-* `$Supports` are in the same format as in the client protocol; `$Supports <feat1> <feat2> <feat3>&#124;`
-
-##### Identification
-
-* sending `$MyPass` early has been removed from the spec.
-
-##### Authentication
-
-* As previously mentioned `$GetPass` is only sent if the user has an account and the `$MyPass` was not sent in the identification process. `$BadPass` or `$ValidateDenide` is sent when proper as usual.
-
-##### Acceptance
-
-From testing it has been found that `$Hello` and `$MyINFO` can be sent together without having to wait for a `$GetINFO`.
-
-* Let the hub decide if the account should be treated as a VIP, i.e. not increment `H:` in the tag, hence it is not mandatory for accounts. A QDC should only respond to this message for account logins only.
-
-* `$OpList` was missing.
-
-#### Commands Sent
-
-Connecting
-* `$Lock`
-* `$HubName`
-* `$Supports`
-
-Identification
-
-Authentication
-* `$GetPass`
-* `$BadPass`
-* `$ValidateDenide`
-
-Acceptance
-* `$LogedIn`
-* `$MyINFO`
-* `$MyINFO stream`
-
-Connected
-* `$To`
-* `$Search`
-* `$SR`
-* `$ConnectToMe`
-* `$RevConnectToMe`
-* `$ForceMove`
-
-#### Commands Accepted
-
-Messages that a QHUB listens to in each state, QHUB ignores otherwise;
-
-Connecting
-* `$Key`
-* `$Supports`
-
-Identification
-* `$Version`
-* `$MyINFO`
-
-Authentication
-* `$MyPass`
-
-Acceptance
-
-Connected
-* `$GetNickList`
-* `$MyINFO`
-* `$To`
-* `$Search`
-* `$SR`
-* `$ConnectToMe`
-* `$RevConnectToMe`
-* `$Kick`
-* `$OpForceMove`
-
-Notes
-* `$ValidateNick` deprecated and ignored
-* `$GetNickList` only valid when connected, a QDC does not receive a `$NickList`, but a series of `$MyINFO`s directly.
-* `$Hello` deprecated and ignored
-* `$GetINFO` deprecated and ignored
-* `$MyINFO` is always accepted as valid and denotes a new or updated client.
 
 ### `Minislots`
 This allows the other client to use a free slot for small files / file list. 
@@ -2080,6 +1844,268 @@ Examples:
 $SetIcon www.example.com/images/myimage.ico|
 $SetIcon http://hub.example.org/img/image.ico|
 ```
+
+## Deprecated extensions
+
+Extensions in this section were deprecated or never became standard in clients and/or hubs.
+The section serves only as a history reference. Those extensions should not be supported.
+
+### `$Capabilities`
+```
+$Capabilities [unknown]|
+```
+
+Contexts: H-C
+
+This command is used to negotiate and notify about protocol extensions, similar to the more popular `$Supports`. Its content is unknown as of date.
+
+### `$IN`
+```
+$IN nick$data[$data]|
+```
+
+Contexts: C-H, H-C
+
+This command is designed to replace the static `$MyINFO`. This command consist of separate smaller parts which all have a 1-byte identifier and are separated by a dollar sign (`$`).
+
+If a client wishes to remove a part of its `$IN` (say for example its description), it must send this parts identifier immediatly followed by the dollar sign (`$`), indicating it is empty.
+
+The order in which parts are sent is free to choose, but tag parts should be grouped together.
+
+Add `IN` to the `$Supports` to indicate support for this.
+
+This command deprecates `$OpList` and `$BotList`.
+
+A client tag has only one identifier indicating it is concerning the tag, but all parts of this tag also have their own 1-byte identifier. In the tag, the parts are delimited with a space (` `).
+
+The data consist of two elements: identifier and its data.
+
+The following table lists the identifiers:
+
+| Identifier (character code) | Description
+|--- |---
+| `D` (`68`) | Description
+| `T` (`84`) | Tag
+| `C` (`67`) | Connection
+| `F` (`70`) | Status flag
+| `E` (`69`) | E-mail address
+| `S` (`83`) | Share size in bytes
+
+Examples:
+```
+$IN john$Dmy_new_description|
+$IN john$S1024|
+$IN john$S1024$$Dmy_new_description|
+```
+
+The tag has the following identifiers in the data:
+
+| Identifier (character code) | Description
+|--- |---
+| `c` (`99`) | Client
+| `v` (`118`) | Version
+| `m` (`109`) | Mode
+| `h` (`104`) | Hub count, `x/y/z` (where `x` is the number of hubs as a normal user, `y` as the number of hubs as registered and `z` as the number of hubs as operator)
+| `s` (`115`) | Slots
+| `f` (`102`) | Free slots
+| `l` (`108`) | Bandwidth limit (`L:` and `B:` in `$MyINFO`)
+| `o` (`111`) | `O:` in `$MyINFO`
+| `r` (`114`) | `R:` in `$MyINFO`
+
+Tag identifiers are separated by a space (` `).
+
+Examples:
+```
+$IN john$Ts3|
+$IN john$Tc++ v0.666|
+```
+
+The status is a 32-bit integers where the bits are according to the following table:
+
+| Bit | Description
+|--- |---
+| 1 | Default value
+| 2 | User is away
+| 3 | USer is server
+| 4 | User is fireball
+| 5 | User is OP
+| 6 | Client is a bot
+| 7 | Client is in DND mode
+| 8 | Client support encryption
+| 9 | Client supports partial search
+
+Bit 5 and Bit 6 of the 32-bit status flag are used to indicate wether a user is an OP or wether the `$IN` string send by the hubsoft belongs to a bot. These values are read-only and should never be changed by a client. The hubsoft must disconnect for this. If a client connects and has successfully logged in with the correct password, the hubsoft will set bit 5 of the status flag and sends this part to all connected users, including the newly connected OP. The connecting client must save the status flag it received from the hub and use it when updating status such as away and fireball. However, as said, it is not allowed to set or reset bit 5 and bit 6 of the status flag.
+
+Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending `$To` strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. `$To` strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
+
+Although the extension has a good design, it was never supported by most clients/hubs.
+The extension is no longer seen in the wild.
+
+### `$Z`
+```
+$Z blob|
+```
+
+Contexts: H-C
+
+This command's intention was to compress (with ZLib) data to decrease bandwidth use.
+The `blob` uncompressed is one or more commands, e.g. a `$Search` followed by a `$MyINFO`.
+
+`ZLine` in the `$Supports` indicated support for this.
+
+The command added an escaping sequence:
+
+| Character | Escape
+|--- |---
+| ` \ ` | `\\`
+| `\|` | `\P`
+
+Because an additional escaping was needed, this command was superseded by [`$ZOn`](#zon).
+that doesn't require any escaping.
+
+### `QuickList`
+This extension clarifies the protocol flow, defines the protocol stages and allowed commands
+in each of them.
+
+Although the good design, extension was not adopted as-is. Some parts of the extension
+might be implemented in hubs. 
+
+The extension should not be listed in `$Supports` since some hubs may drop the connection
+when seeing it.
+
+The terms "NDC" and "NHUB" are used below to denote a client or hub not featuring `QuickList`
+and "QDC" and "QHUB" for those that do. The term "DC" is used when the type is not yet
+established or of no importance. EACH and ALL signals that a message is sent N times, one
+message for each connected user. Also note that the terms IF, MAY, SHOULD and MUST, have
+the same meaning as in the internet RFC specs.
+
+#### Walkthrough
+
+##### Connecting
+
+| Description
+|---
+| A DC connects to QHUB and does nothing
+| QHUB sends $Lock which starts with `EXTENDEDPROTOCOL`
+| QHUB also sends `$HubName`
+| A DC must send `$Key`
+| A DC may also send `$Supports QuickList\|` to signal in is in fact a QDC
+| QHUB responds with `$Supports QuickList\|`
+
+##### Identification
+
+| Description
+|---
+| A QDC may but should not send `$Version`
+| A QDC must send `$MyINFO`
+
+##### Authentication
+
+| Description
+|---
+| QHUB may send `$GetPass`
+| QDC responds with `$MyPass`
+| QHUB may send `$BadPass` and disconnect
+| QHUB may send `$ValidateDenide` and disconnect
+
+
+##### Acceptance
+
+| Description
+|---
+| QHUB may send `$LogedIn` to signal that `H:` should not be incremented
+| QHUB sends all clients `MyINFO` to the QDC
+| QHUB sends `$OpList` to the QDC
+| QHUB may send `$Hello` to all clients but should send it to non QDC only
+| QHUB sends `$MyINFO` to all QDC clients
+
+#### Explanation
+
+##### Connecting
+
+This part has been through some changes. There was an argument of having the client start with `$Supports` and then having the hub respond to that. Having the client start with `$Supports` as a response to `EXTENDEDPROTOCOL` is in a sense much cleaner.
+
+* It has been found that `$HubName` can be sent pretty much at any time. Typically done in conjunction with `$Lock`.
+
+* `$Supports` are in the same format as in the client protocol; `$Supports <feat1> <feat2> <feat3>|`
+
+##### Identification
+
+* sending `$MyPass` early has been removed from the spec.
+
+##### Authentication
+
+* As previously mentioned `$GetPass` is only sent if the user has an account and the `$MyPass` was not sent in the identification process. `$BadPass` or `$ValidateDenide` is sent when proper as usual.
+
+##### Acceptance
+
+From testing it has been found that `$Hello` and `$MyINFO` can be sent together without having to wait for a `$GetINFO`.
+
+* Let the hub decide if the account should be treated as a VIP, i.e. not increment `H:` in the tag, hence it is not mandatory for accounts. A QDC should only respond to this message for account logins only.
+
+* `$OpList` was missing.
+
+#### Commands Sent
+
+Connecting
+* `$Lock`
+* `$HubName`
+* `$Supports`
+
+Identification
+
+Authentication
+* `$GetPass`
+* `$BadPass`
+* `$ValidateDenide`
+
+Acceptance
+* `$LogedIn`
+* `$MyINFO`
+* `$MyINFO stream`
+
+Connected
+* `$To`
+* `$Search`
+* `$SR`
+* `$ConnectToMe`
+* `$RevConnectToMe`
+* `$ForceMove`
+
+#### Commands Accepted
+
+Messages that a QHUB listens to in each state, QHUB ignores otherwise;
+
+Connecting
+* `$Key`
+* `$Supports`
+
+Identification
+* `$Version`
+* `$MyINFO`
+
+Authentication
+* `$MyPass`
+
+Acceptance
+
+Connected
+* `$GetNickList`
+* `$MyINFO`
+* `$To`
+* `$Search`
+* `$SR`
+* `$ConnectToMe`
+* `$RevConnectToMe`
+* `$Kick`
+* `$OpForceMove`
+
+Notes
+* `$ValidateNick` deprecated and ignored
+* `$GetNickList` only valid when connected, a QDC does not receive a `$NickList`, but a series of `$MyINFO`s directly.
+* `$Hello` deprecated and ignored
+* `$GetINFO` deprecated and ignored
+* `$MyINFO` is always accepted as valid and denotes a new or updated client.
 
 ## Examples
 ### Client – Hub connection
