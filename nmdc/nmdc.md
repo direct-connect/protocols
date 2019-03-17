@@ -40,17 +40,17 @@
   * [`$Quit`](#quit)
   * [`$Lock`](#lock)
   * [`$Key`](#key)
-  * [Legacy commands](#legacy-commands)
-    + [`$Ping`](#ping)
-    + [`$GetINFO`](#getinfo)
-    + [`$NickList`](#nicklist)
-    + [`$Get`](#get)
-    + [`$Send`](#send)
-    + [`$FileLength`](#filelength)
-    + [`$GetListLen`](#getlistlen)
-    + [`$ListLen`](#listlen)
-    + [`$MultiConnectToMe`](#multiconnecttome)
-    + [`$MultiSearch`](#multisearch)
+- [Legacy commands](#legacy-commands)
+  * [`$Ping`](#ping)
+  * [`$GetINFO`](#getinfo)
+  * [`$NickList`](#nicklist)
+  * [`$Get`](#get)
+  * [`$Send`](#send)
+  * [`$FileLength`](#filelength)
+  * [`$GetListLen`](#getlistlen)
+  * [`$ListLen`](#listlen)
+  * [`$MultiConnectToMe`](#multiconnecttome)
+  * [`$MultiSearch`](#multisearch)
 - [Standard extensions](#standard-extensions)
   * [`$Supports`](#supports)
   * [`NoHello`](#nohello)
@@ -993,12 +993,12 @@ Note that this (and every other) example uses `011010110110010101111001` as key,
 $Key 011010110110010101111001|
 ```
 
-### Legacy commands
+## Legacy commands
 
 Commands in this section were defined in the original protocol and were either superseded
 by extensions, or are not used by implementations.
 
-#### `$Ping`
+### `$Ping`
 ```
 $Ping sender_ip:sender_port|
 ```
@@ -1009,7 +1009,7 @@ $Ping sender_ip:sender_port|
 
 Not used by any implementations.
 
-#### `$GetINFO`
+### `$GetINFO`
 ```
 $GetINFO <other_nick> <nick>|
 ```
@@ -1029,7 +1029,7 @@ $GetINFO peter john|
 
 Superseded by [`NoGetINFO`](#nogetinfo) extension.
 
-#### `$NickList`
+### `$NickList`
 ```
 $NickList nick$$nick2$$nick3[...]|
 ```
@@ -1045,7 +1045,7 @@ $NickList john$$peter$$richard$$marie$$sarah|
 
 Superseded by [`NoHello`](#nohello) and [`NoGetINFO`](#nogetinfo) extensions.
 
-#### `$Get`
+### `$Get`
 ```
 $Get file$offset|
 ```
@@ -1063,7 +1063,7 @@ $Get C:/Uploads/myfile.txt$15|
 
 Superseded by [`$ADCGET`](#adcget).
 
-#### `$Send`
+### `$Send`
 ```
 $Send|
 ```
@@ -1074,7 +1074,7 @@ This is used as a way to specify that the file should be sent. The uploader shou
 
 Superseded by [`$ADCSND`](#adcsnd).
 
-#### `$FileLength`
+### `$FileLength`
 ```
 $FileLength file_size|
 ```
@@ -1085,7 +1085,7 @@ This command is used as a way to provide the size of the file requested.
 
 Superseded by [`$ADCSND`](#adcsnd).
 
-#### `$GetListLen`
+### `$GetListLen`
 ```
 $GetListLen|
 ```
@@ -1096,7 +1096,7 @@ Get file list size.
 
 Superseded by [`XmlBZList`](#xmlbzlist) and [`$ADCGET`](#adcget).
 
-#### `$ListLen`
+### `$ListLen`
 ```
 $ListLen file_size|
 ```
@@ -1107,7 +1107,7 @@ This command is used as a way to provide the size of the file list of the client
 
 Superseded by [`XmlBZList`](#xmlbzlist) and [`$ADCSND`](#adcsnd).
 
-#### `$MultiConnectToMe`
+### `$MultiConnectToMe`
 ```
 $MultiConnectToMe remote_nick sender_ip:sender_port
 ```
@@ -1125,7 +1125,7 @@ $MultiConnectToMe peter 192.168.0.138:19346
 
 Not used by any implementations.
 
-#### `$MultiSearch`
+### `$MultiSearch`
 ```
 $MultiSearch ip:port search_string|
 ```
