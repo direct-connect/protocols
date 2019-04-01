@@ -734,7 +734,7 @@ $MyINFO $ALL nick description$ $<connection><flag>$mail$share_size$|
  
 Contexts: C-H (C-H-C)
  
-This command is part of the Client-Hub Handshake and during login, and is sent after the client receive $Hello with their own nick. Client resend this on any change. It's broadcasted to all clients. 
+This command is part of the Client-Hub Handshake and during login, and is sent after the client receive [`$Hello`](#hello) with their own nick. Client resend this on any change. It's broadcasted to all clients. 
 
 The `<` and `>` use in here should not be taken literally; they are there to visually distinguish connection from flag. Consequently, the flag shall immediately follow the connection.
 
@@ -900,7 +900,7 @@ $Kick victim|
 
 Contexts: C-H-C
 
-Requests that the hub kicks a user (terminates the connection to the user). The hub will validate that the issuing user actually have permission to kick the other user. The message does not specify a reason to the kick; hubs may decide instead to send a default "you have been kicked" message. Time frame (of a potential ban) does not exist in the protocol, as it is decided by the hub's configuration. It is up to the hub to decide the course of action if the user is not allowed to issue the kick, but the majority of implementations will simply ignore the message or send a message back ("you are not allowed to issue the command"). Many clients that issue the Kick command will precede the message with a message directed (either normal main chat or with $To) to the offended user with the reason for the kick.
+Requests that the hub kicks a user (terminates the connection to the user). The hub will validate that the issuing user actually have permission to kick the other user. The message does not specify a reason to the kick; hubs may decide instead to send a default "you have been kicked" message. Time frame (of a potential ban) does not exist in the protocol, as it is decided by the hub's configuration. It is up to the hub to decide the course of action if the user is not allowed to issue the kick, but the majority of implementations will simply ignore the message or send a message back ("you are not allowed to issue the command"). Many clients that issue the Kick command will precede the message with a message directed (either normal main chat or with [`$To`](#to) to the offended user with the reason for the kick.
 
 ### `$Close`
 ```
@@ -971,7 +971,7 @@ This is a mechanism to request 'certification' for verification. The lock is a c
 
 Note this command, and its use, are used for all connections. 
 
-This command should be the first to be sent in a client to hub connection. This command should be sent after both have used [`$MyNick`](#mynick) in a client to client connection. Both clients (in a client to client connection) should send $Lock.
+This command should be the first to be sent in a client to hub connection. This command should be sent after both have used [`$MyNick`](#mynick) in a client to client connection. Both clients (in a client to client connection) should send `$Lock`.
 
 The lock data is a sequence of random characters, excluding space (` `), dollar sign (`$`) and a pipe (`|`).
 
@@ -1003,7 +1003,7 @@ $Key key|
 
 Contexts: C-H, C-C, H-L
 
-The key is given as a response for a $Lock command, as calculated by the following algorithm. 
+The key is given as a response for a [`$Lock`](#lock) command, as calculated by the following algorithm. 
 
 The key has exactly as many characters as the lock. Except for the first, each key character is computed from the corresponding lock character and the one before it. If the first character has index 0 and the lock has a length of len then:
 
@@ -1983,7 +1983,7 @@ For example: `$Ban`, `$TempBan`, `$UnBan`, `$GetBanList`, `$WhoIP`, `$Banned`, `
 ### `Feed`
 This feature offers additional protocol commands notice. Feature allows you to track all the actions of the individual or all users benefit from logging these actions, and notify operators of the hub acts committed by a newly created chat room.
 
-### IPv4
+### `IPv4`
 This feature is used to indicate IPv4 support when a client is connecting from a IPv6 address. 
 
 The hub should send a [`$ConnectToMe`](#connecttome) to the client, to indicate a download from the hub. The client will connect to the hub address and port as in a normal client to client connection, this time using the client's IPv4 address. The hub should disconnect after it has received the [`$MyNick`](#mynick) command.
@@ -1992,22 +1992,22 @@ The hub should later verify in connection attempts with other IPv4 clients that 
 
 Once the hub has received an IPv4 connection and gathered the IPv4 address, it should set the IPv4 bit in the [`$MyINFO`](#myinfo) command.
 
-Add IPv4 to the `$Supports` to indicate support for this.
+Add `IPv4` to the `$Supports` to indicate support for this.
 
 ### IPv6
 This feature is used to indicate IPv6 support.
 
-IPv6 addresses are specified in RFC 4291 form.
+IPv6 addresses are specified in [RFC 4291](https://tools.ietf.org/html/rfc4291) form.
 
 If the client has an IPv4 connection, it should also signal the use of IPv4. Clients should use the same TCP and UDP ports for both IPv4 and IPv6 if both are supported. The connection mode (passive, active, SOCKS5) can be different.
 
-The hub is required to set the IPv6 bit in the $MyINFO command.
+The hub is required to set the IPv6 bit in the [`$MyINFO`](#myinfo) command.
 
 The connection mode in the [`$MyINFO`](#myinfo) tag changes from `M:X` where `X` is the connection mode (`A` = Active, `B` = Passive, `5` = SOCKS5) to `M:XY` where `X` is the connection mode of IPv4 and `Y` is the connection mode of IPv6. If a client does not support IPv4 or the IPv4 check failed, the first character will be `N` for not supported.
 
 Add `IP64` to the `$Supports` to indicate support for this.
 
-A client that support IPv4 and IPv6 will only use one form when sending messages to a hub. The hub is responsible for translating the command into the correct IPv4/IPv6 address. E.g., if a $Search is sent with a IPv6 address, the hub will send the client's IPv4 address to those who only support IPv4. This minimizes the amount of traffic toward the hub. If a client sent a passive search request, then it is only sent to active users supporting the same TCP/IP protocol. This is regardless if the client is active in the other protocol. I.e., if a passive search request is sent with a IPv4 address, that search request will only be forwarded to IPv4 users and not 'converted' to an IPv6 request, regardless if the client is active in IPv6.
+A client that support IPv4 and IPv6 will only use one form when sending messages to a hub. The hub is responsible for translating the command into the correct IPv4/IPv6 address. E.g., if a [`$Search`](#search) is sent with a IPv6 address, the hub will send the client's IPv4 address to those who only support IPv4. This minimizes the amount of traffic toward the hub. If a client sent a passive search request, then it is only sent to active users supporting the same TCP/IP protocol. This is regardless if the client is active in the other protocol. I.e., if a passive search request is sent with a IPv4 address, that search request will only be forwarded to IPv4 users and not 'converted' to an IPv6 request, regardless if the client is active in IPv6.
 
 ### DHT
 This feature is used to indicate support for Distributed Hash Tables (DHT) for client-client connections. 
@@ -2180,7 +2180,7 @@ The status is a 32-bit integers where the bits are according to the following ta
 
 Bit 5 and Bit 6 of the 32-bit status flag are used to indicate wether a user is an OP or wether the `$IN` string send by the hubsoft belongs to a bot. These values are read-only and should never be changed by a client. The hubsoft must disconnect for this. If a client connects and has successfully logged in with the correct password, the hubsoft will set bit 5 of the status flag and sends this part to all connected users, including the newly connected OP. The connecting client must save the status flag it received from the hub and use it when updating status such as away and fireball. However, as said, it is not allowed to set or reset bit 5 and bit 6 of the status flag.
 
-Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a $To: string for a client in DND-mode, the hub must ignore the $To and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending [`$To`](#to) strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. [`$To`](#to) strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
+Bit 7 of the 32-bit status flag indicates if the client is in DND-mode (Do-Not-Disturb). Unlike Away mode, this mode will prevent the client to receive any pm's. Clients are responsible themselves for setting/resetting this bit. Once this bit is set, and the hub receives a `$To:` string for a client in DND-mode, the hub must ignore the [`$To`](#to) and reply to the sender with a message that the receiver is in DND-Mode. A client having this bit set, should automatically reset this bit when sending a pm itself. Ideally, newer clients supporting `IN`, may prevent themselves from sending [`$To`](#to) strings to other clients having this bit set. The hub will always have the last the say in forwarding a PM or not. [`$To`](#to) strings generated by the hubsoft to the client are not included in this and will be send regardlessly of status ( i.e. messages from bots ).
 
 Although the extension has a good design, it was never supported by most clients/hubs.
 The extension is no longer seen in the wild.
@@ -2252,7 +2252,7 @@ the same meaning as in the internet RFC specs.
 | Description
 |---
 | A DC connects to QHUB and does nothing
-| QHUB sends $Lock which starts with `EXTENDEDPROTOCOL`
+| QHUB sends [`$Lock`](#lock) which starts with `EXTENDEDPROTOCOL`
 | QHUB also sends [`$HubName`](#hubname)
 | A DC must send [`$Key`](#key)
 | A DC may also send `$Supports QuickList\|` to signal in is in fact a QDC
