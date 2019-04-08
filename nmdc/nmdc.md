@@ -135,7 +135,7 @@ This document uses information from many sources, including but not limited to;
 The initial version of this document was compiled by Fredrik Ullner.
 
 ## General
-* URI scheme is `dchub://`. For more details see the [URI scheme](./nmdc-uri-scheme.txt) document.
+* URI scheme is `dchub://` for unencrypted and `nmdcs://` for encrypted connections. Also see the [URI scheme](./nmdc-uri-scheme.txt) document.
 * Messages begin with a `$` (dollar sign). The only exception are [chat messages](#chat-message).
 * Messages end with a `|` (pipe). Exceptions are [`$Cancel`](#cancel) and [`$Canceled`](#canceled) that are used in binary data transfer.
 * Command names use a single space (` `) as a separator.
