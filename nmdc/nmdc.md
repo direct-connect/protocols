@@ -99,6 +99,7 @@
   * [`Feed`](#feed)
   * [IPv4](#ipv4)
   * [IPv6](#ipv6)
+  * [NAT traversal](#nat-traversal)
   * [DHT](#dht)
   * [Queue position](#queue-position)
   * [FailOver](#failover)
@@ -379,22 +380,43 @@ $To: john From: peter $<peter> dogs are more cute|
 
 ### `$ConnectToMe`
 ```
-$ConnectToMe RemoteNick SenderIp:SenderPort
+$ConnectToMe RemoteNick SenderIp:SenderPort|
+$ConnectToMe RemoteNick SenderIp:SenderPort<flag>|
+$ConnectToMe RemoteNick SenderIp:SenderPort<flag> SenderNick|
 ```
 
 Contexts: C-H-C
 
-Request that `RemoteNick` connect to the sending user for an active TCP connection for file transfers. Clients sending this must allow incoming TCP connections. There is no default port.
+Request that `RemoteNick` connect to the sending user for an active TCP connection for file transfers.
+Clients sending this must allow incoming TCP connections. There is no default port.
 
 Example:
 ```
 $ConnectToMe john 192.168.1.2:412|
 ```
 
-Note that the above is for older clients.
+<!-- FIXME: What are the right flags/extensions names to support this?
+            Old spec claims it's the TLS extension in $Support, but client can't detect it.
+            Also, the spec claims that it's the 0x20 flag in $MyINFO, but the other
+            [spec](https://webcache.googleusercontent.com/search?q=cache:WsW9g2m_bxUJ:https://forum.dcbase.org/viewtopic.php?f=81&t=814)
+            from StrongDC++ mentions 0x20 flag in relation to NAT traversal.
+-->
 
-Newer versions of NMDC client include the sender's nick as well (but may not be compatible with all implementations);
- 
+Secure connection (see [TLS](#tls)):
+```
+$ConnectToMe john 192.168.1.2:412S|
+```
+
+NAT traversal (see [NAT traversal](#nat-traversal)):
+```
+$ConnectToMe john 192.168.1.2:412NS peter|
+$ConnectToMe peter 192.168.1.3:412RS|
+```
+
+#### Legacy
+
+Some versions of NMDC client include the sender's nick as well, but it may not be compatible
+with all implementations):
 ```
 $ConnectToMe SenderNick RemoteNick SenderIp:SenderPort
 ```
@@ -2008,6 +2030,28 @@ The connection mode in the [`$MyINFO`](#myinfo) tag changes from `M:X` where `X`
 Add `IP64` to the `$Supports` to indicate support for this.
 
 A client that support IPv4 and IPv6 will only use one form when sending messages to a hub. The hub is responsible for translating the command into the correct IPv4/IPv6 address. E.g., if a [`$Search`](#search) is sent with a IPv6 address, the hub will send the client's IPv4 address to those who only support IPv4. This minimizes the amount of traffic toward the hub. If a client sent a passive search request, then it is only sent to active users supporting the same TCP/IP protocol. This is regardless if the client is active in the other protocol. I.e., if a passive search request is sent with a IPv4 address, that search request will only be forwarded to IPv4 users and not 'converted' to an IPv6 request, regardless if the client is active in IPv6.
+
+### NAT traversal
+
+The purpose of this extension is to allow connections between two passive clients in NMDC protocol.
+
+<!-- FIXME: clarify the flag -->
+
+Client advertises the support as a flag `0x20` in [`$MyINFO`](#myinfo).
+
+When passive client A wants to make connection with remote client B, it sends standard `$RevConnectToMe` command. When remote client B is passive too, it will respond to it with:
+
+```
+$ConnectToMe <A's nick> <B's IP>:<port>N <B's nick>|
+```
+
+where `<port>` is the outbound port to the connected hub. Character `N` is appended to this port number, `NS` for TLS connection. When client A receives it, it tries to connect to specified `IP:port` and responds to B with:
+
+```
+$ConnectToMe <B's nick> <A's IP>:<port>R|
+```
+
+where `<port>` is again the outbound port to the connected hub. Character `R` is appended, `RS` for TLS connection. When client B receives it, it tries to connect to specified `IP:port`.
 
 ### DHT
 This feature is used to indicate support for Distributed Hash Tables (DHT) for client-client connections. 
