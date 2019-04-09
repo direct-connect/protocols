@@ -90,6 +90,7 @@
   * [`ChatOnly`](#chatonly)
   * [`Minislots`](#minislots)
   * [TTHL](#tthl)
+  * [`TTHS` (`$SA` and `$SP`)](#tths-sa-and-sp)
   * [`ZLIG`](#zlig)
   * [`ACTM`](#actm)
     + [`$CTM`](#ctm)
