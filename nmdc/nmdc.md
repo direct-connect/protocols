@@ -660,7 +660,7 @@ Contexts: C-H-C
 The former is sent by active clients and the latter for passive clients. The `ip` is the client's own IP address and the `port` is an open UDP port that accept incoming UDP traffic. `Hub` should be taken literally. The `nick` is the nickname of the searching user.
 
 #### The search string
-The string describing the file or directory the client is searching for. It is made up of a question mark (`?`) delimited string as follows:
+The string describing the file or directory the client is searching for. It is made up of 5 question mark (`?`) delimited strings as follows:
 
 ```
 size_restricted?is_max_size?size?data_type?search_pattern
@@ -676,15 +676,19 @@ size_restricted?is_max_size?size?data_type?search_pattern
 
 | Type | Description
 |--- |---
-| 1 | For any file type
-| 2 | For audio files
-| 3 | For compressed files
-| 4 | For document files
-| 5 | For executable files
-| 6 | For picture files
-| 7 | For video files
-| 8 | For folders
-| 9 | For TTH searching
+|  1 | For any file type
+|  2 | For audio files
+|  3 | For compressed files
+|  4 | For document files
+|  5 | For executable files
+|  6 | For picture files
+|  7 | For video files
+|  8 | For folders
+|  9 | For TTH searching
+| 10 | For disk images
+| 11 | For comics files
+| 12 | For books
+| 13 | For magnet links
 
 `search_pattern` is used by other users to determine if any files match. If it is a TTH search, `search_pattern` should be `TTH:hash`.
 
